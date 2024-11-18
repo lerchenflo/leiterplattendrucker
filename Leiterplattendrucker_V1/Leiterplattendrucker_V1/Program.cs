@@ -9,13 +9,13 @@ namespace Leiterplattendrucker_V1
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Leiterplattendrucker V1");
+            Console.WriteLine("Verfügbare COM - Ports:");
 
             //Ausgeben aller verfügbaren Ports, an denen der Arduino Nano angeschlossen sein könntr
             string[] comPorts = SerialComm.getAvalibablePorts();
             for (int i = 0; i < comPorts.Length; i++)
             {
-                Console.WriteLine($"COMPort {i}: {comPorts[i]}");
+                Console.WriteLine($" - {comPorts[i]}");
             }
 
 
@@ -29,10 +29,23 @@ namespace Leiterplattendrucker_V1
             }
 
             //Druckerserver - Objekt erstellen
-            Druckerserver d = new Druckerserver(localIP, 6850, "COM3");
+            Druckerserver d = new Druckerserver(localIP, 6850, "COM10");
             d.Start();
 
-            
+            /*
+            using (StreamReader sr = new StreamReader("C:\\Users\\Flo\\OneDrive - HTL-Rankweil\\HTL Rankweil\\DA_Leiterplattendrucker\\code\\Gerber - File to Coordinats\\Gerber_file_test\\gerber_file_test\\test13.gerber"))
+            {
+                d.initPrinting(sr.ReadToEnd(), "COM10");
+                d.startPrinting();
+            };
+            */
+
+            Console.Title = localIP + ":6850";
+            Console.WriteLine("\nLokale IP: " + localIP);
+            Console.WriteLine("\nServer läuft");
+
+
+
             while (true)
             {
                 //Arbeitsschleife
