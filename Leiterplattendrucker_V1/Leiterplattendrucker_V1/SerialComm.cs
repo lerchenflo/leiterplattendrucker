@@ -136,8 +136,7 @@ namespace lpd_ansteuerung
             }
 
             // drive x up or down
-            Console.WriteLine(drawing);
-            Debug.WriteLine("Fabisdrawing: " + drawing);
+            //Console.WriteLine("\nDruckerdrawing: " + drawing + "\nLinedrawing: " + draw);
             if (draw != drawing)
             {
                 if (draw)
@@ -160,21 +159,15 @@ namespace lpd_ansteuerung
 
         public void sendCommand(string motor, int mm1, string dir1, int mm2, string dir2)
         {
-            Console.WriteLine("Command sendet");
-            //string red = read();
-
-            
-
             string cmd = motor + mm1.ToString("D5") + dir1 + mm2.ToString("D5") + dir2;
             send(cmd);
 
             while (true) //Polling for mc to be ready
             {
                 string red = read();
-                Console.WriteLine(red);
                 if (red.StartsWith("finish"))
                 {
-                    Console.WriteLine("Finished driving");
+                    
                     break;
                 }
             }
