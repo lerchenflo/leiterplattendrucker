@@ -1,6 +1,8 @@
 ﻿using Leiterplattendrucker_V1;
 using lpd_ansteuerung;
+using System;
 using System.Diagnostics;
+using System.IO;
 using System.Net;
 using System.Text;
 
@@ -10,7 +12,6 @@ namespace gerber2coordinatesTEST
     {
         private HttpListener Httplistener;
         public string COMPort = "";
-        private Website website;
 
 
         public string ipAddress = "";
@@ -25,7 +26,6 @@ namespace gerber2coordinatesTEST
             Httplistener = new HttpListener();
             Httplistener.Prefixes.Add($"http://{ipAddress}:{port}/");
 
-            website = new Website();
         }
 
         /// <summary>
@@ -85,26 +85,36 @@ namespace gerber2coordinatesTEST
                                 case "startprinting":
                                     if (!printing)
                                     {
-                                        Console.WriteLine("Drucker: Drucken wird gestartet...");
-                                        startPrinting();
+                                        if (gerberfileinfo != null)
+                                        {
+                                            Console.WriteLine("Drucker: Drucken wird gestartet...");
+                                            startPrinting();
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine("---Drucker: FEHLER: Gerberobjekt nicht initialisiert");
+                                        }
+                                        
                                     }
                                     break;
+
                                 case "pauseprinting":
                                     Console.WriteLine("Drucker: Drucken wird pausiert...");
                                     pausePrinting();
                                     break;
+
                                 case "stopprinting":
                                     Console.WriteLine("Drucker: Drucken wird gestoppt");
                                     stopPrinting();
                                     break;
+
                                 case "initgerberfile":
                                     Console.WriteLine("Drucker: Drucker wird initialisiert");
                                     initPrinting(requestBody, COMPort);
-
                                     break;
 
                                 default:
-
+                                    Console.WriteLine($"Webserver: Fehler - Ungültige Aktion: {action}");
                                     break;
                             }
                         }
@@ -136,6 +146,7 @@ namespace gerber2coordinatesTEST
                                     }
                                     //Console.WriteLine(responseString + "%");
                                     break;
+
                                 case "getgerberpreview":
                                     Console.WriteLine("Drucker: Preview wird geholt");
                                     if (gerberfileinfo != null)
@@ -155,13 +166,26 @@ namespace gerber2coordinatesTEST
                         }
                         else
                         {
+                            
                             //zurückgeben der Webpage (Ausgelesen aus einem File), je nachdem was angefragt wird
                             string contenttypeHeader = "";
                             int statuscode = 200;
-                            (responseString, contenttypeHeader, statuscode) = website.getResponse(context.Request.Url.AbsolutePath);
+                            bool picture = false;
+
+                            //Bytearray, damit auch Bilder richtig übertragen werden
+                            byte[] response;
+                            (response, contenttypeHeader, statuscode, picture) = Website.getResponse(context.Request.Url.AbsolutePath);
 
                             context.Response.Headers.Add("Content-Type", contenttypeHeader);
                             context.Response.StatusCode = statuscode;
+
+                            using (Stream output = context.Response.OutputStream)
+                            {
+                                context.Response.ContentLength64 = response.Length;
+                                await output.WriteAsync(response, 0, response.Length);
+                                context.Response.Close();
+                                goto Finish;
+                            }
 
                         }
 
@@ -180,7 +204,8 @@ namespace gerber2coordinatesTEST
                 }
             }
 
-            context.Response.Close();
+            Finish: 
+                context.Response.Close();
         }
 
 
@@ -214,10 +239,7 @@ namespace gerber2coordinatesTEST
                 printThread = new Thread(print);
                 printThread.Start();
             }
-            else
-            {
-                Console.WriteLine("---Drucker: FEHLER: Gerberobjekt nicht initialisiert");
-            }
+            
         }
 
         private void pausePrinting()
@@ -237,13 +259,16 @@ namespace gerber2coordinatesTEST
 
         private void endprint()
         {
+            //Druckkopf zum Startpunkt fahren
+            serialconn.driveto00();
+
             Console.WriteLine("Druck fertig, Objekte werden geleert");
+
             serialconn.close();
             printing = false;
             gerberfileinfo = null;
             serialconn = null;
-
-            //Zum Startpunkt fahren??
+            
         }
 
         private void print()
@@ -258,6 +283,11 @@ namespace gerber2coordinatesTEST
                     Debug.WriteLine("X: " + drivecoords.X + "\nY: " + drivecoords.Y + "\nPaint: " + currentline._paint);
                     //An Arduino senden
                     serialconn.driveXY((int)drivecoords.X, (int)drivecoords.Y, currentline._paint);
+                }
+                else
+                {
+                    //Verhindern von unnötiger CPU - Auslastung
+                    Thread.Sleep(500);
                 }
             }
 

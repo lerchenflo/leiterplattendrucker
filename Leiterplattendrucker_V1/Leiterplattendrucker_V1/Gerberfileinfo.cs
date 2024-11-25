@@ -14,7 +14,7 @@ namespace gerber2coordinatesTEST
          * 
          * Zeilen, die mit "%" starten und mit "*% aufhören sind Kommentaare
          * 
-         * Koordinaten: Es sind immer Punkte angegeben, mit X, Y und D. X und Y sind koordinaten,
+         * Koordinaten: Es sind immer Punkte angegeben, mit X, Y und D. X und Y sind Koordinaten,
          * bei KiCad mit *e-6 für die Koordinate in mm.
          * 
          * 
@@ -34,32 +34,39 @@ namespace gerber2coordinatesTEST
 
         public Gerberfileinfo(string GerberfileContent)
         {
-            if (GerberfileContent == string.Empty)
+            try
             {
-                throw new Exception("Gerberfilecontent leer");
+                if (GerberfileContent == string.Empty)
+                {
+                    throw new Exception("Gerberfilecontent leer");
+                }
+                _gerberfilecontent = GerberfileContent;
+
+                //Einheit herausfinden
+                getunit();
+
+                //Kommentare aus dem Gerberfile entfernen
+                _gerberfilecontent = remove_comments(GerberfileContent);
+
+                //Aus dem Gerberfile die Linien auslesen
+                _lines = converttogerberlines(GerberfileContent);
+
+                //Offsets korrigieren, falls negative Koordinaten dabei sind (Zeichnung auf Druckfläche schieben)
+                correctoffsets();
+
+                //Linien nach Reihenfolge anordnen
+                sortlines();
+
+                //Linien richtig drehen, damit der Startpunkt beim Ende der vorherigen linie ist und der Drucker durchfahren kann
+                turnlines();
+
+                //Verbindungslinien für den Drucker hinzufügen
+                calculateroute();
             }
-            _gerberfilecontent = GerberfileContent;
-
-            //Einheit herausfinden
-            getunit();
-
-            //Kommentare aus dem Gerberfile entfernen
-            _gerberfilecontent = remove_comments(GerberfileContent);
-
-            //Aus dem Gerberfile die Linien auslesen
-            _lines = converttogerberlines(GerberfileContent);
-
-            //Offsets korrigieren, falls negative Koordinaten dabei sind (Zeichnung auf Druckfläche schieben)
-            //correctoffsets();
-
-            //Linien nach Reihenfolge Anordnen
-            sortlines();
-
-            //Linien richtig drehen, damit der Startpunkt beim ende der vorherigen linie ist und der Drucker durchfahren kann
-            turnlines();
-
-            //Verbindungslinien für den Drucker hinzufügen
-            calculateroute();
+            catch (Exception e)
+            {
+                throw new Exception("Fehler beim initialisieren des Files: " + e.StackTrace);
+            }
         }
 
 
@@ -387,14 +394,19 @@ namespace gerber2coordinatesTEST
 
             for (int i = 0; i < _lines.Count; i++)
             {
-                if (_lines[i].getoffset().X > dX)
+                GerberPoint offset = _lines[i].getoffset();
+
+                double offsetx = offset.X;
+                double offsety = offset.Y;
+
+                if (offsetx > dX)
                 {
-                    dX = _lines[i].getoffset().X;
+                    dX = offsetx;
                 }
 
-                if (_lines[i].getoffset().Y > dY)
+                if (offsety > dY)
                 {
-                    dY = _lines[i].getoffset().Y;
+                    dY = offsety;
                 }
             }
 

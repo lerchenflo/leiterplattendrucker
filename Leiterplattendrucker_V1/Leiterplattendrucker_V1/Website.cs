@@ -1,72 +1,81 @@
 ﻿using System.Net;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Text.Unicode;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace Leiterplattendrucker_V1
 {
-    public class Website
+    public static class Website
     {
-        public Website()
-        {
-
-        }
 
         /// <summary>
-        /// Response für einen aufgerufenen URL bekommen
+        /// Response für einen aufgerufenen URL zurückgeben
         /// </summary>
         /// <param name="requesturl"></param>
         /// <returns>Body, Content-Type, Statuscode</returns>
-        public (string, string, int) getResponse(string requesturl)
+        public static (byte[], string, int, bool) getResponse(string requesturl)
         {
             //Je nach anfrage verschiedene Files zurückgeben
+            bool picture = false;
 
-
-            //Bekannte urls manuell ändern
+            //Beim aufrufen der Website ohne Verzeichnis wird die index.html zurückgegeben
             if (requesturl == "/")
             {
                 requesturl = "/index.html";
             }
 
-            Console.WriteLine("\n\nRequesturl: " + requesturl);
-            int statuscode = 200;
+            //Standardmäßig ist der Statuscode auf 200 (OK)
+            int statuscode = (int)HttpStatusCode.OK;
 
+            //Ins unterverzeichnis der gerade ausgeführten Instanz navigieren
             string finalFilepath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Website", requesturl.Substring(1, requesturl.Length-1));
-            
-            finalFilepath = finalFilepath.Replace("/", "\\");
-            //Console.WriteLine("Relativpfad: " + finalFilepath);
 
-            string body = loadfile(finalFilepath);
-            
-            if (body == string.Empty)
+            //Bei Windows den Dateipfad ändern
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                finalFilepath = finalFilepath.Replace("/", "\\");
+            }
+
+            byte[] body;
+            if (finalFilepath.EndsWith(".ico"))
+            {
+                body = File.ReadAllBytes("C:\\Users\\Flo\\Desktop\\leiterplattendrucker\\Leiterplattendrucker_V1\\Leiterplattendrucker_V1\\bin\\Debug\\net8.0\\Website\\favicon.ico");
+                picture = true;
+            }
+            else
+            {
+                //Den HTML / CSS / Javascript Code aus dem File auslesen
+                body = Encoding.UTF8.GetBytes(loadfile(finalFilepath));
+            }
+
+            Console.WriteLine(finalFilepath);
+
+            //Falls das File nicht gefunden wurde / Leer ist
+            if (Encoding.UTF8.GetString(body) == string.Empty)
             {
                 Console.WriteLine("Website: Fehler - Kein File geladen");
                 //Wenn ein falsches File angefordert wird, wird ein fehlercode zurückgegeben
                 statuscode = (int)HttpStatusCode.NotFound;
+                body = new byte[0];
             }
-            //Zurückgeben des Files und des Contenttypes mit Statuscode als Tuple
+
+            //Den contenttype aus dem Pfad auslesen
             string contentType = getcontenttype(finalFilepath);
 
-            Console.WriteLine("Content - Type: " + contentType);
-            //Console.WriteLine("Body: " + body);
 
-            return (body, contentType, statuscode);
+            //Zurückgeben des Files und des Contenttypes mit Statuscode als Tuple
+            return (body, contentType, statuscode, picture);
         }
 
-
-
-
-        private string loadfile(string path)
+        /// <summary>
+        /// File aus Pfad auslesen
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public static string loadfile(string path)
         {
-            //Bilder werden anders behandelt
-            if (Path.GetExtension(path) == ".ico")
-            {
-                Console.WriteLine("Bild angefordert");
-                byte[] icoBytes = File.ReadAllBytes(path);
-                
-                return Convert.ToBase64String(icoBytes);
-            }
-
+            
             try
             {
                 StreamReader sr = new StreamReader(path);
@@ -76,17 +85,25 @@ namespace Leiterplattendrucker_V1
             }
             catch (FileNotFoundException)
             {
-                Console.WriteLine("File nicht gefunden: " + path);
+                //Console.WriteLine("File nicht gefunden: " + path);
                 return "";
             }
         }
 
-        private string getcontenttype(string filePath)
+        /// <summary>
+        /// Korrespondierenden Contenttype aus Dateipfad zurückgeben
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        private static string getcontenttype(string filePath)
         {
+            //Extension aus dem Dateipfad extrahieren
             string extension = Path.GetExtension(filePath).ToLower();
+
+            //Korrespondierenden Contenttype zurückgeben
             return extension switch
             {
-                ".html" => "text / html; charset=utf-8",
+                ".html" => "text/html; charset=utf-8",
                 ".css" => "text/css",
                 ".js" => "application/javascript",
                 ".png" => "image/png",

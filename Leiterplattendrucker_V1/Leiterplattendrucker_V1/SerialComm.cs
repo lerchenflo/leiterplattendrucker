@@ -47,6 +47,7 @@ namespace lpd_ansteuerung
             }
 
         }
+
         public string read()
         {
             string msg = "";
@@ -60,6 +61,7 @@ namespace lpd_ansteuerung
             //Console.WriteLine(msg);
             return msg;
         }
+
         public string readTillEndflag()
         {
 
@@ -133,7 +135,6 @@ namespace lpd_ansteuerung
             }
 
             // drive x up or down
-            //Console.WriteLine("\nDruckerdrawing: " + drawing + "\nLinedrawing: " + draw);
             if (draw != drawing)
             {
                 if (draw)
@@ -146,12 +147,17 @@ namespace lpd_ansteuerung
                     sendCommand("z", travel_height, z_dir_up, 0, "f");
                     drawing = false;
                 }
-                //Thread.Sleep(5000);
             }
 
             //drive both directions
             sendCommand("b", Math.Abs(x), dirX, Math.Abs(y), dirY);
 
+        }
+
+        public void driveto00()
+        {
+            //TODO: Testen
+            sendCommand("0", 0, "0", 0, "0");
         }
 
         public void sendCommand(string motor, int mm1, string dir1, int mm2, string dir2)
@@ -164,7 +170,6 @@ namespace lpd_ansteuerung
                 string red = read();
                 if (red.StartsWith("finish"))
                 {
-
                     break;
                 }
             }
