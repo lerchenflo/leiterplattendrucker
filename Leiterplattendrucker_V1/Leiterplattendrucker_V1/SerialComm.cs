@@ -1,7 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.IO.Ports;
-using System.Threading;
+﻿using System.IO.Ports;
 
 namespace lpd_ansteuerung
 {
@@ -25,7 +22,7 @@ namespace lpd_ansteuerung
 
             sp.Open();
         }
-      
+
 
         public void close()
         {
@@ -48,7 +45,7 @@ namespace lpd_ansteuerung
             {
                 return "";
             }
-          
+
         }
         public string read()
         {
@@ -65,7 +62,7 @@ namespace lpd_ansteuerung
         }
         public string readTillEndflag()
         {
-            
+
             string msg = "";
             string retmsg = "";
             while (msg != (endFlag + "\r"))
@@ -75,8 +72,8 @@ namespace lpd_ansteuerung
                 {
                     retmsg += msg;
                 }
-            } 
-            
+            }
+
             return retmsg;
         }
 
@@ -94,7 +91,7 @@ namespace lpd_ansteuerung
                 {
                 }
             }
-            
+
 
             return msg;
         }
@@ -151,7 +148,7 @@ namespace lpd_ansteuerung
                 }
                 //Thread.Sleep(5000);
             }
-            
+
             //drive both directions
             sendCommand("b", Math.Abs(x), dirX, Math.Abs(y), dirY);
 
@@ -167,7 +164,7 @@ namespace lpd_ansteuerung
                 string red = read();
                 if (red.StartsWith("finish"))
                 {
-                    
+
                     break;
                 }
             }

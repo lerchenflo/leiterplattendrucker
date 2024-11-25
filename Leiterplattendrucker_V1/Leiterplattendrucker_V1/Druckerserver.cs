@@ -1,21 +1,8 @@
 ﻿using Leiterplattendrucker_V1;
 using lpd_ansteuerung;
-using Microsoft.VisualBasic;
-using System;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using System.Net;
-using System.Net.Mime;
-using System.Reflection.Metadata;
-using System.Runtime.InteropServices;
-using System.Security.Principal;
 using System.Text;
-using System.Text.Unicode;
-using System.Threading.Tasks;
-using System.Windows;
-using static System.Collections.Specialized.BitVector32;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace gerber2coordinatesTEST
 {
@@ -74,9 +61,6 @@ namespace gerber2coordinatesTEST
             string responseString = "";
 
 
-            //Response auf UTF-8 festlegen (Für Umlaute)
-            context.Response.AddHeader("content-type", "text/html; charset=utf-8");
-
             //Response Header damit der Browser die Response Aktzeptiert:
             context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
             context.Response.Headers.Add("Access-Control-Allow-Headers", "*");
@@ -124,7 +108,7 @@ namespace gerber2coordinatesTEST
                                     break;
                             }
                         }
-                        
+
                     }
                 }
             }
@@ -163,7 +147,7 @@ namespace gerber2coordinatesTEST
                                         responseString = "Keine Preview";
                                     }
                                     break;
-                                
+
                                 default:
                                     responseString = "0";
                                     break;
@@ -171,7 +155,6 @@ namespace gerber2coordinatesTEST
                         }
                         else
                         {
-                            Console.WriteLine("Website geholt");
                             //zurückgeben der Webpage (Ausgelesen aus einem File), je nachdem was angefragt wird
                             string contenttypeHeader = "";
                             int statuscode = 200;
@@ -179,14 +162,9 @@ namespace gerber2coordinatesTEST
 
                             context.Response.Headers.Add("Content-Type", contenttypeHeader);
                             context.Response.StatusCode = statuscode;
-                            Console.WriteLine("Content - Type: " + contenttypeHeader);
-                            Console.WriteLine("statuscode: " + statuscode);
-                            Console.WriteLine("Requesturl: " + context.Request.Url.AbsolutePath);
 
-                           
-                            Console.WriteLine("aaa" + Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Website", context.Request.Url.AbsolutePath));
                         }
-                        
+
                     }
                 }
             }
@@ -252,7 +230,7 @@ namespace gerber2coordinatesTEST
             if (printThread != null)
             {
                 Console.WriteLine("Drucker: Druck stoppen");
-                
+
                 stopprinttoken.Cancel();
             }
         }
@@ -280,7 +258,6 @@ namespace gerber2coordinatesTEST
                     Debug.WriteLine("X: " + drivecoords.X + "\nY: " + drivecoords.Y + "\nPaint: " + currentline._paint);
                     //An Arduino senden
                     serialconn.driveXY((int)drivecoords.X, (int)drivecoords.Y, currentline._paint);
-                    Console.WriteLine("Drawing_Getline: " + currentline._paint);
                 }
             }
 
@@ -288,6 +265,6 @@ namespace gerber2coordinatesTEST
 
         }
 
-        
+
     }
 }
