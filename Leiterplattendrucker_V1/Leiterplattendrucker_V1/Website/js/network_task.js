@@ -1,4 +1,4 @@
-const SERVER_ADDR = "localhost:6850";
+const SERVER_ADDR = "http://192.168.93.48:6850/";
 //const SERVER_ADDR = "http://192.168.212.48:6850";
 
 export function ping(){
