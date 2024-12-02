@@ -8,6 +8,14 @@ progressBar.value = 0;
 progressBar.max = 100;
 form.parentNode.insertBefore(progressBar, form.nextSibling);
 
+export function updateProgress(){
+    var val = getPrintStatus();
+    var progressBar = document.getElementById("printProgressBar");
+    var progressText = document.getElementById("progessText");
+    progressBar.value = val;
+    progressText.innerHTML = "Progress: " + progressBar.value + "%";
+  }
+
 form.addEventListener('submit', (event) => {
     event.preventDefault();
 
@@ -38,7 +46,7 @@ form.addEventListener('submit', (event) => {
 const fileSelector = document.getElementById('file-selector');
   fileSelector.addEventListener('change', (event) => {
     const fileList = event.target.files;
-    console.log(fileList[0]);
+    //console.log(fileList[0]);
     const file = fileList[0];
     if (file) {
         var reader = new FileReader();
@@ -57,31 +65,44 @@ const fileSelector = document.getElementById('file-selector');
 
 // Draw the preview onto the canvas
 function drawpreview(preview_json){
-    console.log(preview_json);
+    //console.log(preview_json);
     //console.log(preview_json.length)
 
     // Drawing onto canvas from json array
     const canvas = document.getElementById("pcbPreview");
     const ctx = canvas.getContext("2d");
 
-    var width = canvas.width;
-    var height = canvas.height;
+    var canvas_width = canvas.width;
+    var canvas_height = canvas.height;
 
-    console.log(width);
+    
+    var max_width = 0;
+    for(var i=0; i < preview_json.length; i++){
+        if(preview_json[i]._endpoint.X > max_width){
+            max_width = preview_json[i]._endpoint.X;
+        }
+    }
+    var max_height = 0;
+    for(var i=0; i < preview_json.length; i++){
+        if(preview_json[i]._endpoint.Y > max_height){
+            max_height = preview_json[i]._endpoint.Y;
+        }
+    }
 
-    console.log(preview_json[5]._startpoint.X);
+    var upscale_mulitplier = Math.min(canvas_width/max_width, canvas_height/max_height);
+    //  console.log(upscale_mulitplier);
 
-    ctx.moveTo(preview_json[0]._startpoint.X, preview_json[0]._startpoint.Y); // Set a start-point
+    ctx.moveTo(preview_json[0]._startpoint.X * upscale_mulitplier, canvas_height- preview_json[0]._startpoint.Y * upscale_mulitplier); // Set a start-point
     // go through every line in the json file and print the line onto the canvas
     for(var i=0; i < preview_json.length; i++){
-        ctx.lineTo(preview_json[i]._endpoint.X, preview_json[i]._endpoint.Y);
+        ctx.lineTo(preview_json[i]._endpoint.X * upscale_mulitplier, canvas_height - preview_json[i]._endpoint.Y * upscale_mulitplier);
     }
 
     ctx.stroke(); // Stroke it (Do the Drawing)
   
-    ctx.font = "10px Arial";
-    ctx.fillText("2",25,60);
-    ctx.fillText("10",40,25);
+    //ctx.font = "10px Arial";
+    //ctx.fillText("2",25,60);
+    //ctx.fillText("10",40,25);
 }
   
 
