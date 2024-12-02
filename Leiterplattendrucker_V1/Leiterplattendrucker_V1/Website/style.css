@@ -1,8 +1,78 @@
-a.button {
-    padding: 1px 6px;
-    border: 1px outset buttonborder;
-    border-radius: 3px;
-    color: buttontext;
-    background-color: buttonface;
-    text-decoration: none;
+/* Reset some default styles */
+body, h1, h2, p {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #121212; /* Dark background */
+    color: #e0e0e0; /* Light text color */
+    line-height: 1.6;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+    color: #2196F3; /* Bright blue for headings */
+    margin-bottom: 20px;
+}
+
+fieldset {
+    border: 2px solid #2196F3; /* Bright blue border */
+    border-radius: 5px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+legend {
+    font-weight: bold;
+    color: #2196F3; /* Bright blue for legend */
+}
+
+button {
+    background-color: #2196F3; /* Bright blue */
+    color: #121212; /* Dark text color */
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    margin: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #1976D2; /* Slightly darker blue on hover */
+}
+
+#progessdiv {
+    margin-top: 20px;
+    text-align: center;
+}
+
+progress {
+    width: 100%;
+    height: 20px;
+    margin-top: 10px;
+    background-color: #333; /* Dark background for progress bar */
+}
+
+#pcbPreview {
+    display: block;
+    margin: 20px auto;
+    border: 1px solid #2196F3; /* Bright blue border */
+    background-color: #1e1e1e; /* Dark background for canvas */
+}
+
+@media (max-width: 600px) {
+    button {
+        width: 100%;
+        margin: 5px 0;
+    }
+
+    #pcbPreview {
+        width: 100%;
+        height: auto;
+    }
 }
