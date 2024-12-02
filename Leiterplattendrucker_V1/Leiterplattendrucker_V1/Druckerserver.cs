@@ -234,6 +234,7 @@ namespace gerber2coordinatesTEST
         {
             if (gerberfileinfo != null)
             {
+                serialconn.driveto00();
                 printing = true;
 
                 printThread = new Thread(print);

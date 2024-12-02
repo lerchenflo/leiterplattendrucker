@@ -49,7 +49,7 @@ namespace Leiterplattendrucker_V1
                 body = Encoding.UTF8.GetBytes(loadfile(finalFilepath));
             }
 
-            Console.WriteLine(finalFilepath);
+            //Console.WriteLine(finalFilepath);
 
             //Falls das File nicht gefunden wurde / Leer ist
             if (Encoding.UTF8.GetString(body) == string.Empty)
