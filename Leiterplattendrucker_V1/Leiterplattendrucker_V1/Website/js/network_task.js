@@ -1,5 +1,9 @@
-const SERVER_ADDR = "localhost:6850";
-//const SERVER_ADDR = "http://192.168.212.48:6850";
+//const SERVER_ADDR = "http://192.168.144.48:6850";
+const SERVER_ADDR = "http://10.161.1.112:6850";
+//const SERVER_ADDR = "http://localhost:6850";
+
+
+import {updateProgress} from './ui.js'
 
 export function ping(){
     var req = new XMLHttpRequest();
@@ -28,8 +32,8 @@ export function get_preview(){
     req.open("GET", SERVER_ADDR, false);
     req.setRequestHeader("action", "getgerberpreview");
     req.send(null);
-    console.log(req.responseText);
-    console.log(req.getAllResponseHeaders());
+    //console.log(req.responseText);
+    //console.log(req.getAllResponseHeaders());
     return req.responseText;
 
     //return "joo gerber preview";

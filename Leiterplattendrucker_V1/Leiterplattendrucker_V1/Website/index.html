@@ -41,18 +41,12 @@
 
   <script type="module">
     import {getPrintStatus} from './js/network_task.js';
-    function updateProgress(){
-      var val = getPrintStatus();
-      var progressBar = document.getElementById("printProgressBar");
-      var progressText = document.getElementById("progessText");
-      progressBar.value = val;
-      progressText.innerHTML = "Progress: " + progressBar.value + "%";
-    }
+    
     
     
   </script>
 
-<canvas id="pcbPreview" width="200" height="100" style="border:1px solid #000000;"></canvas>
+<canvas id="pcbPreview" width="500" height="300" style="border:1px solid #000000;"></canvas>
 
 
 </body>
