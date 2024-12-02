@@ -2,8 +2,8 @@
 const SERVER_ADDR = "http://10.161.1.112:6850";
 //const SERVER_ADDR = "http://localhost:6850";
 
-
 import {updateProgress} from './ui.js'
+
 
 export function ping(){
     var req = new XMLHttpRequest();

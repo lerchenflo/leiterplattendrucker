@@ -1,7 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.IO.Ports;
-using System.Threading;
+﻿using System.IO.Ports;
 
 namespace lpd_ansteuerung
 {
@@ -25,7 +22,7 @@ namespace lpd_ansteuerung
 
             sp.Open();
         }
-      
+
 
         public void close()
         {
@@ -48,8 +45,9 @@ namespace lpd_ansteuerung
             {
                 return "";
             }
-          
+
         }
+
         public string read()
         {
             string msg = "";
@@ -63,9 +61,10 @@ namespace lpd_ansteuerung
             //Console.WriteLine(msg);
             return msg;
         }
+
         public string readTillEndflag()
         {
-            
+
             string msg = "";
             string retmsg = "";
             while (msg != (endFlag + "\r"))
@@ -75,8 +74,8 @@ namespace lpd_ansteuerung
                 {
                     retmsg += msg;
                 }
-            } 
-            
+            }
+
             return retmsg;
         }
 
@@ -94,7 +93,7 @@ namespace lpd_ansteuerung
                 {
                 }
             }
-            
+
 
             return msg;
         }
@@ -136,7 +135,6 @@ namespace lpd_ansteuerung
             }
 
             // drive x up or down
-            //Console.WriteLine("\nDruckerdrawing: " + drawing + "\nLinedrawing: " + draw);
             if (draw != drawing)
             {
                 if (draw)
@@ -149,12 +147,17 @@ namespace lpd_ansteuerung
                     sendCommand("z", travel_height, z_dir_up, 0, "f");
                     drawing = false;
                 }
-                //Thread.Sleep(5000);
             }
-            
+
             //drive both directions
             sendCommand("b", Math.Abs(x), dirX, Math.Abs(y), dirY);
 
+        }
+
+        public void driveto00()
+        {
+            //TODO: Testen
+            sendCommand("0", 0, "0", 0, "0");
         }
 
         public void sendCommand(string motor, int mm1, string dir1, int mm2, string dir2)
@@ -167,7 +170,6 @@ namespace lpd_ansteuerung
                 string red = read();
                 if (red.StartsWith("finish"))
                 {
-                    
                     break;
                 }
             }
