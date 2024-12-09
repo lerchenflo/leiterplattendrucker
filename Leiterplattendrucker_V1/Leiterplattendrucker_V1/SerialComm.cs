@@ -24,6 +24,51 @@ namespace lpd_ansteuerung
         }
 
 
+        //Testen ob Port geöffnet werden kann
+        public static bool testport(string port)
+        {
+            Console.WriteLine($"COMPort {port} wird getestet");
+            bool functions = false;
+
+            try
+            {
+                
+                CancellationTokenSource cts = new CancellationTokenSource();
+
+                Thread t = new Thread((uebergebenerport) =>
+                {
+                    string _port = (string)uebergebenerport;
+                    SerialComm s1 = new SerialComm(_port);
+                    s1.send("test");
+                    cts.Cancel();
+                    s1.close();
+                });
+                t.Start(port);
+                
+
+                Thread.Sleep(1000);
+
+                if (cts.IsCancellationRequested)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+
+                
+                
+                //s.close();
+            }
+            catch (Exception e)
+            {
+                functions = false;
+            }
+            
+            return functions;
+        }
+
         public void close()
         {
             sp.Close();

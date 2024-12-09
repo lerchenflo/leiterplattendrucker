@@ -1,4 +1,4 @@
-import {pauseprinting, send_gerber, start, stop, get_preview} from './network_task.js'
+import {pauseprinting, send_gerber, start, stop, get_preview, getPrintStatus} from './network_task.js'
 
 
 // Progress bar for Fielupload

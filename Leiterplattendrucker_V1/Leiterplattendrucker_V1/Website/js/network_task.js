@@ -1,5 +1,5 @@
 //const SERVER_ADDR = "http://192.168.144.48:6850";
-const SERVER_ADDR = "http://10.161.1.112:6850";
+const SERVER_ADDR = location.host;
 //const SERVER_ADDR = "http://localhost:6850";
 
 import {updateProgress} from './ui.js'

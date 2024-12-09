@@ -15,8 +15,40 @@ namespace Leiterplattendrucker_V1
             string[] comPorts = SerialComm.getAvalibablePorts();
             for (int i = 0; i < comPorts.Length; i++)
             {
-                Console.WriteLine($" - {comPorts[i]}");
+                Console.WriteLine($"{i} - {comPorts[i]}");
             }
+
+            
+            int comportindex = 0;
+            while (true)
+            {
+                try
+                {
+                    Console.WriteLine("\nCOM - Port Nummer mit verbundenem Arduino eingeben:");
+                    comportindex = Convert.ToInt32(Console.ReadLine());
+
+                    //Wenn COMport nicht funktioniert
+                    bool functions = SerialComm.testport(comPorts[comportindex]);
+                    
+                    if (!functions)
+                    {
+                        throw new Exception("COMPort konnte nicht geöffnet werden");
+                    }
+                    else
+                    {
+                        break;
+                    }
+
+                    
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+            }
+
+            
+
 
 
             //Aktuelle IP herausfinden
@@ -29,7 +61,7 @@ namespace Leiterplattendrucker_V1
             }
 
             //Druckerserver - Objekt erstellen
-            Druckerserver d = new Druckerserver(localIP, 6850, "COM10");
+            Druckerserver d = new Druckerserver(localIP, 6850, comPorts[comportindex]);
             d.Start();
 
             /*
