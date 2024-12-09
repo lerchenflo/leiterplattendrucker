@@ -24,8 +24,6 @@ namespace gerber2coordinatesTEST
 
 
 
-
-
         public string _gerberfilecontent { get; set; } = "";
 
         public string _unit { get; set; } = "none";
