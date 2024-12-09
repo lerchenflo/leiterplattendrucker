@@ -244,9 +244,9 @@ namespace gerber2coordinatesTEST
         /// </summary>
         public void calculateroute()
         {
+            //_lines.Reverse();
+
             //Startpunkt zu erster linie
-
-
             //Wenn startpunkt nicht bei 0,0 dann dorthin fahren
             GerberPoint beginpoint = new GerberPoint(0, 0);
             if (!_lines[0]._startpoint.Equals(beginpoint))

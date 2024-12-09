@@ -24,12 +24,18 @@ namespace Leiterplattendrucker_V1
             {
                 requesturl = "/index.html";
             }
+            //Favicon muss seperat verändert werden
+            else if (requesturl == "favicon.ico")
+            {
+                requesturl = "/favicon.ico";
+            }
 
             //Standardmäßig ist der Statuscode auf 200 (OK)
             int statuscode = (int)HttpStatusCode.OK;
 
             //Ins unterverzeichnis der gerade ausgeführten Instanz navigieren
             string finalFilepath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Website", requesturl.Substring(1, requesturl.Length-1));
+
 
             //Bei Windows den Dateipfad ändern
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
@@ -40,7 +46,7 @@ namespace Leiterplattendrucker_V1
             byte[] body;
             if (finalFilepath.EndsWith(".ico"))
             {
-                body = File.ReadAllBytes("C:\\Users\\Flo\\Desktop\\leiterplattendrucker\\Leiterplattendrucker_V1\\Leiterplattendrucker_V1\\bin\\Debug\\net8.0\\Website\\favicon.ico");
+                body = File.ReadAllBytes(finalFilepath);
                 picture = true;
             }
             else
