@@ -64,46 +64,59 @@ const fileSelector = document.getElementById('file-selector');
   });
 
 // Draw the preview onto the canvas
-function drawpreview(preview_json){
-    //console.log(preview_json);
-    //console.log(preview_json.length)
-
+function drawpreview(preview_json) {
     // Drawing onto canvas from json array
     const canvas = document.getElementById("pcbPreview");
     const ctx = canvas.getContext("2d");
 
+    // Clear the canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
     var canvas_width = canvas.width;
     var canvas_height = canvas.height;
 
-    
     var max_width = 0;
-    for(var i=0; i < preview_json.length; i++){
-        if(preview_json[i]._endpoint.X > max_width){
+    for (var i = 0; i < preview_json.length; i++) {
+        if (preview_json[i]._endpoint.X > max_width) {
             max_width = preview_json[i]._endpoint.X;
         }
     }
     var max_height = 0;
-    for(var i=0; i < preview_json.length; i++){
-        if(preview_json[i]._endpoint.Y > max_height){
+    for (var i = 0; i < preview_json.length; i++) {
+        if (preview_json[i]._endpoint.Y > max_height) {
             max_height = preview_json[i]._endpoint.Y;
         }
     }
 
-    var upscale_mulitplier = Math.min(canvas_width/max_width, canvas_height/max_height);
-    //  console.log(upscale_mulitplier);
+    var upscale_multiplier = Math.min(canvas_width / max_width, canvas_height / max_height);
 
-    ctx.moveTo(preview_json[0]._startpoint.X * upscale_mulitplier, canvas_height- preview_json[0]._startpoint.Y * upscale_mulitplier); // Set a start-point
-    // go through every line in the json file and print the line onto the canvas
-    for(var i=0; i < preview_json.length; i++){
-        ctx.lineTo(preview_json[i]._endpoint.X * upscale_mulitplier, canvas_height - preview_json[i]._endpoint.Y * upscale_mulitplier);
+    // Loop through the lines and draw based on 'paint' value
+    for (var i = 0; i < preview_json.length; i++) {
+        // Set stroke color based on 'paint' value
+        if (preview_json[i]._paint === true) {
+            ctx.strokeStyle = 'gold';  // Gold for paint = true
+        } else {
+            ctx.strokeStyle = 'red';  // Red for paint = false
+        }
+
+        // Start a new path for the current line
+        ctx.beginPath();
+        ctx.moveTo(
+            preview_json[i]._startpoint.X * upscale_multiplier,
+            canvas_height - preview_json[i]._startpoint.Y * upscale_multiplier
+        );
+
+        // Draw the current line to the endpoint
+        ctx.lineTo(
+            preview_json[i]._endpoint.X * upscale_multiplier,
+            canvas_height - preview_json[i]._endpoint.Y * upscale_multiplier
+        );
+
+        // Stroke the current line
+        ctx.stroke();
     }
-
-    ctx.stroke(); // Stroke it (Do the Drawing)
-  
-    //ctx.font = "10px Arial";
-    //ctx.fillText("2",25,60);
-    //ctx.fillText("10",40,25);
 }
+
   
 
 function test(){
@@ -130,6 +143,17 @@ pauseprintingbtn.onclick = function(){
 const showpreviewbtn = document.getElementById('showpreview');
 showpreviewbtn.onclick = function(){
     const json_string = get_preview();
-    const json_object = JSON.parse(json_string);
-    drawpreview(json_object);
+    
+    if (json_string == "Keine Preview")
+    {
+        alert("Gerberfile wurde nicht gefunden")
+    }
+    else
+    {
+        const json_object = JSON.parse(json_string);
+        console.log(json_object);
+        drawpreview(json_object);
+    }
+    
+    
 };
