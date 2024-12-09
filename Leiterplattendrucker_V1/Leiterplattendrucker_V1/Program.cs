@@ -28,9 +28,9 @@ namespace Leiterplattendrucker_V1
                     comportindex = Convert.ToInt32(Console.ReadLine());
 
                     //Wenn COMport nicht funktioniert
-                    //bool functions = SerialComm.testport(comPorts[comportindex]);
+                    bool functions = SerialComm.testport(comPorts[comportindex]);
 
-                    bool functions = true; //Für debugging
+                    //bool functions = true; //Für debugging
                     if (!functions)
                     {
                         throw new Exception("COMPort konnte nicht geöffnet werden");
@@ -44,7 +44,7 @@ namespace Leiterplattendrucker_V1
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e.Message);
+                    Console.WriteLine("Fehler: " + e.Message);
                 }
             }
 

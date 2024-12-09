@@ -1,4 +1,5 @@
-﻿using System.IO.Ports;
+﻿using gerber2coordinatesTEST;
+using System.IO.Ports;
 
 namespace lpd_ansteuerung
 {
@@ -27,7 +28,7 @@ namespace lpd_ansteuerung
         //Testen ob Port geöffnet werden kann
         public static bool testport(string port)
         {
-            Console.WriteLine($"COMPort {port} wird getestet");
+            Druckerserver.logtoconsole($"COMPort {port} wird getestet");
             bool functions = false;
 
             try
@@ -39,14 +40,24 @@ namespace lpd_ansteuerung
                 {
                     string _port = (string)uebergebenerport;
                     SerialComm s1 = new SerialComm(_port);
-                    s1.send("test");
+                    s1.send("t");
+                    while (true)
+                    {
+                        string rec = s1.readlines(1);
+                        if (rec.StartsWith("V"))
+                        {
+                            Druckerserver.logtoconsole($"Arduinoversion: {rec}");
+                            break;
+                        }
+                       
+                    }
                     cts.Cancel();
                     s1.close();
                 });
                 t.Start(port);
                 
 
-                Thread.Sleep(1000);
+                Thread.Sleep(2000);
 
                 if (cts.IsCancellationRequested)
                 {
@@ -145,7 +156,15 @@ namespace lpd_ansteuerung
 
         public void send(string sendMsg)
         {
-            sp.Write(sendMsg);
+            try
+            {
+                sp.Write(sendMsg);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Fehler: SerialComm: " + e.Message);
+            }
+            
         }
 
         public override string ToString()
@@ -156,8 +175,8 @@ namespace lpd_ansteuerung
         public void driveXY(int x, int y, bool draw)
         {
             int travel_height = 5;//mm 
-            string z_dir_up = "f";
-            string z_dir_down = "b";
+            string z_dir_up = "b";
+            string z_dir_down = "f";
 
             // Convert 2 values into the Protocol the arduino can understand
             string dirX = "f";

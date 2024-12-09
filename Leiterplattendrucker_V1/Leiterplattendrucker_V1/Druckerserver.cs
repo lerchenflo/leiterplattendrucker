@@ -85,36 +85,35 @@ namespace gerber2coordinatesTEST
                                 case "startprinting":
                                     if (!printing)
                                     {
-                                        if (gerberfileinfo != null)
+                                        if (startPrinting())
                                         {
-                                            Console.WriteLine("Drucker: Drucken wird gestartet...");
-                                            startPrinting();
+                                            logtoconsole("Drucker: Drucken wird gestartet...");
                                         }
                                         else
                                         {
-                                            Console.WriteLine("---Drucker: FEHLER: Gerberobjekt nicht initialisiert");
+                                            logtoconsole("---Drucker: FEHLER: Gerberobjekt nicht initialisiert");
                                         }
                                         
                                     }
                                     break;
 
                                 case "pauseprinting":
-                                    Console.WriteLine("Drucker: Drucken wird pausiert...");
+                                    logtoconsole("Drucker: Drucken wird pausiert...");
                                     pausePrinting();
                                     break;
 
                                 case "stopprinting":
-                                    Console.WriteLine("Drucker: Drucken wird gestoppt");
+                                    logtoconsole("Drucker: Drucken wird gestoppt");
                                     stopPrinting();
                                     break;
 
                                 case "initgerberfile":
-                                    Console.WriteLine("Drucker: Drucker wird initialisiert");
+                                    logtoconsole("Drucker: Drucker wird initialisiert");
                                     initPrinting(requestBody, COMPort);
                                     break;
 
                                 default:
-                                    Console.WriteLine($"Webserver: Fehler - Ungültige Aktion: {action}");
+                                    logtoconsole($"Webserver: Fehler - Ungültige Aktion: {action}");
                                     break;
                             }
                         }
@@ -136,6 +135,7 @@ namespace gerber2coordinatesTEST
                             switch (action)
                             {
                                 case "getprintpercentage":
+
                                     if (gerberfileinfo != null)
                                     {
                                         responseString = Convert.ToString(gerberfileinfo.getprintpercentage());
@@ -144,11 +144,10 @@ namespace gerber2coordinatesTEST
                                     {
                                         responseString = "0";
                                     }
-                                    //Console.WriteLine(responseString + "%");
+                                    
                                     break;
 
                                 case "getgerberpreview":
-                                    Console.WriteLine("Drucker: Preview wird geholt");
                                     if (gerberfileinfo != null)
                                     {
                                         responseString = getpreview();
@@ -230,7 +229,7 @@ namespace gerber2coordinatesTEST
         }
 
 
-        public void startPrinting()
+        public bool startPrinting()
         {
             if (gerberfileinfo != null)
             {
@@ -239,23 +238,25 @@ namespace gerber2coordinatesTEST
 
                 printThread = new Thread(print);
                 printThread.Start();
+                return true;
             }
-            
+            return false;
         }
 
-        private void pausePrinting()
+        private bool pausePrinting()
         {
             printing = !printing;
+            return printing;
         }
 
-        private void stopPrinting()
+        private bool stopPrinting()
         {
             if (printThread != null)
             {
-                Console.WriteLine("Drucker: Druck stoppen");
-
                 stopprinttoken.Cancel();
+                return true;
             }
+            return false;
         }
 
         private void endprint()
@@ -263,7 +264,7 @@ namespace gerber2coordinatesTEST
             //Druckkopf zum Startpunkt fahren
             serialconn.driveto00();
 
-            Console.WriteLine("Druck fertig, Objekte werden geleert");
+            logtoconsole("Drucker: Druck fertig, Objekte werden geleert");
 
             serialconn.close();
             printing = false;
@@ -296,6 +297,11 @@ namespace gerber2coordinatesTEST
 
         }
 
+
+        public static void logtoconsole(string message)
+        {
+            Console.WriteLine(DateTime.Now.Hour + ":" + DateTime.Now.Minute + ":" + DateTime.Now.Second + ": " + message);
+        }
 
     }
 }
