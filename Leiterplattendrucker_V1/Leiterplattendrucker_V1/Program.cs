@@ -29,7 +29,8 @@ namespace Leiterplattendrucker_V1
 
                     //Wenn COMport nicht funktioniert
                     bool functions = SerialComm.testport(comPorts[comportindex]);
-                    
+
+                    //bool functions = true; //Für debugging
                     if (!functions)
                     {
                         throw new Exception("COMPort konnte nicht geöffnet werden");
@@ -53,6 +54,7 @@ namespace Leiterplattendrucker_V1
 
             //Aktuelle IP herausfinden
             string localIP;
+            int localport = 6851;
             using (Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, 0))
             {
                 socket.Connect("8.8.8.8", 65530);
@@ -61,7 +63,7 @@ namespace Leiterplattendrucker_V1
             }
 
             //Druckerserver - Objekt erstellen
-            Druckerserver d = new Druckerserver(localIP, 6850, comPorts[comportindex]);
+            Druckerserver d = new Druckerserver(localIP, localport, comPorts[comportindex]);
             d.Start();
 
             /*
@@ -72,7 +74,7 @@ namespace Leiterplattendrucker_V1
             };
             */
 
-            Console.Title = localIP + ":6850";
+            Console.Title = localIP + ":" + localport;
             Console.WriteLine("\nLokale IP: " + localIP);
             Console.WriteLine("\nServer läuft");
 
