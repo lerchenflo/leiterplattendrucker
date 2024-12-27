@@ -29,6 +29,7 @@ namespace Leiterplattendrucker_V1
             {
                 requesturl = "/favicon.ico";
             }
+            
 
             //Standardmäßig ist der Statuscode auf 200 (OK)
             int statuscode = (int)HttpStatusCode.OK;
@@ -91,7 +92,7 @@ namespace Leiterplattendrucker_V1
             }
             catch (FileNotFoundException)
             {
-                //Console.WriteLine("File nicht gefunden: " + path);
+                Console.WriteLine("File nicht gefunden: " + path);
                 return "";
             }
         }

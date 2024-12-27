@@ -2,52 +2,110 @@
 <html>
 <head>
   <title>PCB Printer Website</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="/style.css">
 </head>
 <body>
   <h1>PCB Printer Website</h1>
+  <p>Wilkommen auf der PCB Printer Seite. Auf dieser Seite können Gerber-Dateine hochgeladen werden um diese vom Drucker drucken zu lassen.<br>
+      Zum Start laden sie Bitte ihre Gerber-Datei hoch.
+  </p>
 
+  <div id="uploaddiv">
+    <fieldset>
+      <legend>upload new files</legend>
+        <form method="POST" enctype="multipart/form-data">
+          <input id="file-selector" type="file" name="file1" accept=".gbr, .gerber" >
+        </form>
+      </fieldset>
+  </div>
 
-  <fieldset>
-  <legend>upload new files</legend>
-    <form method="POST" enctype="multipart/form-data">
-      <input id="file-selector" type="file" name="file1" accept=".gbr, .gerber" >
-    </form>
-  </fieldset>
+  <button id="startprinting" disabled>Start Print</button>
+
+  <div id="previewdiv">
+    <canvas id="pcbPreview" width="500" height="300" style="border:1px solid #000000;"></canvas>
+  </div>
+
   
-
-  <script src="./js/ui.js" type="module"></script>
-
-  <button id="startprinting">Start Print</button>
+  <!--Debugging buttons   
+  <br>
   <button id="stopprinting">Stop Print</button>
   <button id="pauseprinting">Pause Print</button>
   <button id="showpreview">Show preview (debugging)</button>
+  <button id="hide">Hide</button>
+-->
 
-  <div id="progessdiv">
-    <h2>Printing: [todo]</h2>
-    <progress id="printProgressBar" value="0" max="100"></progress>
-    <span id="progessText">Progress: x %</span>
-  </div>
-
-  <script>
-    function print_file(x){
-    console.log("Print: " +  x);
-      }
-
-    function preview(x){
-      console.log("preview: " +  x);
-    }
-  </script>
+  <!-- JS code-->
+  <script src="./js/ui.js" type="module"></script>
 
   <script type="module">
-    import {getPrintStatus} from './js/network_task.js';
+    import {send_gerber, isPrinting} from './js/network_task.js';
+    import {drawPreviewFromServer} from './js/ui.js';
     
-    
-    
+    if(isPrinting()){ //redirect to printstatus if Printer is already Printing
+      window.location.href = "./printstatus.html";
+    }
+
+    // Load Gerber file using js, sending it to the server in Textformat
+    const fileSelector = document.getElementById('file-selector');
+      fileSelector.addEventListener('change', (event) => {
+        const fileList = event.target.files;
+        const file = fileList[0];
+        if (file) {
+            var reader = new FileReader();
+            reader.readAsText(file, "UTF-8");
+            reader.onload = function (evt) {
+                var content = evt.target.result;
+                console.log("Sending Gerber File");
+                send_gerber(content); // Sending the geberfile as text
+            }
+            reader.onerror = function (evt) {
+                console.log("error reading file");
+            }
+        }
+
+        setTimeout(drawPreviewFromServer, 500);
+
+    });
+
   </script>
+<!--
+  <script type="module">
+    import {pauseprinting, send_gerber, start, stop, get_preview, getPrintStatus} from './js/network_task.js';
+    // Start print -> button onlcick
+    const startprintingbtn = document.getElementById('startprinting');
+    startprintingbtn.onclick = function(){
+        console.log("startprinting");
+        start();
+    };
 
-<canvas id="pcbPreview" width="500" height="300" style="border:1px solid #000000;"></canvas>
+    const stopprintingbtn = document.getElementById('stopprinting');
+    stopprintingbtn.onclick = function(){
+        stop();
+    };
 
+    const pauseprintingbtn = document.getElementById('pauseprinting');
+    pauseprintingbtn.onclick = function(){
+        pauseprinting();
+    };
 
+    const showpreviewbtn = document.getElementById('showpreview');
+    showpreviewbtn.onclick = function(){
+        const json_string = get_preview();
+        
+        if (json_string == "Keine Preview")
+        {
+            alert("Gerberfile wurde nicht gefunden")
+        }
+        else
+        {
+            const json_object = JSON.parse(json_string);
+            console.log(json_object);
+            drawpreview(json_object);
+        }
+        
+        
+    };
+  </script>
+-->
 </body>
 </html>

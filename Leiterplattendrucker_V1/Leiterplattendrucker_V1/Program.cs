@@ -20,36 +20,36 @@ namespace Leiterplattendrucker_V1
 
             
             int comportindex = 0;
-            while (true)
+            if(comPorts.Length > 1 ) //Nicht abfragen wenn nur 1 Port verfügbar ist
             {
-                try
+                while (true)
                 {
-                    Console.WriteLine("\nCOM - Port Nummer mit verbundenem Arduino eingeben:");
-                    comportindex = Convert.ToInt32(Console.ReadLine());
-
-                    //Wenn COMport nicht funktioniert
-                    bool functions = SerialComm.testport(comPorts[comportindex]);
-
-                    //bool functions = true; //Für debugging
-                    if (!functions)
+                    try
                     {
-                        throw new Exception("COMPort konnte nicht geöffnet werden");
-                    }
-                    else
-                    {
-                        break;
-                    }
+                        Console.WriteLine("\nCOM - Port Nummer mit verbundenem Arduino eingeben:");
+                        comportindex = Convert.ToInt32(Console.ReadLine());
 
-                    
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine("Fehler: " + e.Message);
+                        //Wenn COMport nicht funktioniert
+                        //bool functions = SerialComm.testport(comPorts[comportindex]);
+
+                        bool functions = true; //Für debugging
+                        if (!functions)
+                        {
+                            throw new Exception("COMPort konnte nicht geöffnet werden");
+                        }
+                        else
+                        {
+                            break;
+                        }
+
+
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine("Fehler: " + e.Message);
+                    }
                 }
             }
-
-            
-
 
 
             //Aktuelle IP herausfinden
@@ -78,13 +78,25 @@ namespace Leiterplattendrucker_V1
             Console.WriteLine("\nLokale IP: " + localIP);
             Console.WriteLine("\nServer läuft");
 
-            
 
-            while (true)
+            try
             {
-                //Arbeitsschleife
-            }
+                while (Console.ReadKey().Key != ConsoleKey.Enter) { }
+                d.stopSerialConnection();
 
+                /*
+                while (true)
+                {
+                    //Arbeitsschleife
+                }
+                */
+            }
+            catch (Exception)
+            {
+                d.stopSerialConnection();
+                throw;
+            }
+            
         }
     }
 }

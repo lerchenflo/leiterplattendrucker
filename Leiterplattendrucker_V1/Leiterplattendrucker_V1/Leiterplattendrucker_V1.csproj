@@ -24,6 +24,9 @@
     <None Update="Website\js\ui.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Website\printstatus.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Website\style.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

@@ -158,6 +158,11 @@ namespace gerber2coordinatesTEST
                                     }
                                     break;
 
+                                case "isprinting":
+                                    //todo: flo bitte coole logik macha dia segt ob da drucker am drucken isch oder ned
+                                    responseString = "false";
+                                    break;
+
                                 default:
                                     responseString = "0";
                                     break;
@@ -221,11 +226,26 @@ namespace gerber2coordinatesTEST
         {
             gerberfileinfo = new Gerberfileinfo(Gerberfilecontent);
             serialconn = new SerialComm(COM);
+            logtoconsole(serialconn.ToString());
+
+
         }
 
         public string getpreview()
         {
             return gerberfileinfo.getlinelist_as_json();
+        }
+
+        /// <summary>
+        /// Serial connection schließen um Fehler beim nächsten start zu vermeiden
+        /// </summary>
+        public void stopSerialConnection()
+        {
+            if(serialconn != null)
+            {
+                serialconn.close(); 
+            }
+            
         }
 
 

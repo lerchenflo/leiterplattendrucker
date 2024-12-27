@@ -32,11 +32,21 @@ export function get_preview(){
     req.open("GET", SERVER_ADDR, false);
     req.setRequestHeader("action", "getgerberpreview");
     req.send(null);
-    //console.log(req.responseText);
-    //console.log(req.getAllResponseHeaders());
     return req.responseText;
+}
 
-    //return "joo gerber preview";
+export function isPrinting(){
+    var req = new XMLHttpRequest();
+    req.open("GET", SERVER_ADDR, false);
+    req.setRequestHeader("action", "isprinting");
+    req.send(null);
+
+    if(req.responseText == "true"){
+        return true;
+    }else{
+        return false;
+    }
+    
 }
 
 export function start(){
@@ -45,10 +55,6 @@ export function start(){
     req.open("POST", SERVER_ADDR);
     req.setRequestHeader("action", "startprinting");
     req.send(null);
-
-    // from now on update the porgressbar every 5 seconds
-    updateProgress();
-    setInterval(updateProgress, 5000);
 }
 
 export function stop(){
