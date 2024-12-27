@@ -1,13 +1,6 @@
-import {pauseprinting, send_gerber, start, stop, get_preview, getPrintStatus} from './network_task.js'
+import {pauseprinting, send_gerber, start, stop, get_preview, getPrintStatus} from './network_task.js';
 
-
-// Progress bar for Fielupload
-const form = document.querySelector('form');
-const progressBar = document.createElement('progress');
-progressBar.value = 0;
-progressBar.max = 100;
-form.parentNode.insertBefore(progressBar, form.nextSibling);
-
+// Update the progressbar and the Text below according to the print status
 export function updateProgress(){
     var val = getPrintStatus();
     var progressBar = document.getElementById("printProgressBar");
@@ -16,52 +9,30 @@ export function updateProgress(){
     progressText.innerHTML = "Progress: " + progressBar.value + "%";
   }
 
-form.addEventListener('submit', (event) => {
-    event.preventDefault();
 
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', form.action);
-    xhr.upload.addEventListener('progress', (event) => {
-    progressBar.value = (event.loaded / event.total) * 100;
-    });
 
-    xhr.onload = () => {
-    if (xhr.status === 200) {
-        // Handle successful upload
-        console.log('Upload successful!');
-        console.log("reload")
-        location.reload(); // reload page
-    } else {
-        // Handle upload error
-        console.error('Upload failed.');
+
+
+export function drawPreviewFromServer(buttonExists=true){ // gets the Preview from the Server and displays it, when buttonexits = true it disables the start button from index.html
+    const json_string = get_preview();
+    
+    if (json_string == "Keine Preview")
+    {
+        alert("Gerberfile wurde nicht gefunden")
+        if(buttonExists){
+            document.getElementById("startprinting").disabled = true;
+        }     
     }
-    };
-
-    const formData = new FormData(form);
-    xhr.send(formData);
-});
-
-
-// Load Gerber file using js, sending it to the server in Textformat
-const fileSelector = document.getElementById('file-selector');
-  fileSelector.addEventListener('change', (event) => {
-    const fileList = event.target.files;
-    //console.log(fileList[0]);
-    const file = fileList[0];
-    if (file) {
-        var reader = new FileReader();
-        reader.readAsText(file, "UTF-8");
-        reader.onload = function (evt) {
-            var content = evt.target.result;
-            //console.log(content);
-            send_gerber(content);
-            
-        }
-        reader.onerror = function (evt) {
-            console.log("error reading file");
-        }
+    else
+    {
+        const json_object = JSON.parse(json_string);
+        console.log(json_object);
+        drawpreview(json_object);
+        if(buttonExists){
+            document.getElementById("startprinting").disabled = false;
+        } 
     }
-  });
+}
 
 // Draw the preview onto the canvas
 function drawpreview(preview_json) {
@@ -117,43 +88,4 @@ function drawpreview(preview_json) {
     }
 }
 
-  
 
-function test(){
-    console.log("test");
-}
-
-// Start print -> button onlcick
-const startprintingbtn = document.getElementById('startprinting');
-startprintingbtn.onclick = function(){
-    console.log("startprinting");
-    start();
-};
-
-const stopprintingbtn = document.getElementById('stopprinting');
-stopprintingbtn.onclick = function(){
-    stop();
-};
-
-const pauseprintingbtn = document.getElementById('pauseprinting');
-pauseprintingbtn.onclick = function(){
-    pauseprinting();
-};
-
-const showpreviewbtn = document.getElementById('showpreview');
-showpreviewbtn.onclick = function(){
-    const json_string = get_preview();
-    
-    if (json_string == "Keine Preview")
-    {
-        alert("Gerberfile wurde nicht gefunden")
-    }
-    else
-    {
-        const json_object = JSON.parse(json_string);
-        console.log(json_object);
-        drawpreview(json_object);
-    }
-    
-    
-};

@@ -21,6 +21,7 @@ namespace lpd_ansteuerung
             sp.PortName = port;
             sp.BaudRate = baudRate;
 
+            Console.WriteLine("Opening Port " + port);
             sp.Open();
         }
 
