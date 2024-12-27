@@ -34,6 +34,44 @@ export function drawPreviewFromServer(buttonExists=true){ // gets the Preview fr
     }
 }
 
+
+    const formData = new FormData(form);
+    xhr.send(formData);
+
+
+// Load Gerber file using js, sending it to the server in Textformat
+const fileSelector = document.getElementById('file-selector');
+fileSelector.addEventListener('change', (event) => {
+    fileupload_event = event;
+    load_and_send_gerber();
+  });
+
+let fileupload_event = null;
+
+function load_and_send_gerber() {
+    const fileList = fileupload_event.target.files;
+    //console.log(fileList[0]);
+    const file = fileList[0];
+    if (file) {
+        var reader = new FileReader();
+        reader.readAsText(file, "UTF-8");
+        reader.onload = function (evt) {
+            var content = evt.target.result;
+            //console.log(content);
+            send_gerber(content);
+
+            setTimeout(() => {
+                get_and_draw_preview();
+            }, 500);
+
+        }
+        reader.onerror = function (evt) {
+            console.log("error reading file");
+        }
+    }
+}
+
+
 // Draw the preview onto the canvas
 function drawpreview(preview_json) {
     // Drawing onto canvas from json array
@@ -88,4 +126,42 @@ function drawpreview(preview_json) {
     }
 }
 
+function get_and_draw_preview() {
+    const json_string = get_preview();
+
+    if (json_string == "Keine Preview") {
+        if (!fileupload_event) {
+            load_and_send_gerber();
+            get_and_draw_preview();
+        }
+        
+    }
+    else {
+        const json_object = JSON.parse(json_string);
+        console.log(json_object);
+        drawpreview(json_object);
+    }
+}
+  
+
+function test(){
+    console.log("test");
+}
+
+// Start print -> button onlcick
+const startprintingbtn = document.getElementById('startprinting');
+startprintingbtn.onclick = function(){
+    console.log("startprinting");
+    start();
+};
+
+const stopprintingbtn = document.getElementById('stopprinting');
+stopprintingbtn.onclick = function(){
+    stop();
+};
+
+const pauseprintingbtn = document.getElementById('pauseprinting');
+pauseprintingbtn.onclick = function(){
+    pauseprinting();
+};
 

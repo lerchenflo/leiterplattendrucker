@@ -75,7 +75,6 @@ namespace gerber2coordinatesTEST
                 {
                     using (StreamReader reader = new StreamReader(body, context.Request.ContentEncoding))
                     {
-                        Console.WriteLine("Neuer Post");
                         string requestBody = await reader.ReadToEndAsync();
 
                         if (action != null)
@@ -320,7 +319,7 @@ namespace gerber2coordinatesTEST
 
         public static void logtoconsole(string message)
         {
-            Console.WriteLine(DateTime.Now.Hour + ":" + DateTime.Now.Minute + ":" + DateTime.Now.Second + ": " + message);
+            Console.WriteLine("[" + DateTime.Now.Hour + ":" + DateTime.Now.Minute + ":" + DateTime.Now.Second + "]: " + message);
         }
 
     }

@@ -30,12 +30,29 @@
   <br>
   <button id="stopprinting">Stop Print</button>
   <button id="pauseprinting">Pause Print</button>
+
   <button id="showpreview">Show preview (debugging)</button>
   <button id="hide">Hide</button>
 -->
 
   <!-- JS code-->
   <script src="./js/ui.js" type="module"></script>
+
+  <div id="progessdiv">
+    <h2>Printing: [todo]</h2>
+    <progress id="printProgressBar" value="0" max="100"></progress>
+    <span id="progessText"></span>
+  </div>
+
+  <script>
+    function print_file(x){
+    console.log("Print: " +  x);
+      }
+
+    function preview(x){
+      console.log("preview: " +  x);
+    }
+  </script>
 
   <script type="module">
     import {send_gerber, isPrinting} from './js/network_task.js';

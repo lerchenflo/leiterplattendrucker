@@ -25,6 +25,15 @@ namespace Leiterplattendrucker_V1
                 while (true)
                 {
                     try
+
+                    Console.WriteLine("\nCOM - Port Nummer mit verbundenem Arduino eingeben:");
+                    comportindex = Convert.ToInt32(Console.ReadLine());
+
+                    //Wenn COMport nicht funktioniert
+                    bool functions = SerialComm.testport(comPorts[comportindex]);
+
+                    //bool functions = true; //Für debugging
+                    if (!functions)
                     {
                         Console.WriteLine("\nCOM - Port Nummer mit verbundenem Arduino eingeben:");
                         comportindex = Convert.ToInt32(Console.ReadLine());
