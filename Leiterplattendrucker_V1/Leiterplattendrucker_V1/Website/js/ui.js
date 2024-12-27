@@ -44,8 +44,15 @@ form.addEventListener('submit', (event) => {
 
 // Load Gerber file using js, sending it to the server in Textformat
 const fileSelector = document.getElementById('file-selector');
-  fileSelector.addEventListener('change', (event) => {
-    const fileList = event.target.files;
+fileSelector.addEventListener('change', (event) => {
+    fileupload_event = event;
+    load_and_send_gerber();
+  });
+
+let fileupload_event = null;
+
+function load_and_send_gerber() {
+    const fileList = fileupload_event.target.files;
     //console.log(fileList[0]);
     const file = fileList[0];
     if (file) {
@@ -55,13 +62,18 @@ const fileSelector = document.getElementById('file-selector');
             var content = evt.target.result;
             //console.log(content);
             send_gerber(content);
-            
+
+            setTimeout(() => {
+                get_and_draw_preview();
+            }, 500);
+
         }
         reader.onerror = function (evt) {
             console.log("error reading file");
         }
     }
-  });
+}
+
 
 // Draw the preview onto the canvas
 function drawpreview(preview_json) {
@@ -117,6 +129,22 @@ function drawpreview(preview_json) {
     }
 }
 
+function get_and_draw_preview() {
+    const json_string = get_preview();
+
+    if (json_string == "Keine Preview") {
+        if (!fileupload_event) {
+            load_and_send_gerber();
+            get_and_draw_preview();
+        }
+        
+    }
+    else {
+        const json_object = JSON.parse(json_string);
+        console.log(json_object);
+        drawpreview(json_object);
+    }
+}
   
 
 function test(){
@@ -140,20 +168,3 @@ pauseprintingbtn.onclick = function(){
     pauseprinting();
 };
 
-const showpreviewbtn = document.getElementById('showpreview');
-showpreviewbtn.onclick = function(){
-    const json_string = get_preview();
-    
-    if (json_string == "Keine Preview")
-    {
-        alert("Gerberfile wurde nicht gefunden")
-    }
-    else
-    {
-        const json_object = JSON.parse(json_string);
-        console.log(json_object);
-        drawpreview(json_object);
-    }
-    
-    
-};
