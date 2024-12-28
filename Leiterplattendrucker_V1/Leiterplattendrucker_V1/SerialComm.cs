@@ -21,8 +21,11 @@ namespace lpd_ansteuerung
             sp.PortName = port;
             sp.BaudRate = baudRate;
 
-            //Console.WriteLine("Opening Port " + port);
-            sp.Open();
+            if (Druckerserver.USEUSB_DEBUG)
+            {
+                sp.Open();
+            }
+            
         }
 
 
@@ -34,7 +37,7 @@ namespace lpd_ansteuerung
 
             try
             {
-                
+    
                 CancellationTokenSource cts = new CancellationTokenSource();
 
                 Thread t = new Thread((uebergebenerport) =>

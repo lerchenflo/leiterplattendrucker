@@ -6,10 +6,19 @@ using System.IO;
 using System.Net;
 using System.Text;
 
+
+
 namespace gerber2coordinatesTEST
 {
+    
+
     public class Druckerserver
     {
+        public static bool USEUSB_DEBUG = false;
+
+        
+
+
         private HttpListener Httplistener;
         public string COMPort = "";
 
@@ -25,6 +34,7 @@ namespace gerber2coordinatesTEST
             this.COMPort = COMPort;
             Httplistener = new HttpListener();
             Httplistener.Prefixes.Add($"http://{ipAddress}:{port}/");
+
 
         }
 
@@ -225,10 +235,12 @@ namespace gerber2coordinatesTEST
         public void initPrinting(string Gerberfilecontent, string COM)
         {
             gerberfileinfo = new Gerberfileinfo(Gerberfilecontent);
-            serialconn = new SerialComm(COM);
-            //logtoconsole(serialconn.ToString());
+            if (Druckerserver.USEUSB_DEBUG)
+            {
+                serialconn = new SerialComm(COM);
 
-
+            }
+            logtoconsole("Port geöffnet", 3);
         }
 
         public string getpreview()
@@ -254,7 +266,11 @@ namespace gerber2coordinatesTEST
             if (gerberfileinfo != null)
             {
                 printing = true;
-                serialconn.driveto00();
+                if (USEUSB_DEBUG)
+                {
+                    serialconn.driveto00();
+                }
+                
 
                 printThread = new Thread(print);
                 printThread.Start();
@@ -282,11 +298,18 @@ namespace gerber2coordinatesTEST
         private void endprint()
         {
             //Druckkopf zum Startpunkt fahren
-            serialconn.driveto00();
+            if (USEUSB_DEBUG)
+            {
+                serialconn.driveto00();
+            }
 
             logtoconsole("Drucker: Druck fertig, Objekte werden geleert");
 
-            serialconn.close();
+            if (USEUSB_DEBUG)
+            {
+                serialconn.close();
+            }
+            
             printing = false;
             gerberfileinfo = null;
             serialconn = null;
@@ -304,7 +327,11 @@ namespace gerber2coordinatesTEST
 
                     Debug.WriteLine("X: " + drivecoords.X + "\nY: " + drivecoords.Y + "\nPaint: " + currentline._paint);
                     //An Arduino senden
-                    serialconn.driveXY((int)drivecoords.X, (int)drivecoords.Y, currentline._paint);
+
+                    if (USEUSB_DEBUG)
+                    {
+                        serialconn.driveXY((int)drivecoords.X, (int)drivecoords.Y, currentline._paint);
+                    }
                 }
                 else
                 {
@@ -322,29 +349,36 @@ namespace gerber2coordinatesTEST
         /// </summary>
         /// <param name="message">Zu loggender String</param>
         /// <param name="color">0 = Keine Farbe 1 = Rote Farbe 2 = Grüne Farbe</param>
-        public static void logtoconsole(string message, int color=0)
+        public static void logtoconsole(string message, int color=0, bool withtime=true)
         {
-            if (color==0)
+            switch (color)
             {
-                Console.WriteLine("[" + DateTime.Now.Hour + ":" + DateTime.Now.Minute + ":" + DateTime.Now.Second + "]\t" + message);
-            }
-            else if(color==1)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                logtoconsole(message);
-                Console.ResetColor();
-            }else if (color == 2)
-            {
-                Console.ForegroundColor = ConsoleColor.Green;
-                logtoconsole(message);
-                Console.ResetColor();
-            }else if (color == 3)
-            {
-                Console.ForegroundColor = ConsoleColor.DarkYellow;
-                logtoconsole(message);
-                Console.ResetColor();
+                case 1:
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    break;
+
+                case 2:
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    break;
+
+                case 3:
+                    Console.ForegroundColor = ConsoleColor.DarkYellow;
+                    break;
+
+                default:
+                    break;
             }
 
+            if (withtime)
+            {
+                Console.WriteLine("[" + DateTime.Now.Hour + ":" + DateTime.Now.Minute + ":" + DateTime.Now.Second + "]\t" + message);
+
+            }
+            else
+            {
+                Console.WriteLine("\t\t" + message);
+            }
+            Console.ResetColor();
         }
 
         public static void logemptytoconsole()
