@@ -30,9 +30,9 @@ namespace Leiterplattendrucker_V1
                     comportindex = Convert.ToInt32(Console.ReadLine());
 
                     //Wenn COMport nicht funktioniert
-                    //bool functions = SerialComm.testport(comPorts[comportindex]);
+                    bool functions = SerialComm.testport(comPorts[comportindex]);
 
-                    bool functions = true; //Für debugging
+                    //bool functions = true; //Für debugging
                     if (!functions)
                     {
 

@@ -323,27 +323,27 @@ namespace gerber2coordinatesTEST
         /// <param name="color">0 = Keine Farbe 1 = Rote Farbe 2 = Grüne Farbe</param>
         public static void logtoconsole(string message, int color=0)
         {
-            if (color==0)
+            switch (color)
             {
-                Console.WriteLine("[" + DateTime.Now.Hour + ":" + DateTime.Now.Minute + ":" + DateTime.Now.Second + "]\t" + message);
-            }
-            else if(color==1)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                logtoconsole(message);
-                Console.ResetColor();
-            }else if (color == 2)
-            {
-                Console.ForegroundColor = ConsoleColor.Green;
-                logtoconsole(message);
-                Console.ResetColor();
-            }else if (color == 3)
-            {
-                Console.ForegroundColor = ConsoleColor.DarkYellow;
-                logtoconsole(message);
-                Console.ResetColor();
+                case 1:
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    break;
+
+                case 2:
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    break;
+
+                case 3:
+                    Console.ForegroundColor = ConsoleColor.DarkYellow;
+                    break;
+
+                default:
+                    break;
             }
 
+
+            Console.WriteLine("[" + DateTime.Now.Hour + ":" + DateTime.Now.Minute + ":" + DateTime.Now.Second + "]\t" + message);
+            Console.ResetColor();
         }
 
         public static void logemptytoconsole()
