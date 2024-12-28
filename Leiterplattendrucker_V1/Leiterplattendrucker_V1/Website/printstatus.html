@@ -12,14 +12,17 @@
       </div>
       
       <div id="progessdiv">
-        <h2>Printing: [todo]</h2>
+        <h2>printing ...</h2>
         <progress id="printProgressBar" value="0" max="100"></progress>
         <span id="progessText">Progress: x %</span>
       </div>
 
       <script type="module">
-        import {drawPreviewFromServer} from './js/ui.js';
-        drawPreviewFromServer(false);
+        import {redirectIfPrinting, drawPreviewFromServer, updateProgress} from './js/ui.js';
+
+        redirectIfPrinting(); // go back to index.html if printer is not printing
+        drawPreviewFromServer(false); // draw the preview
+        setInterval(updateProgress, 1000);
         
       </script>
 

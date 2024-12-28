@@ -41,7 +41,7 @@ export function isPrinting(){
     req.setRequestHeader("action", "isprinting");
     req.send(null);
 
-    if(req.responseText == "true"){
+    if(req.responseText == "True"){
         return true;
     }else{
         return false;

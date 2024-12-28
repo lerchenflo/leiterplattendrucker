@@ -82,6 +82,7 @@ namespace gerber2coordinatesTEST
                             switch (action)
                             {
                                 case "startprinting":
+                                    logtoconsole("start printing command recieved");
                                     if (!printing)
                                     {
                                         if (startPrinting())
@@ -161,7 +162,7 @@ namespace gerber2coordinatesTEST
                                     //todo: flo bitte coole logik macha dia segt ob da drucker am drucken isch oder ned
                                     responseString = printing.ToString();
                                     break;
-
+                                        
                                 default:
                                     responseString = "0";
                                     break;
@@ -252,8 +253,8 @@ namespace gerber2coordinatesTEST
         {
             if (gerberfileinfo != null)
             {
-                serialconn.driveto00();
                 printing = true;
+                serialconn.driveto00();
 
                 printThread = new Thread(print);
                 printThread.Start();
