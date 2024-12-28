@@ -9,54 +9,44 @@ namespace Leiterplattendrucker_V1
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Verfügbare COM - Ports:");
+            Druckerserver.logtoconsole("Verfügbare COM - Ports:");
 
             //Ausgeben aller verfügbaren Ports, an denen der Arduino Nano angeschlossen sein könntr
             string[] comPorts = SerialComm.getAvalibablePorts();
             for (int i = 0; i < comPorts.Length; i++)
             {
-                Console.WriteLine($"{i} - {comPorts[i]}");
+                Druckerserver.logtoconsole($"{i} - {comPorts[i]}");
             }
 
             
             int comportindex = 0;
-            if(comPorts.Length > 1 ) //Nicht abfragen wenn nur 1 Port verfügbar ist
-            {
-                while (true)
-                {
-                    try
 
-                    Console.WriteLine("\nCOM - Port Nummer mit verbundenem Arduino eingeben:");
+            while (true)
+            {
+                try
+                {
+
+                    Druckerserver.logtoconsole("COM - Port Nummer mit verbundenem Arduino eingeben:");
                     comportindex = Convert.ToInt32(Console.ReadLine());
 
                     //Wenn COMport nicht funktioniert
-                    bool functions = SerialComm.testport(comPorts[comportindex]);
+                    //bool functions = SerialComm.testport(comPorts[comportindex]);
 
-                    //bool functions = true; //Für debugging
+                    bool functions = true; //Für debugging
                     if (!functions)
                     {
-                        Console.WriteLine("\nCOM - Port Nummer mit verbundenem Arduino eingeben:");
-                        comportindex = Convert.ToInt32(Console.ReadLine());
 
-                        //Wenn COMport nicht funktioniert
-                        //bool functions = SerialComm.testport(comPorts[comportindex]);
-
-                        bool functions = true; //Für debugging
-                        if (!functions)
-                        {
-                            throw new Exception("COMPort konnte nicht geöffnet werden");
-                        }
-                        else
-                        {
-                            break;
-                        }
-
-
+                        throw new Exception("COMPort konnte nicht geöffnet werden");
                     }
-                    catch (Exception e)
+                    else
                     {
-                        Console.WriteLine("Fehler: " + e.Message);
+                        break;
                     }
+                }
+                catch (Exception e)
+                {
+                    Druckerserver.logtoconsole("Fehler: " + e.Message, 1);
+                    
                 }
             }
 
@@ -83,9 +73,11 @@ namespace Leiterplattendrucker_V1
             };
             */
 
-            Console.Title = localIP + ":" + localport;
-            Console.WriteLine("\nLokale IP: " + localIP);
-            Console.WriteLine("\nServer läuft");
+            string serverurl = localIP + ":" + localport;
+
+            Console.Title = serverurl;
+            
+            Druckerserver.logtoconsole("Server läuft: " + serverurl, 2);
 
 
             try

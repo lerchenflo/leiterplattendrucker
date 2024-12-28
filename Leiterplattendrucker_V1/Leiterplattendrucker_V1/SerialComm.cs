@@ -21,7 +21,7 @@ namespace lpd_ansteuerung
             sp.PortName = port;
             sp.BaudRate = baudRate;
 
-            Console.WriteLine("Opening Port " + port);
+            //Console.WriteLine("Opening Port " + port);
             sp.Open();
         }
 
@@ -29,7 +29,7 @@ namespace lpd_ansteuerung
         //Testen ob Port geöffnet werden kann
         public static bool testport(string port)
         {
-            Druckerserver.logtoconsole($"COMPort {port} wird getestet");
+            Druckerserver.logtoconsole($"COMPort {port} wird getestet", 3);
             bool functions = false;
 
             try
@@ -47,7 +47,7 @@ namespace lpd_ansteuerung
                         string rec = s1.readlines(1);
                         if (rec.StartsWith("V"))
                         {
-                            Druckerserver.logtoconsole($"Arduinoversion: {rec}");
+                            Druckerserver.logtoconsole($"Arduinoversion: {rec}", 3);
                             break;
                         }
                        
@@ -163,7 +163,7 @@ namespace lpd_ansteuerung
             }
             catch (Exception e)
             {
-                Console.WriteLine("Fehler: SerialComm: " + e.Message);
+                Druckerserver.logtoconsole("Fehler: SerialComm: " + e.Message, 1);
             }
             
         }

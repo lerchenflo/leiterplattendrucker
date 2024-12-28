@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using gerber2coordinatesTEST;
+using System.Net;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Unicode;
@@ -61,7 +62,7 @@ namespace Leiterplattendrucker_V1
             //Falls das File nicht gefunden wurde / Leer ist
             if (Encoding.UTF8.GetString(body) == string.Empty)
             {
-                Console.WriteLine("Website: Fehler - Kein File geladen");
+                Druckerserver.logtoconsole("Website: Fehler - Kein File geladen", 1);
                 //Wenn ein falsches File angefordert wird, wird ein fehlercode zurückgegeben
                 statuscode = (int)HttpStatusCode.NotFound;
                 body = new byte[0];
@@ -92,7 +93,7 @@ namespace Leiterplattendrucker_V1
             }
             catch (FileNotFoundException)
             {
-                Console.WriteLine("File nicht gefunden: " + path);
+                Druckerserver.logtoconsole("File nicht gefunden: " + path, 1);
                 return "";
             }
         }

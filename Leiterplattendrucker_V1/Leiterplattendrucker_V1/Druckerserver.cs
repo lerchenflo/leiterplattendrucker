@@ -159,7 +159,7 @@ namespace gerber2coordinatesTEST
 
                                 case "isprinting":
                                     //todo: flo bitte coole logik macha dia segt ob da drucker am drucken isch oder ned
-                                    responseString = "false";
+                                    responseString = printing.ToString();
                                     break;
 
                                 default:
@@ -225,7 +225,7 @@ namespace gerber2coordinatesTEST
         {
             gerberfileinfo = new Gerberfileinfo(Gerberfilecontent);
             serialconn = new SerialComm(COM);
-            logtoconsole(serialconn.ToString());
+            //logtoconsole(serialconn.ToString());
 
 
         }
@@ -316,10 +316,39 @@ namespace gerber2coordinatesTEST
 
         }
 
-
-        public static void logtoconsole(string message)
+        /// <summary>
+        /// Allgemeine Konsolenausgabe mit aktueller Zeit
+        /// </summary>
+        /// <param name="message">Zu loggender String</param>
+        /// <param name="color">0 = Keine Farbe 1 = Rote Farbe 2 = Grüne Farbe</param>
+        public static void logtoconsole(string message, int color=0)
         {
-            Console.WriteLine("[" + DateTime.Now.Hour + ":" + DateTime.Now.Minute + ":" + DateTime.Now.Second + "]: " + message);
+            if (color==0)
+            {
+                Console.WriteLine("[" + DateTime.Now.Hour + ":" + DateTime.Now.Minute + ":" + DateTime.Now.Second + "]\t" + message);
+            }
+            else if(color==1)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                logtoconsole(message);
+                Console.ResetColor();
+            }else if (color == 2)
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                logtoconsole(message);
+                Console.ResetColor();
+            }else if (color == 3)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                logtoconsole(message);
+                Console.ResetColor();
+            }
+
+        }
+
+        public static void logemptytoconsole()
+        {
+            Console.WriteLine();
         }
 
     }

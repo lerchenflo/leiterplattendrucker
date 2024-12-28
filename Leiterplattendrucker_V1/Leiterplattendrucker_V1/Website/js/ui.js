@@ -35,9 +35,6 @@ export function drawPreviewFromServer(buttonExists=true){ // gets the Preview fr
 }
 
 
-    const formData = new FormData(form);
-    xhr.send(formData);
-
 
 // Load Gerber file using js, sending it to the server in Textformat
 const fileSelector = document.getElementById('file-selector');
@@ -155,6 +152,7 @@ startprintingbtn.onclick = function(){
     start();
 };
 
+/*
 const stopprintingbtn = document.getElementById('stopprinting');
 stopprintingbtn.onclick = function(){
     stop();
@@ -164,4 +162,6 @@ const pauseprintingbtn = document.getElementById('pauseprinting');
 pauseprintingbtn.onclick = function(){
     pauseprinting();
 };
+
+*/
 
