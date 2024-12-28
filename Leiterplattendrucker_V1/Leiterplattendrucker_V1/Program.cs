@@ -2,53 +2,92 @@
 using lpd_ansteuerung;
 using System.Net;
 using System.Net.Sockets;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Leiterplattendrucker_V1
 {
     internal class Program
     {
+
         static void Main(string[] args)
         {
-            Druckerserver.logtoconsole("Verfügbare COM - Ports:");
+
+            if (!Druckerserver.USEUSB_DEBUG)
+            {
+                //https://patorjk.com/software/taag/#p=display&f=Big&t=DEBUG%20MODE%0AKein%20USB
+                Druckerserver.logtoconsole(@"                  
+                     
+                    ██████╗ ███████╗██████╗ ██╗   ██╗ ██████╗     ███╗   ███╗ ██████╗ ██████╗ ███████╗
+                    ██╔══██╗██╔════╝██╔══██╗██║   ██║██╔════╝     ████╗ ████║██╔═══██╗██╔══██╗██╔════╝
+                    ██║  ██║█████╗  ██████╔╝██║   ██║██║  ███╗    ██╔████╔██║██║   ██║██║  ██║█████╗  
+                    ██║  ██║██╔══╝  ██╔══██╗██║   ██║██║   ██║    ██║╚██╔╝██║██║   ██║██║  ██║██╔══╝  
+                    ██████╔╝███████╗██████╔╝╚██████╔╝╚██████╔╝    ██║ ╚═╝ ██║╚██████╔╝██████╔╝███████╗
+                    ╚═════╝ ╚══════╝╚═════╝  ╚═════╝  ╚═════╝     ╚═╝     ╚═╝ ╚═════╝ ╚═════╝ ╚══════╝
+                                                                                  
+                    ██╗  ██╗███████╗██╗███╗   ██╗    ██╗   ██╗███████╗██████╗                         
+                    ██║ ██╔╝██╔════╝██║████╗  ██║    ██║   ██║██╔════╝██╔══██╗                        
+                    █████╔╝ █████╗  ██║██╔██╗ ██║    ██║   ██║███████╗██████╔╝                        
+                    ██╔═██╗ ██╔══╝  ██║██║╚██╗██║    ██║   ██║╚════██║██╔══██╗                        
+                    ██║  ██╗███████╗██║██║ ╚████║    ╚██████╔╝███████║██████╔╝                        
+                    ╚═╝  ╚═╝╚══════╝╚═╝╚═╝  ╚═══╝     ╚═════╝ ╚══════╝╚═════╝                         
+                                                                                  
+                       
+                                        ", 1, false);
+                Druckerserver.logemptytoconsole();
+            }
+
+            if (Druckerserver.USEUSB_DEBUG)
+            {
+                Druckerserver.logtoconsole("Verfügbare COM - Ports:");
+            }
+            
 
             //Ausgeben aller verfügbaren Ports, an denen der Arduino Nano angeschlossen sein könntr
             string[] comPorts = SerialComm.getAvalibablePorts();
             for (int i = 0; i < comPorts.Length; i++)
             {
-                Druckerserver.logtoconsole($"{i} - {comPorts[i]}");
+                if (Druckerserver.USEUSB_DEBUG)
+                {
+                    Druckerserver.logtoconsole($"{i} - {comPorts[i]}");
+                }
+            }
+
+
+            int comportindex = 0;
+
+            if (Druckerserver.USEUSB_DEBUG)
+            {
+                while (true)
+                {
+                    try
+                    {
+                        Druckerserver.logemptytoconsole();
+                        Druckerserver.logtoconsole("COM - Port Nummer mit verbundenem Arduino eingeben:");
+                        comportindex = Convert.ToInt32(Console.ReadLine());
+
+                        //Wenn COMport nicht funktioniert
+                        bool functions = SerialComm.testport(comPorts[comportindex]);
+
+                        //bool functions = true; //Für debugging
+                        if (!functions)
+                        {
+
+                            throw new Exception("COMPort konnte nicht geöffnet werden");
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Druckerserver.logtoconsole("Fehler: " + e.Message, 1);
+
+                    }
+                }
             }
 
             
-            int comportindex = 0;
-
-            while (true)
-            {
-                try
-                {
-
-                    Druckerserver.logtoconsole("COM - Port Nummer mit verbundenem Arduino eingeben:");
-                    comportindex = Convert.ToInt32(Console.ReadLine());
-
-                    //Wenn COMport nicht funktioniert
-                    bool functions = SerialComm.testport(comPorts[comportindex]);
-
-                    //bool functions = true; //Für debugging
-                    if (!functions)
-                    {
-
-                        throw new Exception("COMPort konnte nicht geöffnet werden");
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-                catch (Exception e)
-                {
-                    Druckerserver.logtoconsole("Fehler: " + e.Message, 1);
-                    
-                }
-            }
 
 
             //Aktuelle IP herausfinden
