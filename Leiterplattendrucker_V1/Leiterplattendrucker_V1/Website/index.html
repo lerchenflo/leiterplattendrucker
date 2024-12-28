@@ -11,15 +11,21 @@
   </p>
 
   <div id="uploaddiv">
-    <fieldset>
-      <legend>upload new files</legend>
-        <form method="POST" enctype="multipart/form-data">
-          <input id="file-selector" type="file" name="file1" accept=".gbr, .gerber" >
-        </form>
-      </fieldset>
+
+    <form class="upload-form">
+      <label for="file-selector" class="file-label">Select a Gerber File:</label>
+      <input
+        id="file-selector"
+        type="file"
+        name="file1"
+        accept=".gbr, .gerber"
+        class="file-input"
+      />
+      <button id="startprinting" disabled>Start Print</button>
+    </form>
   </div>
 
-  <button id="startprinting" disabled>Start Print</button>
+  
 
   <div id="previewdiv">
     <canvas id="pcbPreview" width="500" height="300" style="border:1px solid #000000;"></canvas>

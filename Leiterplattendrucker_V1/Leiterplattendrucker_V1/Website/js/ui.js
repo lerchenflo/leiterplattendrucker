@@ -38,6 +38,9 @@ export function redirectIfPrinting(){
     }
     if(!(window.location.href).endsWith(newURL)){
         window.location.href = "." + newURL;
+        return true;
+    }else{
+        return false;
     }
 
 }

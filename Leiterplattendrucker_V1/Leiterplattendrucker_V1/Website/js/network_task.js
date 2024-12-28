@@ -76,11 +76,12 @@ export function getPrintStatus(){
     var req = new XMLHttpRequest();
     req.open("GET", SERVER_ADDR, false);
     req.setRequestHeader("action", "getprintpercentage");
-    req.send(null);
-    //var headers = req.getAllResponseHeaders();
-    
-    //console.log(req.responseText);
-    //console.log(req.getAllResponseHeaders());
+
+    try{
+        req.send(null);
+    }catch(error){
+        alert("Server offline: \n" + error);
+    }
     return req.responseText;
 }
 

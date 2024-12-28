@@ -12,7 +12,6 @@
       </div>
       
       <div id="progessdiv">
-        <h2>printing ...</h2>
         <progress id="printProgressBar" value="0" max="100"></progress>
         <span id="progessText">Progress: x %</span>
       </div>
@@ -20,14 +19,11 @@
       <script type="module">
         import {redirectIfPrinting, drawPreviewFromServer, updateProgress} from './js/ui.js';
 
-        redirectIfPrinting(); // go back to index.html if printer is not printing
-        drawPreviewFromServer(false); // draw the preview
-        setInterval(updateProgress, 1000);
-        
-      </script>
-
-      <script type="module">
-        import {isPrinting} from './js/network_task.js';
+        if(!redirectIfPrinting())// go back to index.html if printer is not printing
+        {
+          drawPreviewFromServer(false); // draw the preview
+          setInterval(updateProgress, 1000);
+        } 
         
       </script>
 
