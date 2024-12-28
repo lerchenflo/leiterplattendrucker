@@ -72,6 +72,48 @@ progress {
     background-color: #1e1e1e; /* Dark background for canvas */
 }
 
+.upload-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #1e1e1e;
+    max-width: 400px;
+    margin: 20px auto;
+
+  }
+  
+.file-label {
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    color: #007bff;
+    margin-bottom: 15px;
+}
+
+.file-input {
+    padding: 10px;
+    font-size: 14px;
+    color: #333;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: #007bff;
+    transition: border-color 0.3s ease;
+}
+
+.file-input:hover {
+    border-color: #007bff;
+}
+
+.file-input:focus {
+    outline: none;
+    border-color: #0056b3;
+    box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
+}
+  
+
 @media (max-width: 600px) {
     button {
         width: 100%;
