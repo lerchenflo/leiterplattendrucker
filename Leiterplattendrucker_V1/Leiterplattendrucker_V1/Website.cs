@@ -46,7 +46,7 @@ namespace Leiterplattendrucker_V1
             }
 
             byte[] body;
-            if (finalFilepath.EndsWith(".ico"))
+            if (finalFilepath.EndsWith(".ico") || finalFilepath.EndsWith(".png")) //Bilder anders auslesen
             {
                 body = File.ReadAllBytes(finalFilepath);
                 picture = true;

@@ -34,7 +34,7 @@ export function redirectIfPrinting(){
     if(isPrinting()){ //redirect to printstatus if Printer is already Printing
         newURL = "/printstatus.html";
     }else{
-        newURL = "/index.html";
+        newURL = "/";
     }
     if(!(window.location.href).endsWith(newURL)){
         window.location.href = "." + newURL;

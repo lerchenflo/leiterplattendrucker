@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>PCB Printer Website</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <div class="header">
+        <a href="./"><img src="./images/arrow.png" alt="Back Error"></a>
+        <h1>PCB Printer Settings</h1>
+    </div>
+  <p>Hier können verschiedene Druckeinstellungen geändert werden.
+  </p>
+  <fieldset>
+    <legend>Poligone</legend>
+    <label for="filling-level">Polygon füllgrad</label>
+    <input id="filling-level" type="number" value="30" min="0" max="100" step="5" />
+    
+  </fieldset>
+
+  <div class="spacer"></div>
+
+    <button id="resetbutton">
+        Reset to default
+    </button>
+    <br>
+
+    <a href="./" class="settings-button">
+    <img src="./images/arrow.png" alt="Settings icon" class="icon">
+    <span>Zurück</span>
+    </a>
+
+
+  <script type="module">
+    //import {getsettings} from './js/network_task.js';
+
+    //todo input fields mit werten vom server befüllen
+    const fillLvlInp = document.getElementById("filling-level");
+    fillLvlInp.onchange = function(){
+        let newLVL = fillLvlInp.value;
+        console.log("filling level chaged to " + newLVL);
+        //todo send command to server
+    }
+
+    const resetButton = document.getElementById("resetbutton");
+    resetButton.onclick = function(){
+        // todo send command(s) to server
+        //todo update ui elemets
+        console.log("Resetting to default values");
+    }
+
+  </script>
+  
+</body>
