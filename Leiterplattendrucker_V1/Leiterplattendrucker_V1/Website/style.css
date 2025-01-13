@@ -1,3 +1,18 @@
+/* Define CSS variables for colors and common styles */
+:root {
+    --dark-bg: #121212;
+    --light-text: #e0e0e0;
+    --bright-blue: #007bff;
+    --dark-blue: #0056b3;
+    --progress-bg: #333;
+    --canvas-bg: #1e1e1e;
+    --disabled-border: #999999;
+    --disabled-bg: #cccccc;
+    --disabled-text: #666666;
+    --red: #f44336;
+    --hover-red: #d32f2f;
+}
+
 /* Reset some default styles */
 body, h1, h2, p {
     margin: 0;
@@ -7,20 +22,20 @@ body, h1, h2, p {
 
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #121212; /* Dark background */
-    color: #e0e0e0; /* Light text color */
+    background-color: var(--dark-bg);
+    color: var(--light-text);
     line-height: 1.6;
     padding: 20px;
 }
 
 h1 {
     text-align: center;
-    color: #2196F3; /* Bright blue for headings */
+    color: var(--bright-blue);
     margin-bottom: 20px;
 }
 
 fieldset {
-    border: 2px solid #2196F3; /* Bright blue border */
+    border: 2px solid var(--bright-blue);
     border-radius: 5px;
     padding: 20px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
@@ -28,12 +43,12 @@ fieldset {
 
 legend {
     font-weight: bold;
-    color: #2196F3; /* Bright blue for legend */
+    color: var(--bright-blue);
 }
 
 button {
-    background-color: #2196F3; /* Bright blue */
-    color: #121212; /* Dark text color */
+    background-color: var(--bright-blue);
+    color: var(--light-text);
     border: none;
     border-radius: 5px;
     padding: 10px 20px;
@@ -43,14 +58,14 @@ button {
 }
 
 button:hover {
-    background-color: #1976D2; /* Slightly darker blue on hover */
+    background-color: var(--dark-blue);
 }
 
 button:disabled,
-button[disabled]{
-  border: 1px solid #999999;
-  background-color: #cccccc;
-  color: #666666;
+button[disabled] {
+    border: 1px solid var(--disabled-border);
+    background-color: var(--disabled-bg);
+    color: var(--disabled-text);
 }
 
 #progessdiv {
@@ -58,18 +73,43 @@ button[disabled]{
     text-align: center;
 }
 
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.spacer {
+    height: 20px; /* Default vertical space */
+    width: 100%; /* Full width by default */
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.header img {
+    height: 35px;
+}
+
 progress {
     width: 100%;
     height: 20px;
     margin-top: 10px;
-    background-color: #333; /* Dark background for progress bar */
+    background-color: var(--progress-bg);
 }
 
 #pcbPreview {
     display: block;
     margin: 20px auto;
-    border: 1px solid #2196F3; /* Bright blue border */
-    background-color: #1e1e1e; /* Dark background for canvas */
+    border: 1px solid var(--bright-blue);
+    background-color: var(--canvas-bg);
+}
+
+#settingsicon {
+    width: 20px;
 }
 
 .upload-form {
@@ -78,41 +118,98 @@ progress {
     align-items: center;
     padding: 20px;
     border-radius: 8px;
-    background-color: #1e1e1e;
+    background-color: var(--canvas-bg);
     max-width: 400px;
     margin: 20px auto;
+}
 
-  }
-  
 .file-label {
     font-family: Arial, sans-serif;
     font-size: 16px;
     font-weight: bold;
-    color: #007bff;
+    color: var(--bright-blue);
     margin-bottom: 15px;
 }
 
 .file-input {
     padding: 10px;
     font-size: 14px;
-    color: #333;
-    border: 1px solid #ccc;
+    color: var(--dark-bg);
+    border: 1px solid var(--progress-bg);
     border-radius: 4px;
     cursor: pointer;
-    background-color: #007bff;
+    background-color: var(--bright-blue);
     transition: border-color 0.3s ease;
 }
 
 .file-input:hover {
-    border-color: #007bff;
+    border-color: var(--dark-blue);
 }
 
 .file-input:focus {
     outline: none;
-    border-color: #0056b3;
+    border-color: var(--dark-blue);
     box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
 }
-  
+
+.settings-button {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 10px 20px;
+    margin: 10px;
+    background-color: var(--bright-blue);
+    color: white;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.settings-button:hover {
+    cursor: pointer;
+    background-color: var(--dark-blue);
+}
+
+/* Popup container */
+.popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+  }
+  /* Popup content */
+  .popup-content {
+    background-color: var(--dark-bg);
+    padding: 20px;
+    border-radius: 10px;
+    width: 300px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  /* Close button */
+  .close-btn {
+    background-color: var(--red);
+    color: var(--light-text);
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  .close-btn:hover {
+    background-color: var(--hover-red);
+  }
+
+.icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+}
 
 @media (max-width: 600px) {
     button {

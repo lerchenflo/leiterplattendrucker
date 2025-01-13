@@ -6,9 +6,10 @@
 </head>
 <body>
   <h1>PCB Printer Website</h1>
+  
   <p>Wilkommen auf der PCB Printer Seite. Auf dieser Seite können Gerber-Dateine hochgeladen werden um diese vom Drucker drucken zu lassen.<br>
-      Zum Start laden sie Bitte ihre Gerber-Datei hoch.
-  </p>
+    Zum Start laden sie Bitte ihre Gerber-Datei hoch.
+  </p>    
 
   <div id="uploaddiv">
 
@@ -18,11 +19,41 @@
         id="file-selector"
         type="file"
         name="file1"
-        accept=".gbr, .gerber"
+        accept=".gbr, .gerber, .gtl"
         class="file-input"
       />
-      <button id="startprinting" disabled>Start Print</button>
     </form>
+    
+  </div>
+  <div class="center">
+    <button id="startprinting" disabled>Start Print</button>
+    
+  </div>
+  
+
+  <div id="settingsdiv" class="center">
+    <div onclick="openPopup()" class="settings-button">
+      <img src="./images/settings.png" alt="Settings icon" class="icon">
+      <span>Einstellungen</span>
+    </div> 
+  </div>
+
+  <div id="settings-popup" class="popup">
+    <div class="popup-content">
+      <fieldset>
+        <legend>Einstellungen</legend>
+        <label for="filling-level">Polygon füllgrad</label>
+        <input id="filling-level" type="number" value="30" min="0" max="100" step="5" />
+        
+      </fieldset>
+    
+      <div class="spacer"></div>
+    
+        <button id="resetbutton">
+            Reset to default
+        </button>
+      <button class="close-btn" onclick="closePopup()">Close</button>
+    </div>
   </div>
 
   
@@ -43,6 +74,38 @@
 
   <!-- JS code-->
   <script src="./js/ui.js" type="module"></script>
+
+  <script>
+    // Open popup
+    function openPopup() {
+      document.getElementById("settings-popup").style.display = "flex";
+    }
+
+    // Close popup
+    function closePopup() {
+      document.getElementById("settings-popup").style.display = "none";
+    }
+  </script>
+
+<script type="module">
+  //import {getsettings} from './js/network_task.js';
+
+  //todo input fields mit werten vom server befüllen
+  const fillLvlInp = document.getElementById("filling-level");
+  fillLvlInp.onchange = function(){
+      let newLVL = fillLvlInp.value;
+      console.log("filling level chaged to " + newLVL);
+      //todo send command to server
+  }
+
+  const resetButton = document.getElementById("resetbutton");
+  resetButton.onclick = function(){
+      // todo send command(s) to server
+      //todo update ui elemets
+      console.log("Resetting to default values");
+  }
+
+</script>
 
   <script type="module">
     import {send_gerber, isPrinting, start} from './js/network_task.js';
@@ -68,7 +131,8 @@
             }
         }
 
-        setTimeout(drawPreviewFromServer, 500); // get and draw the preview after 500ms
+        setInterval(drawPreviewFromServer, 500); // get and draw the preview after 500ms
+        setTimeout(drawPreviewFromServer, 3000, true, true)
 
     });
 
@@ -81,39 +145,15 @@
         setTimeout(redirectIfPrinting, 500);
     };
 
-  </script>
-<!--
-  <script type="module">
-    import {pauseprinting, send_gerber, start, stop, get_preview, getPrintStatus} from './js/network_task.js';
-    
-    const stopprintingbtn = document.getElementById('stopprinting');
-    stopprintingbtn.onclick = function(){
-        stop();
-    };
+    /*
+    const homebtn = document.getElementById('home');
+    homebtn.onclick = function(){
+      console.log("drive to 0 position");
 
-    const pauseprintingbtn = document.getElementById('pauseprinting');
-    pauseprintingbtn.onclick = function(){
-        pauseprinting();
-    };
+    }
+      */
 
-    const showpreviewbtn = document.getElementById('showpreview');
-    showpreviewbtn.onclick = function(){
-        const json_string = get_preview();
-        
-        if (json_string == "Keine Preview")
-        {
-            alert("Gerberfile wurde nicht gefunden")
-        }
-        else
-        {
-            const json_object = JSON.parse(json_string);
-            console.log(json_object);
-            drawpreview(json_object);
-        }
-        
-        
-    };
   </script>
--->
+
 </body>
 </html>

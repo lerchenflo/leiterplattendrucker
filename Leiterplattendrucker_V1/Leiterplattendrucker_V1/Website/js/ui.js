@@ -9,12 +9,14 @@ export function updateProgress(){
     progressText.innerHTML = "Progress: " + progressBar.value + "%";
   }
 
-export function drawPreviewFromServer(buttonExists=true){ // gets the Preview from the Server and displays it, when buttonexits = true it disables the start button from index.html
+export function drawPreviewFromServer(buttonExists=true, alertBool=false){ // gets the Preview from the Server and displays it, when buttonexits = true it disables the start button from index.html
     const json_string = get_preview();
     
     if (json_string == "Keine Preview")
     {
-        alert("Gerberfile wurde nicht gefunden")
+        if(alertBool){
+            alert("Falsches Gerberfile format oder sehr großes Gerberfile");
+        }
         if(buttonExists){
             document.getElementById("startprinting").disabled = true;
         }     
@@ -34,7 +36,7 @@ export function redirectIfPrinting(){
     if(isPrinting()){ //redirect to printstatus if Printer is already Printing
         newURL = "/printstatus.html";
     }else{
-        newURL = "/index.html";
+        newURL = "/";
     }
     if(!(window.location.href).endsWith(newURL)){
         window.location.href = "." + newURL;

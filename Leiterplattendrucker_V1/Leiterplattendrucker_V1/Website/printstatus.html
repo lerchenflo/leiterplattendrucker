@@ -16,14 +16,35 @@
         <span id="progessText">Progress: x %</span>
       </div>
 
+      <div class="center">
+        <button id="stop">Stop</button>
+        <button id="pause">Pause</button>
+      </div>
+
       <script type="module">
         import {redirectIfPrinting, drawPreviewFromServer, updateProgress} from './js/ui.js';
+        import {stop, pauseprinting} from './js/network_task.js';
 
-        if(!redirectIfPrinting())// go back to index.html if printer is not printing
+        //if(!redirectIfPrinting())// go back to index.html if printer is not printing
+        if(true) //for debugging with server in debugging mode
         {
           drawPreviewFromServer(false); // draw the preview
           setInterval(updateProgress, 1000);
         } 
+
+
+        // Button onclicks
+        const stopbtn = document.getElementById('stop'); // button to stop the printer
+        stopbtn.onclick = function(){
+          console.log("stop printing");
+          stop();
+        }
+
+        const pausebtn = document.getElementById('pause');
+        pausebtn.onclick = function(){
+          console.log("pause/resume printing");
+          pauseprinting();
+        }
         
       </script>
 
