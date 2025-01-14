@@ -205,6 +205,31 @@ progress {
     background-color: var(--hover-red);
   }
 
+  .legend {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 10px;
+    font-family: Arial, sans-serif;
+}
+.legend-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+.color-box {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    border: 1px solid #000;
+}
+.gold {
+    background-color: gold;
+}
+.red {
+    background-color: red;
+}
+
 .icon {
     width: 20px;
     height: 20px;

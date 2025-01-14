@@ -35,6 +35,7 @@
 // Constants
 #define StepsPerMM 1282 // innacuratly measured
 #define SPEED 50 //Period of the pulse in us (lower value = higher speed)
+#define TRAVEL_HEIGT 8000 // Steps to drive up or down while driving to 0,0. should be obselete as soon as z endswitches are implemented
 
 void init_motor_pins(){
   // Set the Pin Mode for all Inputs and outputs
@@ -202,6 +203,10 @@ void drive_preassure(int stopPreassure){ // drive the z axis down until the set 
 }
 
 void zero_pos(int speed){  //drive to 0,0 position until hitting an endstop
+  //drive z up while positioning to 0
+  drive(2, true, TRAVEL_HEIGT, speed); // drive z axis up while traveling to 0, 0
+  
+
   // set signals for direction and enable
   digitalWrite(X_DIR, DIRX0);
   digitalWrite(Y_DIR, DIRY0);
@@ -233,6 +238,8 @@ void zero_pos(int speed){  //drive to 0,0 position until hitting an endstop
 
   digitalWrite(X_ENA, LOW);
   digitalWrite(Y_ENA, LOW);
+
+  drive(2, false, TRAVEL_HEIGT, speed); // drive z axis back down for debuggin purposes
   Serial.println("Endstops reached");
 }
 
