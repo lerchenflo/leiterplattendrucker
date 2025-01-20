@@ -1,5 +1,7 @@
 ﻿using gerber2coordinatesTEST;
+using System.Diagnostics;
 using System.IO.Ports;
+using System.Security.Cryptography;
 
 namespace lpd_ansteuerung
 {
@@ -20,10 +22,12 @@ namespace lpd_ansteuerung
             port = _port;
             sp.PortName = port;
             sp.BaudRate = baudRate;
+            sp.WriteTimeout= 1000;
 
             if (Druckerserver.USEUSB_DEBUG)
             {
                 sp.Open();
+                //Druckerserver.logtoconsole("Port geöffnet", 3);
             }
             
         }
@@ -45,18 +49,32 @@ namespace lpd_ansteuerung
                     string _port = (string)uebergebenerport;
                     SerialComm s1 = new SerialComm(_port);
                     s1.send("t");
+                    
                     while (true)
                     {
-                        string rec = s1.readlines(1);
-                        if (rec.StartsWith("V"))
+                        if (s1.newdata()) // Warten ob daten angekommen sind
                         {
-                            Druckerserver.logtoconsole($"Arduinoversion: {rec}", 3);
+                            
+                            string rec = s1.read();
+                            //Console.WriteLine("Received: " + data);
+                            if (rec.StartsWith("V"))
+                            {
+                                Druckerserver.logtoconsole($"Arduinoversion: {rec}", 3);
+                                cts.Cancel();
+                                break;
+                            }
+                        }
+                        else if (cts.IsCancellationRequested)
+                        {
+
                             break;
                         }
-                       
+                        
+                        
                     }
-                    cts.Cancel();
+                    
                     s1.close();
+                    
                 });
                 t.Start(port);
                 
@@ -69,6 +87,7 @@ namespace lpd_ansteuerung
                 }
                 else
                 {
+                    cts.Cancel();
                     return false;
                 }
 
@@ -78,15 +97,23 @@ namespace lpd_ansteuerung
             }
             catch (Exception e)
             {
+                Druckerserver.logtoconsole(e.Message, 1);
                 functions = false;
+                
             }
             
             return functions;
         }
 
+        public bool newdata()
+        {
+            return sp.BytesToRead > 0;
+        }
+
         public void close()
         {
             sp.Close();
+            //Druckerserver.logtoconsole("Port closed");
         }
 
         public static string[] getAvalibablePorts()
@@ -149,12 +176,11 @@ namespace lpd_ansteuerung
                 {
                     msg += sp.ReadLine();
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
+                    Debug.WriteLine("Readlines: " + e.Message);
                 }
             }
-
-
             return msg;
         }
 

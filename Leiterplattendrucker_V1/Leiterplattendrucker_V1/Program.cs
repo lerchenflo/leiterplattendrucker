@@ -116,7 +116,7 @@ namespace Leiterplattendrucker_V1
 
             Console.Title = serverurl;
             
-            Druckerserver.logtoconsole("Server läuft: " + serverurl, 2);
+            Druckerserver.logtoconsole("Server läuft auf: " + serverurl, 2);
 
 
             try

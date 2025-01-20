@@ -1,5 +1,8 @@
 ﻿using System.Diagnostics;
+using System.Drawing;
+using System.Linq;
 using System.Text.Json;
+using System.Windows;
 
 
 namespace gerber2coordinatesTEST
@@ -29,6 +32,7 @@ namespace gerber2coordinatesTEST
         public string _unit { get; set; } = "none";
         public List<GerberLine> _lines { get; set; } = new List<GerberLine>();
 
+        
 
         public Gerberfileinfo(string GerberfileContent)
         {
@@ -49,8 +53,14 @@ namespace gerber2coordinatesTEST
                 //Aus dem Gerberfile die Linien auslesen
                 _lines = converttogerberlines(GerberfileContent);
 
+                //aus dem Gerberfile Pads auslesen
+                _lines.AddRange(fillpadsandpoints(GerberfileContent));
+
                 //Offsets korrigieren, falls negative Koordinaten dabei sind (Zeichnung auf Druckfläche schieben)
                 correctoffsets();
+
+                //Doppelte Linien entfernen
+                //removeduplicates();
 
                 //Linien nach Reihenfolge anordnen
                 sortlines();
@@ -96,6 +106,7 @@ namespace gerber2coordinatesTEST
             string ReturnString = "";
             for (int i = 0; i < lines.Length; i++)
             {
+                //Wenn kein Kommentar
                 if (!lines[i].StartsWith("%") && !lines[i].EndsWith("*%"))
                 {
                     ReturnString += lines[i] + "\n";
@@ -116,6 +127,86 @@ namespace gerber2coordinatesTEST
             string[] lines = GerberfileContent.Split(new[] { "\r\n", "\n" }, StringSplitOptions.TrimEntries);
 
             return lines.Length;
+        }
+
+
+        private List<GerberLine> fillpolygonswithlines(string GerberfileContent)
+        {
+            List<GerberPolygon> polygons = new List<GerberPolygon>();
+
+            string[] lines = GerberfileContent.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+
+            //Durch alle Linien
+            for (int i = 0; i < lines.Length; i++)
+            {
+                //Wenn ein Polygon beginnt
+                if (lines[i].StartsWith("G36"))
+                {
+                    List<GerberPoint> polygonpoints = new List<GerberPoint>();
+
+                    for (int j = 1; j < lines.Length - i; j++)
+                    {
+                        //wenn Polygon fertig dann aufhören sonst Eckpunkt hinzufügen
+                        if (lines[i + j].StartsWith("G37"))
+                        {
+                            polygons.Add(new GerberPolygon(polygonpoints));
+                            break;
+                        }
+                        else
+                        {
+                            if (lines[i + j].StartsWith("X"))
+                            {
+                                double[] xy = Gerbertoolbox.getXY(lines[i + j]);
+
+                                polygonpoints.Add(new GerberPoint(xy[0], xy[1]));
+                            }
+                        }
+                    }
+                }
+            }
+
+            //Gerberlines zückgeben
+            List<GerberLine> returnlist = new List<GerberLine>();
+
+            for (int i = 0; i < polygons.Count; i++)
+            {
+                returnlist.AddRange(polygons[i].getgerberlines());
+            }
+
+            return returnlist;
+        }
+
+
+        private List<GerberLine> fillpadsandpoints(string GerberfileContent, double size = 0.4)
+        {
+            List<GerberPoint> points = new List<GerberPoint>();
+
+            string[] lines = GerberfileContent.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+
+            //Punkte aus dem File auslesen
+            for (int i = 0; i < lines.Length; i++)
+            {
+                if (lines[i].EndsWith("D03*"))
+                {
+                    points.Add(new GerberPoint(Gerbertoolbox.getXY(lines[i])));
+                }
+            }
+
+            //Punkte füllen
+            List<GerberLine> returnlist = new List<GerberLine>();
+            foreach (var p in points)
+            {
+                GerberPoint ol = new GerberPoint(p.X - size, p.Y + size);  //Punkt oben links
+                GerberPoint or = new GerberPoint(p.X + size, p.Y + size); //Punkt oben rechts
+                GerberPoint ul = new GerberPoint(p.X - size, p.Y - size); //Punkt unten links
+                GerberPoint ur = new GerberPoint(p.X + size, p.Y - size); //Punkt unten rechts
+
+                returnlist.Add(new GerberLine(ol, or));  // Oben
+                returnlist.Add(new GerberLine(or, ur));  // Rechts
+                returnlist.Add(new GerberLine(ur, ul));  // Unten
+                returnlist.Add(new GerberLine(ul, ol));  // Links
+            }
+            return returnlist;
         }
 
 
@@ -149,6 +240,9 @@ namespace gerber2coordinatesTEST
 
                 }
             }
+
+            //Polygons füllen und hinzufügen
+            gerberLines.AddRange(fillpolygonswithlines(GerberfileContent));
 
             return gerberLines;
         }
@@ -264,7 +358,7 @@ namespace gerber2coordinatesTEST
 
                 if (startpoint != endpoint)
                 {
-                    Debug.WriteLine("Linie einfügen: " + startpoint.ToString() + "\n" + endpoint.ToString());
+                    //Debug.WriteLine("Linie einfügen: " + startpoint.ToString() + "\n" + endpoint.ToString());
                     GerberLine connectionline = new GerberLine(endpoint, startpoint, false);
                     _lines.Insert(i, connectionline);
                 }
@@ -281,16 +375,20 @@ namespace gerber2coordinatesTEST
         {
             int index = 0;
             double distance = 1000000;
+
+            //Linie am nächsten zum Startpunkt finden
             for (int i = 0; i < _lines.Count; i++)
             {
                 double[] currentdist = _lines[i].getdistance(0, 0);
-                if (currentdist[0] > distance)
+                if (currentdist[0] < distance)
                 {
                     index = i;
                     distance = currentdist[0];
                 }
             }
-            if (_lines[index].getdistance(0, 0)[1] == 0)
+
+            //Startpunkt der Linie herausfinden, welcher näher am Startpunkt ist
+            if (_lines[index].getdistance(0, 0)[1] < _lines[index].getdistance(0, 0)[0])
             {
                 return _lines[index]._startpoint;
             }
@@ -341,7 +439,7 @@ namespace gerber2coordinatesTEST
 
                 }
             }
-            Debug.WriteLine($"Index: {shortestdistindex}");
+            //Debug.WriteLine($"Index: {shortestdistindex}");
             return _lines[shortestdistindex];
         }
 
@@ -394,8 +492,8 @@ namespace gerber2coordinatesTEST
             {
                 GerberPoint offset = _lines[i].getoffset();
 
-                double offsetx = offset.X;
-                double offsety = offset.Y;
+                double offsetx = Math.Abs(offset.X);
+                double offsety = Math.Abs(offset.Y);
 
                 if (offsetx > dX)
                 {
@@ -411,9 +509,11 @@ namespace gerber2coordinatesTEST
             //Wenn ein Offset vorhanden ist
             if (dX > 0 || dY > 0)
             {
+                Debug.WriteLine($"Offset wird korrigiert:\nX: {dX}\nY: {dY}");
                 for (int i = 0; i < _lines.Count; i++)
                 {
-                    _lines[i].correctoffset(dX, dY);
+                    //Offset anwenden
+                    _lines[i].correctoffset(dX > 0 ? dX + 2 : 0, dY > 0 ? dY + 2 : 0);
                 }
             }
         }
@@ -436,7 +536,7 @@ namespace gerber2coordinatesTEST
             cananas.Children.Clear();
 
 
-            for (int i = 0; i < get_file_lenght(_gerberfilecontent); i++)
+            for (int i = 0; i < _lines.Count; i++)
             {
                 Line l = new Line();
 
@@ -528,7 +628,7 @@ namespace gerber2coordinatesTEST
         //{
         //    setcoordinates(X_start,Y_start, X_end, Y_end, paint);
         //}
-        public GerberLine(GerberPoint startpoint_, GerberPoint endpoint_, bool paint)
+        public GerberLine(GerberPoint startpoint_, GerberPoint endpoint_, bool paint = true)
         {
             _startpoint = startpoint_;
             _endpoint = endpoint_;
@@ -561,7 +661,7 @@ namespace gerber2coordinatesTEST
             _endpoint = new GerberPoint(X_end, Y_end);
             _paint = paint;
 
-            Debug.WriteLine($"Zeile: X1: {X_start} Y1: {Y_start} X2: {X_end} Y2: {Y_end} Paint: {paint}");
+            //Debug.WriteLine($"Zeile: X1: {X_start} Y1: {Y_start} X2: {X_end} Y2: {Y_end} Paint: {paint}");
         }
 
 
@@ -614,7 +714,6 @@ namespace gerber2coordinatesTEST
 
         public GerberPoint getoffset()
         {
-
             double dX = 0;
             double dY = 0;
 
@@ -629,6 +728,10 @@ namespace gerber2coordinatesTEST
                     //Startpunkt hat X offset
                     dX = Math.Max(dX, Math.Abs(_endpoint.X));
                 }
+                else
+                {
+                    dX = Math.Abs(_endpoint.X);
+                }
             }
 
             if (_startpoint.Y < 0)
@@ -641,6 +744,10 @@ namespace gerber2coordinatesTEST
                 {
                     //Startpunkt hat Y offset
                     dY = Math.Max(dY, Math.Abs(_endpoint.Y));
+                }
+                else
+                {
+                    dY = Math.Abs(_endpoint.Y);
                 }
             }
 
@@ -682,7 +789,6 @@ namespace gerber2coordinatesTEST
 
 
             return (new double[] { X, Y });
-
         }
 
 
@@ -740,6 +846,13 @@ namespace gerber2coordinatesTEST
 
         public GerberPoint() { }
 
+        public GerberPoint(double[] xy)
+        {
+            X = xy[0];
+            Y = xy[1];
+        }
+
+
         public override string ToString()
         {
             return "X: " + X + ", Y: " + Y;
@@ -775,4 +888,229 @@ namespace gerber2coordinatesTEST
             return !(p1 == p2);
         }
     }
+
+
+    public class GerberSettingsList
+    {
+        public List<GerberSetting> _settings { get; set; } = new List<GerberSetting>();
+
+        public double getpadwidth()
+        {
+            return getsetting(SETTING.padwidth);
+        }
+
+        public void setpadwidth(double value)
+        {
+            setsetting(SETTING.padwidth, value);
+        }
+
+        public double getpolygoninfill()
+        {
+            return getsetting(SETTING.polygoninfill);
+        }
+
+        public void setpolygoninfill(double value)
+        {
+            setsetting(SETTING.polygoninfill, value);
+        }
+
+
+        public double getsetting(SETTING Setting)
+        {
+            return _settings.Find(x => x._type == Setting)?._value ?? 0;
+        }
+
+
+        public bool existssetting(SETTING Setting)
+        {
+            return _settings.Any(x => x._type == Setting);
+        }
+
+        public void setsetting(SETTING Setting, double value)
+        {
+            if (existssetting(Setting))
+            {
+                _settings.Find(x => x._type == Setting)._value = value;
+            }
+            else
+            {
+                _settings.Add(new GerberSetting(Setting, value));
+            }
+            
+        }
+    }
+    public enum SETTING
+    {
+        padwidth,
+        polygoninfill,
+        none
+    }
+
+
+    public class GerberSetting
+    {
+        public SETTING _type = SETTING.none;
+        public double _value = 0;
+
+        public GerberSetting(SETTING Setting, double Value) 
+        {
+            _type = Setting;
+            _value = Value;
+        }
+    }
+
+
+    public class GerberPolygon
+    {
+        public List<GerberPoint> _poligoncornerpoints = new List<GerberPoint>();
+        public double _stepsize { get; set; } = 1;
+
+        public GerberPolygon(List<GerberPoint> polygoncorners, double stepsize = 10)
+        {
+            _poligoncornerpoints = polygoncorners;
+            _stepsize = stepsize;
+        }
+
+
+        //folgender Code von ChatGPT mit prompt: 
+        /*
+         * i need to implement a function which takes edge points of a polygon in absolute coordinates x and y and fills the polygon with
+         * straight lines, and not to paint outside of the polygon even if there are more than 4 edges into this class:
+            public     class GerberPolygon
+            {
+                public List<GerberPoint> _poligoncornerpoints;
+
+                public GerberPolygon(List<GerberPoint> polygoncorners)
+                {
+                    _poligoncornerpoints = polygoncorners;
+                }
+
+                public List<GerberLine> getgerberlines() { 
+        
+        
+    
+                }
+            }
+
+                        and the gerberline has this constructor:
+                        public GerberLine(GerberPoint startpoint_, GerberPoint endpoint_, bool paint) paint for if there is a line or not, i only need to make the lines with paint
+         * 
+         * 
+         */
+
+        public List<GerberLine> getgerberlines(double lineDistance = 1)
+        {
+            List<GerberLine> gerberLines = new List<GerberLine>();
+
+
+            // Find the bounding box of the polygon (min/max X and Y)
+            double minX = _poligoncornerpoints.Min(p => p.X);
+            double maxX = _poligoncornerpoints.Max(p => p.X);
+            double minY = _poligoncornerpoints.Min(p => p.Y);
+            double maxY = _poligoncornerpoints.Max(p => p.Y);
+
+            // Horizontal lines
+            for (double currentY = minY; currentY <= maxY; currentY += lineDistance)
+            {
+                List<double> intersections = GetIntersections(currentY);
+
+                if (intersections.Count < 2)
+                    continue;
+
+                intersections.Sort();
+
+                for (int i = 0; i < intersections.Count; i += 2)
+                {
+                    GerberPoint startPoint = new GerberPoint(intersections[i], currentY);
+                    GerberPoint endPoint = new GerberPoint(intersections[i + 1], currentY);
+                    gerberLines.Add(new GerberLine(startPoint, endPoint, true)); // true for paint
+                }
+            }
+
+            // Vertical lines
+            for (double currentX = minX; currentX <= maxX; currentX += lineDistance)
+            {
+                List<double> intersections = GetVerticalIntersections(currentX);
+
+                if (intersections.Count < 2)
+                    continue;
+
+                intersections.Sort();
+
+                for (int i = 0; i < intersections.Count; i += 2)
+                {
+                    GerberPoint startPoint = new GerberPoint(currentX, intersections[i]);
+                    GerberPoint endPoint = new GerberPoint(currentX, intersections[i + 1]);
+                    gerberLines.Add(new GerberLine(startPoint, endPoint, true)); // true for paint
+                }
+            }
+            //gerberLines.AddRange(getoutline());
+
+            return gerberLines;
+        }
+
+        // Get intersections of a horizontal line (scanline) with the polygon edges
+        private List<double> GetIntersections(double y)
+        {
+            List<double> intersections = new List<double>();
+
+            for (int i = 0; i < _poligoncornerpoints.Count; i++)
+            {
+                GerberPoint p1 = _poligoncornerpoints[i];
+                GerberPoint p2 = _poligoncornerpoints[(i + 1) % _poligoncornerpoints.Count];
+
+                if ((p1.Y <= y && p2.Y > y) || (p1.Y > y && p2.Y <= y))
+                {
+                    double x = p1.X + (y - p1.Y) * (p2.X - p1.X) / (p2.Y - p1.Y);
+                    intersections.Add(x);
+                }
+            }
+
+            return intersections;
+        }
+
+        // Get intersections of a vertical line with the polygon edges
+        private List<double> GetVerticalIntersections(double x)
+        {
+            List<double> intersections = new List<double>();
+
+            for (int i = 0; i < _poligoncornerpoints.Count; i++)
+            {
+                GerberPoint p1 = _poligoncornerpoints[i];
+                GerberPoint p2 = _poligoncornerpoints[(i + 1) % _poligoncornerpoints.Count];
+
+                if ((p1.X <= x && p2.X > x) || (p1.X > x && p2.X <= x))
+                {
+                    double y = p1.Y + (x - p1.X) * (p2.Y - p1.Y) / (p2.X - p1.X);
+                    intersections.Add(y);
+                }
+            }
+
+            return intersections;
+        }
+
+        public List<GerberLine> getoutline()
+        {
+            List<GerberLine> returnlist = new List<GerberLine>();
+
+            for (int i = 0; i < _poligoncornerpoints.Count; i++)
+            {
+                returnlist.Add(new GerberLine(_poligoncornerpoints[i], _poligoncornerpoints[(i + 1) % _poligoncornerpoints.Count], true));
+            }
+
+            return returnlist;
+        }
+
+
+
+        // Edge class for storing edges in the edge table
+        class Edge
+        {
+            public int YMin { get; set; }
+            public int YMax { get; set; }
+            public double X { get; set; }
+            public double SlopeInverse { get; set; }
+        }
+    }
+
 }

@@ -14,7 +14,7 @@ namespace gerber2coordinatesTEST
 
     public class Druckerserver
     {
-        public static bool USEUSB_DEBUG = false;
+        public static bool USEUSB_DEBUG = true;
 
         
 
@@ -92,7 +92,6 @@ namespace gerber2coordinatesTEST
                             switch (action)
                             {
                                 case "startprinting":
-                                    logtoconsole("start printing command recieved");
                                     if (!printing)
                                     {
                                         if (startPrinting())
@@ -169,7 +168,6 @@ namespace gerber2coordinatesTEST
                                     break;
 
                                 case "isprinting":
-                                    //todo: flo bitte coole logik macha dia segt ob da drucker am drucken isch oder ned
                                     responseString = printing.ToString();
                                     break;
                                         
@@ -218,6 +216,9 @@ namespace gerber2coordinatesTEST
                 }
             }
 
+            //Finish block ausführen wenn nicht vorher ausgeführt
+            goto Finish;
+
             Finish: 
                 context.Response.Close();
         }
@@ -225,22 +226,27 @@ namespace gerber2coordinatesTEST
 
 
 
-        private Gerberfileinfo gerberfileinfo;
-        private SerialComm serialconn;
-        private Thread printThread;
+        private Gerberfileinfo? gerberfileinfo = null;
+        private SerialComm? serialconn = null;
+        private Thread? printThread = null;
         private bool printing = false;
         private CancellationTokenSource stopprinttoken = new CancellationTokenSource();
 
 
         public void initPrinting(string Gerberfilecontent, string COM)
         {
+            if (serialconn != null)
+            {
+                serialconn.close();
+                serialconn = null;
+            }
+
             gerberfileinfo = new Gerberfileinfo(Gerberfilecontent);
             if (Druckerserver.USEUSB_DEBUG)
             {
                 serialconn = new SerialComm(COM);
-
             }
-            logtoconsole("Port geöffnet", 3);
+            
         }
 
         public string getpreview()
@@ -263,8 +269,9 @@ namespace gerber2coordinatesTEST
 
         public bool startPrinting()
         {
-            if (gerberfileinfo != null)
+            if (gerberfileinfo != null && !printing)
             {
+                
                 printing = true;
                 if (USEUSB_DEBUG)
                 {
@@ -322,6 +329,7 @@ namespace gerber2coordinatesTEST
             {
                 if (printing)
                 {
+                    logtoconsole("Druckfortschritt: " + gerberfileinfo.getprintpercentage(), 3);
                     GerberLine currentline = gerberfileinfo.get_next_line();
                     GerberPoint drivecoords = Gerbertoolbox.getrelativecoords(currentline._startpoint, currentline._endpoint);
 
