@@ -26,16 +26,37 @@ namespace gerber2coordinatesTEST
 
 
 
-
+        //Gerberfile als String
         public string _gerberfilecontent { get; set; } = "";
 
+        //Unit des Gerberfiles
         public string _unit { get; set; } = "none";
+
+        //Linien die der Drucker zu fahren hat
         public List<GerberLine> _lines { get; set; } = new List<GerberLine>();
+
+        //Settings für den Druck
+        public GerberSettingsList Settings { get; set; } = new GerberSettingsList();
+
+       
 
         
 
         public Gerberfileinfo(string GerberfileContent)
         {
+            //Gerberfile initialisieren
+            Initgerberfile(GerberfileContent);
+
+
+            //Callback beim ändern einer Setting (Preview muss geupdated werden)
+            Settings.setonchangecallback(Initgerberfile, GerberfileContent);
+        }
+
+        
+
+        private void Initgerberfile(string GerberfileContent)
+        {
+            Console.WriteLine("Gerberfile init");
             try
             {
                 if (GerberfileContent == string.Empty)
@@ -168,17 +189,21 @@ namespace gerber2coordinatesTEST
             //Gerberlines zückgeben
             List<GerberLine> returnlist = new List<GerberLine>();
 
+            double polygonfillrate = Settings.getpolygoninfill();
+
             for (int i = 0; i < polygons.Count; i++)
             {
-                returnlist.AddRange(polygons[i].getgerberlines());
+                returnlist.AddRange(polygons[i].getgerberlines(polygonfillrate));
             }
 
             return returnlist;
         }
 
 
-        private List<GerberLine> fillpadsandpoints(string GerberfileContent, double size = 0.4)
+        private List<GerberLine> fillpadsandpoints(string GerberfileContent)
         {
+            
+
             List<GerberPoint> points = new List<GerberPoint>();
 
             string[] lines = GerberfileContent.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
@@ -193,6 +218,8 @@ namespace gerber2coordinatesTEST
             }
 
             //Punkte füllen
+            double size = Settings.getpadwidth();
+
             List<GerberLine> returnlist = new List<GerberLine>();
             foreach (var p in points)
             {
@@ -894,6 +921,19 @@ namespace gerber2coordinatesTEST
     {
         public List<GerberSetting> _settings { get; set; } = new List<GerberSetting>();
 
+        public delegate void CallbackDelegate(string filecontent);
+        string _callbackFileContent = "";
+
+        private CallbackDelegate _onchangecallback;
+
+        //Callback setzen
+        public void setonchangecallback(CallbackDelegate callback, string callbackFileContent)
+        {
+            _onchangecallback = callback;
+            _callbackFileContent = callbackFileContent;
+        }
+
+
         public double getpadwidth()
         {
             return getsetting(SETTING.padwidth);
@@ -917,26 +957,28 @@ namespace gerber2coordinatesTEST
 
         public double getsetting(SETTING Setting)
         {
-            return _settings.Find(x => x._type == Setting)?._value ?? 0;
+            return _settings.Find(x => x._type.Equals(Setting))?._value ?? 0.5;
         }
 
 
         public bool existssetting(SETTING Setting)
         {
-            return _settings.Any(x => x._type == Setting);
+            return _settings.Any(x => x._type.Equals(Setting));
         }
 
         public void setsetting(SETTING Setting, double value)
         {
             if (existssetting(Setting))
             {
-                _settings.Find(x => x._type == Setting)._value = value;
+                _settings.Find(x => x._type.Equals(Setting))._value = value;
             }
             else
             {
                 _settings.Add(new GerberSetting(Setting, value));
             }
-            
+            Console.WriteLine("Setsetting");
+            //Callback ausführen, es wurde etwas geändert
+            _onchangecallback?.Invoke(_callbackFileContent);
         }
     }
     public enum SETTING

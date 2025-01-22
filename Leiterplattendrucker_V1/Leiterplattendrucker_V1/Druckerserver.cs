@@ -14,7 +14,7 @@ namespace gerber2coordinatesTEST
 
     public class Druckerserver
     {
-        public static bool USEUSB_DEBUG = true;
+        public static bool USEUSB_DEBUG = false;
 
         
 
@@ -71,7 +71,7 @@ namespace gerber2coordinatesTEST
             string responseString = "";
 
 
-            //Response Header damit der Browser die Response Aktzeptiert:
+            //Response Header damit der Browser die Response Akzeptiert:
             context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
             context.Response.Headers.Add("Access-Control-Allow-Headers", "*");
             context.Response.Headers.Add("Access-Control-Expose-Headers", "*");
@@ -89,6 +89,7 @@ namespace gerber2coordinatesTEST
 
                         if (action != null)
                         {
+                            
                             switch (action)
                             {
                                 case "startprinting":
@@ -119,6 +120,15 @@ namespace gerber2coordinatesTEST
                                 case "initgerberfile":
                                     logtoconsole("Drucker: Drucker wird initialisiert");
                                     initPrinting(requestBody, COMPort);
+                                    break;
+
+                                //Settings
+                                case "setpadfill":
+                                    setpadfill(Convert.ToDouble(requestBody));
+                                    break;
+
+                                case "setpolygonfill":
+                                    setpolygonfill(Convert.ToDouble(requestBody));
                                     break;
 
                                 default:
@@ -248,6 +258,33 @@ namespace gerber2coordinatesTEST
             }
             
         }
+
+
+        public void setpadfill(double value)
+        {
+            if (gerberfileinfo != null)
+            {
+                gerberfileinfo.Settings.setpadwidth(value);
+            }
+            else
+            {
+                logtoconsole("Setting ungültig, Gerberfile nicht initialisiert", 3);
+            }
+        }
+
+        public void setpolygonfill(double value)
+        {
+            if (gerberfileinfo != null)
+            {
+                Console.WriteLine("Setinfill");
+                gerberfileinfo.Settings.setpolygoninfill(value);
+            }
+            else
+            {
+                logtoconsole("Setting ungültig, Gerberfile nicht initialisiert", 3);
+            }
+        }
+
 
         public string getpreview()
         {
@@ -389,9 +426,13 @@ namespace gerber2coordinatesTEST
             Console.ResetColor();
         }
 
-        public static void logemptytoconsole()
+        public static void logemptytoconsole(int Lines = 1)
         {
-            Console.WriteLine();
+            for (int i = 0; i < Lines; i++)
+            {
+                Console.WriteLine();
+            }
+
         }
 
     }
