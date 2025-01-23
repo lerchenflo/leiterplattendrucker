@@ -11,8 +11,8 @@
     Zum Start laden sie Bitte ihre Gerber-Datei hoch.
   </p>    
 
+  <!--Upload-field for Gerberfiles-->
   <div id="uploaddiv">
-
     <form class="upload-form">
       <label for="file-selector" class="file-label">Select a Gerber File:</label>
       <input
@@ -23,21 +23,22 @@
         class="file-input"
       />
     </form>
-    
-  </div>
-  <div class="center">
-    <button id="startprinting" disabled>Start Print</button>
-    
   </div>
   
-
-  <div id="settingsdiv" class="center">
+  <!--open settings popup-->
+  <div id="settingsdiv" class="center" title="Open the settings-popup">
     <div onclick="openPopup()" class="settings-button">
       <img src="./images/settings.png" alt="Settings icon" class="icon">
       <span>Einstellungen</span>
     </div> 
   </div>
 
+  <!--Button to start the printing process-->
+  <div class="center">
+    <button id="startprinting" disabled title="upload a gerberfile first">Start Print</button>
+  </div>
+
+  <!--Settings popup-->
   <div id="settings-popup" class="popup">
     <div class="popup-content">
       <fieldset>
@@ -47,20 +48,19 @@
         <br>
         <label for="pad-size">Pad größe</label>
         <input id="pad-size" type="number" value="0.5" min="0.1" max="1" step="0.1" />
-        
       </fieldset>
     
       <div class="spacer"></div>
     
-        <button id="resetbutton">
-            Reset to default
-        </button>
+      <button id="resetbutton">
+          Reset to default
+      </button>
       <button class="close-btn" onclick="closePopup()">Close</button>
     </div>
   </div>
 
   
-
+<!--Preview of the driven path-->
   <div id="previewdiv">
     <canvas id="pcbPreview" width="500" height="300" style="border:1px solid #000000;"></canvas>
   </div>
@@ -75,16 +75,6 @@
         <span>Not Drawing</span>
     </div>
   </div>
-
-  
-  <!--Debugging buttons   
-  <br>
-  <button id="stopprinting">Stop Print</button>
-  <button id="pauseprinting">Pause Print</button>
-
-  <button id="showpreview">Show preview (debugging)</button>
-  <button id="hide">Hide</button>
--->
 
   <!-- JS code-->
   <script src="./js/ui.js" type="module"></script>
@@ -104,7 +94,7 @@
 <script type="module">
   import {set_settings} from './js/network_task.js';
 
-  //
+  // input fields for filling-level and pad-size
   const fillLvlInp = document.getElementById("filling-level");
   const padfillLvlInp = document.getElementById("pad-size");
 
