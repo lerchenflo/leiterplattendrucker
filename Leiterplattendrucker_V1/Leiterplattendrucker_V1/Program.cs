@@ -36,21 +36,12 @@ namespace Leiterplattendrucker_V1
                 Druckerserver.logemptytoconsole();
             }
 
-            if (Druckerserver.USEUSB_DEBUG)
-            {
-                Druckerserver.logtoconsole("Verfügbare COM - Ports:");
-            }
             
 
+
             //Ausgeben aller verfügbaren Ports, an denen der Arduino Nano angeschlossen sein könntr
-            string[] comPorts = SerialComm.getAvalibablePorts();
-            for (int i = 0; i < comPorts.Length; i++)
-            {
-                if (Druckerserver.USEUSB_DEBUG)
-                {
-                    Druckerserver.logtoconsole($"{i} - {comPorts[i]}");
-                }
-            }
+            string[] comPorts = { "0" };
+            
 
 
             int comportindex = 0;
@@ -61,8 +52,23 @@ namespace Leiterplattendrucker_V1
                 {
                     try
                     {
+                        
+                        if (Druckerserver.USEUSB_DEBUG)
+                        {
+                            Druckerserver.logtoconsole("Verfügbare COM - Ports:");
+                        }
+
+                        comPorts = SerialComm.getAvalibablePorts();
+                        for (int i = 0; i < comPorts.Length; i++)
+                        {
+                            if (Druckerserver.USEUSB_DEBUG)
+                            {
+                                Druckerserver.logtoconsole($"{i} - {comPorts[i]}");
+                            }
+                        }
+
                         Druckerserver.logemptytoconsole();
-                        Druckerserver.logtoconsole("COM - Port Nummer mit verbundenem Arduino eingeben:");
+                        Druckerserver.logtoconsole("COM - Port mit verbundenem Arduino eingeben:");
                         comportindex = Convert.ToInt32(Console.ReadLine());
 
                         //Wenn COMport nicht funktioniert
@@ -108,7 +114,7 @@ namespace Leiterplattendrucker_V1
             using (StreamReader sr = new StreamReader("C:\\Users\\Flo\\OneDrive - HTL-Rankweil\\HTL Rankweil\\DA_Leiterplattendrucker\\code\\Gerber - File to Coordinats\\Gerber_file_test\\gerber_file_test\\test13.gerber"))
             {
                 d.initPrinting(sr.ReadToEnd(), "COM10");
-                d.startPrinting();
+                d.setpolygonfill(0.5);
             };
             */
 

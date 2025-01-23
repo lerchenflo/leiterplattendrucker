@@ -26,16 +26,37 @@ namespace gerber2coordinatesTEST
 
 
 
-
+        //Gerberfile als String
         public string _gerberfilecontent { get; set; } = "";
 
+        //Unit des Gerberfiles
         public string _unit { get; set; } = "none";
+
+        //Linien die der Drucker zu fahren hat
         public List<GerberLine> _lines { get; set; } = new List<GerberLine>();
+
+        //Settings für den Druck
+        public GerberSettingsList Settings { get; set; } = new GerberSettingsList();
+
+       
 
         
 
         public Gerberfileinfo(string GerberfileContent)
         {
+            //Gerberfile initialisieren
+            Initgerberfile(GerberfileContent);
+
+
+            //Callback beim ändern einer Setting (Preview muss geupdated werden)
+            Settings.setonchangecallback(Initgerberfile, GerberfileContent);
+        }
+
+        
+
+        private void Initgerberfile(string GerberfileContent)
+        {
+            Console.WriteLine("Gerberfile init");
             try
             {
                 if (GerberfileContent == string.Empty)
@@ -57,7 +78,10 @@ namespace gerber2coordinatesTEST
                 _lines.AddRange(fillpadsandpoints(GerberfileContent));
 
                 //Offsets korrigieren, falls negative Koordinaten dabei sind (Zeichnung auf Druckfläche schieben)
-                correctoffsets();
+                correctnegativeoffsets();
+
+                //Zeichnung ins Eck schieben
+                //movetopad();
 
                 //Doppelte Linien entfernen
                 //removeduplicates();
@@ -168,17 +192,21 @@ namespace gerber2coordinatesTEST
             //Gerberlines zückgeben
             List<GerberLine> returnlist = new List<GerberLine>();
 
+            double polygonfillrate = Settings.getpolygoninfill();
+
             for (int i = 0; i < polygons.Count; i++)
             {
-                returnlist.AddRange(polygons[i].getgerberlines());
+                returnlist.AddRange(polygons[i].getgerberlines(polygonfillrate));
             }
 
             return returnlist;
         }
 
 
-        private List<GerberLine> fillpadsandpoints(string GerberfileContent, double size = 0.4)
+        private List<GerberLine> fillpadsandpoints(string GerberfileContent)
         {
+            
+
             List<GerberPoint> points = new List<GerberPoint>();
 
             string[] lines = GerberfileContent.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
@@ -193,6 +221,8 @@ namespace gerber2coordinatesTEST
             }
 
             //Punkte füllen
+            double size = Settings.getpadwidth();
+
             List<GerberLine> returnlist = new List<GerberLine>();
             foreach (var p in points)
             {
@@ -483,28 +513,31 @@ namespace gerber2coordinatesTEST
 
 
 
-        private void correctoffsets()
+        private void correctnegativeoffsets()
         {
             double dX = 0;
             double dY = 0;
 
             for (int i = 0; i < _lines.Count; i++)
             {
-                GerberPoint offset = _lines[i].getoffset();
+                GerberPoint offset = _lines[i].getnegativeoffset();
 
-                double offsetx = Math.Abs(offset.X);
-                double offsety = Math.Abs(offset.Y);
+                double offsetx = offset.X;
+                double offsety = offset.Y;
 
-                if (offsetx > dX)
+                if (offsetx < dX)
                 {
                     dX = offsetx;
                 }
 
-                if (offsety > dY)
+                if (offsety < dY)
                 {
                     dY = offsety;
                 }
             }
+
+            dX = Math.Abs(dX);
+            dY = Math.Abs(dY);
 
             //Wenn ein Offset vorhanden ist
             if (dX > 0 || dY > 0)
@@ -519,11 +552,30 @@ namespace gerber2coordinatesTEST
         }
 
 
+        private void movetopad()
+        {
+            double Xoffset = 100000;
+            double Yoffset = 100000;
+
+            //Offset auf maximal gesetzt, jetzt muss der kleiste Offset gefunden und korrigiert werden
+            foreach (GerberLine line in _lines)
+            {
+                GerberPoint g = line.getpositiveoffset();
+                Xoffset = g.X < Xoffset ? g.X : Xoffset;
+                Yoffset = g.Y < Yoffset ? g.Y : Yoffset;
+            }
+
+            foreach (GerberLine l in _lines)
+            {
+                l.correctoffset(-Xoffset + 1, -Yoffset + 1);
+            }
+            Console.WriteLine("Offsets korrigiert: " + Xoffset);
+        }
+
+
         public string getlinelist_as_json()
         {
-            string jsonstring = JsonSerializer.Serialize(_lines);
-
-            return jsonstring;
+            return JsonSerializer.Serialize(_lines);
         }
 
 
@@ -712,46 +764,34 @@ namespace gerber2coordinatesTEST
             _endpoint.Y += dY;
         }
 
-        public GerberPoint getoffset()
+        /// <summary>
+        /// Maximaler negativer Offset
+        /// </summary>
+        /// <returns></returns>
+        public GerberPoint getnegativeoffset()
+        {
+            double dXs, dXe, dYs, dYe = 0;
+
+
+            dYs = _startpoint.Y < 0 ? _startpoint.Y : 0;
+            dYe = _endpoint.Y < 0 ? _endpoint.Y : 0;
+
+            dXs = _startpoint.X < 0 ? _startpoint.X : 0;
+            dXe = _endpoint.X < 0 ? _endpoint.X : 0;
+
+            return new GerberPoint(Math.Min(dXs, dXe), Math.Min(dYs, dYe));
+        }
+
+        public GerberPoint getpositiveoffset()
         {
             double dX = 0;
             double dY = 0;
 
-            if (_startpoint.X < 0)
-            {
-                dX = Math.Abs(_startpoint.X);
-            }
-            if (_endpoint.X < 0)
-            {
-                if (dX > 0)
-                {
-                    //Startpunkt hat X offset
-                    dX = Math.Max(dX, Math.Abs(_endpoint.X));
-                }
-                else
-                {
-                    dX = Math.Abs(_endpoint.X);
-                }
-            }
+            dX = _startpoint.X > _endpoint.X ? _endpoint.X : _startpoint.X;
 
-            if (_startpoint.Y < 0)
-            {
-                dY = Math.Abs(_startpoint.Y);
-            }
-            if (_endpoint.Y < 0)
-            {
-                if (dY > 0)
-                {
-                    //Startpunkt hat Y offset
-                    dY = Math.Max(dY, Math.Abs(_endpoint.Y));
-                }
-                else
-                {
-                    dY = Math.Abs(_endpoint.Y);
-                }
-            }
+            dY = _startpoint.Y > _endpoint.Y ? _endpoint.Y : _startpoint.Y;
 
-            return new GerberPoint(dX, dY);
+            return new GerberPoint(dX,dY);
         }
 
     }
@@ -894,6 +934,19 @@ namespace gerber2coordinatesTEST
     {
         public List<GerberSetting> _settings { get; set; } = new List<GerberSetting>();
 
+        public delegate void CallbackDelegate(string filecontent);
+        string _callbackFileContent = "";
+
+        private CallbackDelegate _onchangecallback;
+
+        //Callback setzen
+        public void setonchangecallback(CallbackDelegate callback, string callbackFileContent)
+        {
+            _onchangecallback = callback;
+            _callbackFileContent = callbackFileContent;
+        }
+
+
         public double getpadwidth()
         {
             return getsetting(SETTING.padwidth);
@@ -917,26 +970,28 @@ namespace gerber2coordinatesTEST
 
         public double getsetting(SETTING Setting)
         {
-            return _settings.Find(x => x._type == Setting)?._value ?? 0;
+            return _settings.Find(x => x._type.Equals(Setting))?._value ?? 0.5;
         }
 
 
         public bool existssetting(SETTING Setting)
         {
-            return _settings.Any(x => x._type == Setting);
+            return _settings.Any(x => x._type.Equals(Setting));
         }
 
         public void setsetting(SETTING Setting, double value)
         {
             if (existssetting(Setting))
             {
-                _settings.Find(x => x._type == Setting)._value = value;
+                _settings.Find(x => x._type.Equals(Setting))._value = value;
             }
             else
             {
                 _settings.Add(new GerberSetting(Setting, value));
             }
-            
+            Console.WriteLine("Setsetting");
+            //Callback ausführen, es wurde etwas geändert
+            _onchangecallback?.Invoke(_callbackFileContent);
         }
     }
     public enum SETTING
