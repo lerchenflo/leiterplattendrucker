@@ -43,7 +43,10 @@
       <fieldset>
         <legend>Einstellungen</legend>
         <label for="filling-level">Polygon füllgrad</label>
-        <input id="filling-level" type="number" value="30" min="0" max="100" step="5" />
+        <input id="filling-level" type="number" value="0.5" min="0.3" max="2" step="0.1" />
+        <br>
+        <label for="pad-size">Pad größe</label>
+        <input id="pad-size" type="number" value="0.5" min="0.1" max="1" step="0.1" />
         
       </fieldset>
     
@@ -99,19 +102,23 @@
   </script>
 
 <script type="module">
-  //import {getsettings} from './js/network_task.js';
+  import {set_settings} from './js/network_task.js';
 
-  //todo input fields mit werten vom server befüllen
+  //
   const fillLvlInp = document.getElementById("filling-level");
+  const padfillLvlInp = document.getElementById("pad-size");
+
   fillLvlInp.onchange = function(){
-      let newLVL = fillLvlInp.value;
-      console.log("filling level chaged to " + newLVL);
-      //todo send command to server
+      set_settings(padfillLvlInp.value, fillLvlInp.value);
+  }
+  padfillLvlInp.onchange = function(){
+    set_settings(padfillLvlInp.value, fillLvlInp.value);
   }
 
   const resetButton = document.getElementById("resetbutton");
   resetButton.onclick = function(){
       // todo send command(s) to server
+      
       //todo update ui elemets
       console.log("Resetting to default values");
   }

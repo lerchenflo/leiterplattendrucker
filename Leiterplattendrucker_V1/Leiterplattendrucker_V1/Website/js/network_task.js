@@ -49,6 +49,16 @@ export function isPrinting(){
     
 }
 
+// functions for settings
+export function set_settings(padfill, polygonfill){
+    var req = new XMLHttpRequest();
+    req.open("POST", SERVER_ADDR);
+    req.setRequestHeader("action", "settings");
+    req.setRequestHeader("setpolygonfill", polygonfill.toString().replace("." , ","));
+    req.setRequestHeader("setpadfill", padfill.toString().replace("." , ","));
+    req.send(null);
+}
+
 export function start(){
     console.log("start");
     var req = new XMLHttpRequest();

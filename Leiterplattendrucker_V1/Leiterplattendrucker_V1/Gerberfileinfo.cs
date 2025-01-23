@@ -78,7 +78,10 @@ namespace gerber2coordinatesTEST
                 _lines.AddRange(fillpadsandpoints(GerberfileContent));
 
                 //Offsets korrigieren, falls negative Koordinaten dabei sind (Zeichnung auf Druckfläche schieben)
-                correctoffsets();
+                correctnegativeoffsets();
+
+                //Zeichnung ins Eck schieben
+                //movetopad();
 
                 //Doppelte Linien entfernen
                 //removeduplicates();
@@ -510,28 +513,31 @@ namespace gerber2coordinatesTEST
 
 
 
-        private void correctoffsets()
+        private void correctnegativeoffsets()
         {
             double dX = 0;
             double dY = 0;
 
             for (int i = 0; i < _lines.Count; i++)
             {
-                GerberPoint offset = _lines[i].getoffset();
+                GerberPoint offset = _lines[i].getnegativeoffset();
 
-                double offsetx = Math.Abs(offset.X);
-                double offsety = Math.Abs(offset.Y);
+                double offsetx = offset.X;
+                double offsety = offset.Y;
 
-                if (offsetx > dX)
+                if (offsetx < dX)
                 {
                     dX = offsetx;
                 }
 
-                if (offsety > dY)
+                if (offsety < dY)
                 {
                     dY = offsety;
                 }
             }
+
+            dX = Math.Abs(dX);
+            dY = Math.Abs(dY);
 
             //Wenn ein Offset vorhanden ist
             if (dX > 0 || dY > 0)
@@ -546,11 +552,30 @@ namespace gerber2coordinatesTEST
         }
 
 
+        private void movetopad()
+        {
+            double Xoffset = 100000;
+            double Yoffset = 100000;
+
+            //Offset auf maximal gesetzt, jetzt muss der kleiste Offset gefunden und korrigiert werden
+            foreach (GerberLine line in _lines)
+            {
+                GerberPoint g = line.getpositiveoffset();
+                Xoffset = g.X < Xoffset ? g.X : Xoffset;
+                Yoffset = g.Y < Yoffset ? g.Y : Yoffset;
+            }
+
+            foreach (GerberLine l in _lines)
+            {
+                l.correctoffset(-Xoffset + 1, -Yoffset + 1);
+            }
+            Console.WriteLine("Offsets korrigiert: " + Xoffset);
+        }
+
+
         public string getlinelist_as_json()
         {
-            string jsonstring = JsonSerializer.Serialize(_lines);
-
-            return jsonstring;
+            return JsonSerializer.Serialize(_lines);
         }
 
 
@@ -739,46 +764,34 @@ namespace gerber2coordinatesTEST
             _endpoint.Y += dY;
         }
 
-        public GerberPoint getoffset()
+        /// <summary>
+        /// Maximaler negativer Offset
+        /// </summary>
+        /// <returns></returns>
+        public GerberPoint getnegativeoffset()
+        {
+            double dXs, dXe, dYs, dYe = 0;
+
+
+            dYs = _startpoint.Y < 0 ? _startpoint.Y : 0;
+            dYe = _endpoint.Y < 0 ? _endpoint.Y : 0;
+
+            dXs = _startpoint.X < 0 ? _startpoint.X : 0;
+            dXe = _endpoint.X < 0 ? _endpoint.X : 0;
+
+            return new GerberPoint(Math.Min(dXs, dXe), Math.Min(dYs, dYe));
+        }
+
+        public GerberPoint getpositiveoffset()
         {
             double dX = 0;
             double dY = 0;
 
-            if (_startpoint.X < 0)
-            {
-                dX = Math.Abs(_startpoint.X);
-            }
-            if (_endpoint.X < 0)
-            {
-                if (dX > 0)
-                {
-                    //Startpunkt hat X offset
-                    dX = Math.Max(dX, Math.Abs(_endpoint.X));
-                }
-                else
-                {
-                    dX = Math.Abs(_endpoint.X);
-                }
-            }
+            dX = _startpoint.X > _endpoint.X ? _endpoint.X : _startpoint.X;
 
-            if (_startpoint.Y < 0)
-            {
-                dY = Math.Abs(_startpoint.Y);
-            }
-            if (_endpoint.Y < 0)
-            {
-                if (dY > 0)
-                {
-                    //Startpunkt hat Y offset
-                    dY = Math.Max(dY, Math.Abs(_endpoint.Y));
-                }
-                else
-                {
-                    dY = Math.Abs(_endpoint.Y);
-                }
-            }
+            dY = _startpoint.Y > _endpoint.Y ? _endpoint.Y : _startpoint.Y;
 
-            return new GerberPoint(dX, dY);
+            return new GerberPoint(dX,dY);
         }
 
     }

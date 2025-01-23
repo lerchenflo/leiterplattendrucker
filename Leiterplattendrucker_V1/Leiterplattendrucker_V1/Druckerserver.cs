@@ -4,6 +4,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Text;
 
 
@@ -123,12 +124,13 @@ namespace gerber2coordinatesTEST
                                     break;
 
                                 //Settings
-                                case "setpadfill":
-                                    setpadfill(Convert.ToDouble(requestBody));
-                                    break;
+                                case "settings":
+                                    //Replace für die Convert.todouble funktion
+                                    string padfill = context.Request.Headers["setpadfill"];
+                                    string polygonfill = context.Request.Headers["setpolygonfill"];
 
-                                case "setpolygonfill":
-                                    setpolygonfill(Convert.ToDouble(requestBody));
+                                    setpadfill(Convert.ToDouble(padfill));
+                                    setpolygonfill(Convert.ToDouble(polygonfill));
                                     break;
 
                                 default:
