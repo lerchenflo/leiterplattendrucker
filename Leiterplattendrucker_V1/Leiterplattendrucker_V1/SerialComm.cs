@@ -262,7 +262,7 @@ namespace lpd_ansteuerung
             while (true) //Polling for mc to be ready
             {
                 string red = read();
-                if (red.StartsWith("finish"))
+                if (red.StartsWith("ready"))
                 {
                     break;
                 }
