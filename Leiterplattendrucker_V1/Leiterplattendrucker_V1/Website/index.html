@@ -1,41 +1,61 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>PCB Printer Website</title>
+  <title>Leiterplattendrucker</title>
   <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-  <h1>PCB Printer Website</h1>
-  
-  <p>Wilkommen auf der PCB Printer Seite. Auf dieser Seite können Gerber-Dateine hochgeladen werden um diese vom Drucker drucken zu lassen.<br>
-    Zum Start laden sie Bitte ihre Gerber-Datei hoch.
-  </p>    
+  <h1>Leiterplattendrucker Website</h1>
 
-  <!--Upload-field for Gerberfiles-->
-  <div id="uploaddiv">
-    <form class="upload-form">
-      <label for="file-selector" class="file-label">Select a Gerber File:</label>
-      <input
-        id="file-selector"
-        type="file"
-        name="file1"
-        accept=".gbr, .gerber, .gtl"
-        class="file-input"
-      />
-    </form>
-  </div>
-  
-  <!--open settings popup-->
-  <div id="settingsdiv" class="center" title="Open the settings-popup">
-    <div onclick="openPopup()" class="settings-button">
-      <img src="./images/settings.png" alt="Settings icon" class="icon">
-      <span>Einstellungen</span>
-    </div> 
-  </div>
+  <div class="container">
+    <div class="column">
+      <!--Upload-field for Gerberfiles-->
+      <div id="uploaddiv">
+   
+        <form class="upload-form">
+          <label for="file-selector" class="file-label">Gerber-File auswählen:</label>
+          <input
+            id="file-selector"
+            type="file"
+            name="file1"
+            accept=".gbr, .gerber, .gtl"
+            class="file-input"
+          />
+        </form>
+      </div>
+      
+      <!--open settings popup-->
+      <div id="settingsdiv" class="center" title="Open the settings-popup">
+        <div onclick="openPopup()" class="settings-button">
+          <img src="./images/settings.png" alt="Settings icon" class="icon">
+          <span>Einstellungen</span>
+        </div> 
+      </div>
 
-  <!--Button to start the printing process-->
-  <div class="center">
-    <button id="startprinting" disabled title="upload a gerberfile first">Start Print</button>
+      <!--Button to start the printing process-->
+      <div class="center">
+        <button id="startprinting" disabled title="zuerst Gerber-File hochladen">Druck Starten</button>
+      </div>
+
+    </div>
+    <div class="column">
+      
+      <!--Preview of the driven path-->
+      <div id="previewdiv">
+        <canvas id="pcbPreview" width="1000" height="600"></canvas>
+      </div>
+
+      <div class="legend">
+        <div class="legend-item">
+            <div class="color-box gold"></div>
+            <span>Leiterbahn</span>
+        </div>
+        <div class="legend-item">
+            <div class="color-box red"></div>
+            <span>übersprungener Pfad</span>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!--Settings popup-->
@@ -52,27 +72,8 @@
     
       <div class="spacer"></div>
     
-      <button id="resetbutton">
-          Reset to default
-      </button>
-      <button class="close-btn" onclick="closePopup()">Close</button>
-    </div>
-  </div>
-
-  
-<!--Preview of the driven path-->
-  <div id="previewdiv">
-    <canvas id="pcbPreview" width="500" height="300" style="border:1px solid #000000;"></canvas>
-  </div>
-
-  <div class="legend">
-    <div class="legend-item">
-        <div class="color-box gold"></div>
-        <span>Drawing</span>
-    </div>
-    <div class="legend-item">
-        <div class="color-box red"></div>
-        <span>Not Drawing</span>
+      <button id="resetbutton">zurücksetzen</button>
+      <button class="close-btn" onclick="closePopup()">schließen</button>
     </div>
   </div>
 
@@ -107,10 +108,9 @@
 
   const resetButton = document.getElementById("resetbutton");
   resetButton.onclick = function(){
-      // todo send command(s) to server
-      
-      //todo update ui elemets
-      console.log("Resetting to default values");
+    padfillLvlInp.value = 0.5;
+    fillLvlInp.value = 0.5;
+    set_settings(padfillLvlInp.value, fillLvlInp.value);
   }
 
 </script>
@@ -152,14 +152,6 @@
 
         setTimeout(redirectIfPrinting, 500);
     };
-
-    /*
-    const homebtn = document.getElementById('home');
-    homebtn.onclick = function(){
-      console.log("drive to 0 position");
-
-    }
-      */
 
   </script>
 

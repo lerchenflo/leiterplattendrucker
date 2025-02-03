@@ -70,7 +70,7 @@ button[disabled] {
 
 #progessdiv {
     margin-top: 20px;
-    text-align: center;
+    text-align: left;
 }
 
 .center {
@@ -101,12 +101,30 @@ progress {
     background-color: var(--progress-bg);
 }
 
+#previewdiv {
+    width: 100%; /* Occupy full width of parent */
+    height: 0; /* Important for aspect ratio */
+    padding-bottom: 60%; /* Aspect ratio (height/width * 100). Adjust as needed. 3:5 for example*/
+    position: relative; /* For absolute positioning of canvas */
+  }
+  
+#pcbPreview {
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+border: 1px solid var(--bright-blue);
+background-color: var(--canvas-bg);
+}
+
+/*
 #pcbPreview {
     display: block;
     margin: 20px auto;
-    border: 1px solid var(--bright-blue);
-    background-color: var(--canvas-bg);
+    
 }
+    */
 
 #settingsicon {
     width: 20px;
@@ -235,6 +253,25 @@ progress {
     height: 20px;
     margin-right: 10px;
 }
+
+.container {
+    display: flex; /* Enable flexbox layout */
+    flex-wrap: wrap; /* Allow columns to wrap on smaller screens */
+  }
+  
+  .column {
+    flex: 1; /* Each column takes up equal width */
+    padding: 20px;
+    box-sizing: border-box; /* Include padding in width calculation */
+  }
+  
+  
+  /* Media query for smaller screens: stack columns vertically */
+  @media (max-width: 768px) {
+    .column {
+      flex: 1 1 100%; /* Each column takes full width */
+    }
+  }
 
 @media (max-width: 600px) {
     button {
