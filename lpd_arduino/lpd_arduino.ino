@@ -37,6 +37,8 @@
 #define SPEED 50 //Period of the pulse in us (lower value = higher speed)
 #define TRAVEL_HEIGT 8000 // Steps to drive up or down while driving to 0,0. should be obselete as soon as z endswitches are implemented
 
+String cmd = ""; // public variable for instructions over uart
+
 void init_motor_pins(){
   // Set the Pin Mode for all Inputs and outputs
   pinMode(X_PUL, OUTPUT);
@@ -253,17 +255,15 @@ void setup() {
 
   // Initialise Serial Communication
   Serial.begin(9600);
-  while (!Serial) {
-    ;  // wait for serial port to connect. Needed for native USB port only
-  }
   Serial.println("Leiterplattendrucker Ansteuerung");
-  
+
 }
 
+
+
 void loop() {
-  if (Serial.available() > 0) // Polling for Command over serial
-  {
-    String cmd = Serial.readString(); //read the avaliable command over serial
+  
+  if(cmd != ""){
     Serial.println(cmd);
     /*
     Protocoll:
@@ -280,6 +280,9 @@ void loop() {
     char dir2Cmd = cmd[12];
     int mm1 = cmd.substring(1,6).toInt();
     int mm2 = cmd.substring(7,12).toInt();
+
+    cmd = ""; //reset the variable
+    Serial.println("ready"); // tell the server to send new commands
 
     // Convert the axis into numbers
     int axis = 0;
@@ -342,5 +345,12 @@ void loop() {
     }
 
     Serial.println("finish"); // send finish so the steering pc knows that the move is finished
+  }
+}
+
+void serialEvent() {
+  if (Serial.available() > 0) // Polling for Command over serial
+  {
+    cmd = Serial.readString(); //read the avaliable command over serial
   }
 }

@@ -19,6 +19,7 @@ export function drawPreviewFromServer(buttonExists=true, alertBool=false){ // ge
         }
         if(buttonExists){
             document.getElementById("startprinting").disabled = true;
+            document.getElementById("startprinting").title = "Please upload valid Gerberfile first";
         }     
     }
     else
@@ -27,6 +28,7 @@ export function drawPreviewFromServer(buttonExists=true, alertBool=false){ // ge
         drawpreview(json_object);
         if(buttonExists){
             document.getElementById("startprinting").disabled = false;
+            document.getElementById("startprinting").title = "Press to start the Print";
         } 
     }
 }
