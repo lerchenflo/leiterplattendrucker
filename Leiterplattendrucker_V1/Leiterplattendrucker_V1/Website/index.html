@@ -10,7 +10,7 @@
   <div class="container">
     <div class="column">
       <!--Upload-field for Gerberfiles-->
-      <div id="uploaddiv">
+      <div id="uploaddiv" >
    
         <form class="upload-form">
           <label for="file-selector" class="file-label">Gerber-File auswählen:</label>
@@ -26,7 +26,7 @@
       
       <!--open settings popup-->
       <div id="settingsdiv" class="center" title="Open the settings-popup">
-        <div onclick="openPopup()" class="settings-button">
+        <div onclick="openPopup()" class="settings-button" tabindex="0">
           <img src="./images/settings.png" alt="Settings icon" class="icon">
           <span>Einstellungen</span>
         </div> 
@@ -34,7 +34,7 @@
 
       <!--Button to start the printing process-->
       <div class="center">
-        <button id="startprinting" disabled title="zuerst Gerber-File hochladen">Druck Starten</button>
+        <button id="startprinting" disabled title="zuerst Gerber-File hochladen" tabindex="0">Druck Starten</button>
       </div>
 
     </div>
