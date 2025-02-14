@@ -1,3 +1,4 @@
+#include <Wire.h>
 // Code für Arduino Nano, Motoransteuerung der Stepper motoren, Befehle über uart
 #define VERSION 1
 
@@ -36,6 +37,8 @@
 #define StepsPerMM 1282 // innacuratly measured
 #define SPEED 50 //Period of the pulse in us (lower value = higher speed)
 #define TRAVEL_HEIGT 8000 // Steps to drive up or down while driving to 0,0. should be obselete as soon as z endswitches are implemented
+
+#define SLAVE_ADDR 9
 
 String cmd = ""; // public variable for instructions over uart
 
@@ -204,6 +207,33 @@ void drive_preassure(int stopPreassure){ // drive the z axis down until the set 
     digitalWrite(Z_ENA,LOW);
 }
 
+// todo
+void drive_distance(int stopPreassure){ // drive the z axis down according to the distande the ultrasonic sensor is reading
+  int speed = 10; //hardcoded speed
+  // send signals to the motor
+  digitalWrite(Z_DIR, LOW); // drive down
+  digitalWrite(Z_ENA,HIGH);
+
+  //dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+  
+  while(analogRead(PREASSURE_SNS) < stopPreassure) // check if wanted preassure is reached
+    {
+      if(true){ // endstop placeholder
+        digitalWrite(Z_PUL,HIGH);
+        delayMicroseconds(speed);
+        digitalWrite(Z_PUL,LOW);
+        delayMicroseconds(speed);
+      }else{
+        Serial.println("end stop reached");
+        break; // end driving
+      }
+    }
+    Serial.println("preassure reached"); // send a message back to the controll programm
+    digitalWrite(Z_ENA,LOW);
+}
+
+
+
 void zero_pos(int speed){  //drive to 0,0 position until hitting an endstop
   //drive z up while positioning to 0
   drive(2, true, TRAVEL_HEIGT, speed); // drive z axis up while traveling to 0, 0
@@ -256,6 +286,8 @@ void setup() {
   // Initialise Serial Communication
   Serial.begin(9600);
   Serial.println("Leiterplattendrucker Ansteuerung");
+
+  Wire.begin(); // join i2c bus (address optional for master)
 
 }
 
@@ -313,6 +345,15 @@ void loop() {
       delay(100);
       Serial.print("V:");
       Serial.println(VERSION);
+    }else if(axisCmd == 'e'){ // code vor testing purposes, e = led ein
+      Serial.println("sending over iic");
+      Wire.beginTransmission(SLAVE_ADDR); // transmit to device #9
+      Wire.write(1); // sends x
+      Wire.endTransmission(); // stop transmitting
+      delay(500);
+
+    }else if(axisCmd == 'a'){ // code vor testing purposes, a = led aus
+      Serial.println(0);
     }
 
     // Convert text into boolean values for the driving directions
@@ -330,11 +371,12 @@ void loop() {
     }
   
     //Debugging outputs
+    /*
     Serial.println(mm1);
     Serial.println(mm2);
     Serial.println(dirCmd);
     Serial.println(dir2Cmd);
-
+    */
     // run the Motor driving functions
     if(axis < 3){ // axis x,y,z
       drive(axis, dir, mmToSteps(mm1), SPEED);
