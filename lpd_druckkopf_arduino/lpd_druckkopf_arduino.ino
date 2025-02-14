@@ -25,16 +25,24 @@ void setup() {
   Wire.begin(SLAVE_ADDR);
   // Attach a function to trigger when something is received.
   Wire.onReceive(receiveEvent);
+  Wire.onRequest(requestEvent);
 }
 
 void receiveEvent(int bytes) {
   x = Wire.read();    // read one character from the I2C
 }
 
+void requestEvent() {
+  Wire.write(104); // respond with message of 6 bytes as expected by master
+}
+
 
 void loop() {
-  Serial.println(x);
+  //Serial.println(x);
   if(x == 1){
     digitalWrite(TESTLED, HIGH);
+  }if(x==2){
+    digitalWrite(TESTLED, LOW);
   }
+   x=0;
 }

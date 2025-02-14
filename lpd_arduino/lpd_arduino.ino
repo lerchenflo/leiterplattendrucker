@@ -348,12 +348,24 @@ void loop() {
     }else if(axisCmd == 'e'){ // code vor testing purposes, e = led ein
       Serial.println("sending over iic");
       Wire.beginTransmission(SLAVE_ADDR); // transmit to device #9
-      Wire.write(1); // sends x
+      Wire.write(1);
       Wire.endTransmission(); // stop transmitting
       delay(500);
 
     }else if(axisCmd == 'a'){ // code vor testing purposes, a = led aus
-      Serial.println(0);
+      
+      Wire.beginTransmission(SLAVE_ADDR); // transmit to device #9
+      Wire.write(2);
+      Wire.endTransmission(); // stop transmitting
+      delay(500);
+    }
+    else if(axisCmd == 'r'){ // code vor testing purposes, r = request
+      Wire.requestFrom(SLAVE_ADDR, 1); //addr, nr bytes
+      while (Wire.available()) { // peripheral may send less than requested
+        int c = Wire.read(); // receive a byte as character
+        Serial.print(c);         // print the character
+      }
+      delay(500);
     }
 
     // Convert text into boolean values for the driving directions
