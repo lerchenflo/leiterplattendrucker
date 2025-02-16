@@ -607,7 +607,7 @@ namespace gerber2coordinatesTEST
 
             foreach (GerberLine l in _lines)
             {
-                l.correctoffset(-Xoffset + 1, -Yoffset + 1);
+                l.correctoffset(-Xoffset + _settings.getoffset()[0], -Yoffset + _settings.getoffset()[1]);
             }
         }
 
@@ -1006,7 +1006,7 @@ namespace gerber2coordinatesTEST
 
         public double getpadwidth()
         {
-            return getsetting(SETTING.padwidth);
+            return getsetting(SETTING.padwidth)[0];
         }
 
         public void setpadwidth(double value)
@@ -1016,7 +1016,7 @@ namespace gerber2coordinatesTEST
 
         public double getpolygoninfill()
         {
-            return getsetting(SETTING.polygoninfill);
+            return getsetting(SETTING.polygoninfill)[0];
         }
 
         public void setpolygoninfill(double value)
@@ -1025,9 +1025,22 @@ namespace gerber2coordinatesTEST
         }
 
 
-        public double getsetting(SETTING Setting)
+        public double[] getoffset()
         {
-            return _settings.Find(x => x._type.Equals(Setting))?._value ?? 0.5;
+            return getsetting(SETTING.offset);
+        }
+
+        public void setoffset(double xvalue, double yvalue)
+        {
+            setsetting(SETTING.offset, xvalue, yvalue);
+        }
+
+
+
+
+        public double[] getsetting(SETTING Setting)
+        {
+            return new double[] { _settings.Find(x => x._type.Equals(Setting))?._value ?? 0.5, _settings.Find(x => x._type.Equals(Setting))?._value2 ?? 0.0};
         }
 
 
@@ -1036,27 +1049,28 @@ namespace gerber2coordinatesTEST
             return _settings.Any(x => x._type.Equals(Setting));
         }
 
-        public void setsetting(SETTING Setting, double value)
+        public void setsetting(SETTING Setting, double value, double value2=0)
         {
             if (existssetting(Setting))
             {
                 //Nur wenn die Setting sich geändert hat wird das File neu initialisiert
-                if (_settings.Find(x => x._type.Equals(Setting))._value == value)
+                if (_settings.Find(x => x._type.Equals(Setting))._value == value && _settings.Find(x => x._type.Equals(Setting))._value2 == value2)
                 {
                     return;
                 }
                 else
                 {
                     _settings.Find(x => x._type.Equals(Setting))._value = value;
+                    _settings.Find(x => x._type.Equals(Setting))._value2 = value2;
                 }
                 
             }
             else
             {
-                _settings.Add(new GerberSetting(Setting, value));
+                _settings.Add(new GerberSetting(Setting, value, value2));
             }
 
-            Druckerserver.logtoconsole("Settings: " + Setting.ToString() + ": " + value);
+            Druckerserver.logtoconsole("Settings: " + Setting.ToString() + ": " + value + (value2 != 0 ? "; " + Convert.ToString(value2) : ""));
 
             //Callback ausführen, es wurde etwas geändert
             _onchangecallback?.Invoke(_callbackFileContent);
@@ -1066,6 +1080,7 @@ namespace gerber2coordinatesTEST
     {
         padwidth,
         polygoninfill,
+        offset,
         none
     }
 
@@ -1074,11 +1089,13 @@ namespace gerber2coordinatesTEST
     {
         public SETTING _type = SETTING.none;
         public double _value = 0;
+        public double _value2 = 0;
 
-        public GerberSetting(SETTING Setting, double Value)
+        public GerberSetting(SETTING Setting, double Value, double Value2=0)
         {
             _type = Setting;
             _value = Value;
+            _value2 = Value2;
         }
     }
 
