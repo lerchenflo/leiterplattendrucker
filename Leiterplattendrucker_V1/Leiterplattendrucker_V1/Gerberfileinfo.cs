@@ -1,8 +1,5 @@
 ﻿using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
 using System.Text.Json;
-using System.Windows;
 
 
 namespace gerber2coordinatesTEST
@@ -38,25 +35,25 @@ namespace gerber2coordinatesTEST
         //Settings für den Druck
         public GerberSettingsList Settings { get; set; } = new GerberSettingsList();
 
-       
+        //Aktuelle linie die der Drucker gerade abarbeitet
+        public int currentline = 0;
 
-        
+
 
         public Gerberfileinfo(string GerberfileContent)
         {
             //Gerberfile initialisieren
             Initgerberfile(GerberfileContent);
 
-
             //Callback beim ändern einer Setting (Preview muss geupdated werden)
             Settings.setonchangecallback(Initgerberfile, GerberfileContent);
         }
 
-        
+
 
         private void Initgerberfile(string GerberfileContent)
         {
-            Console.WriteLine("Gerberfile init");
+            Debug.WriteLine("Gerberfile init");
             try
             {
                 if (GerberfileContent == string.Empty)
@@ -72,19 +69,22 @@ namespace gerber2coordinatesTEST
                 _gerberfilecontent = remove_comments(GerberfileContent);
 
                 //Aus dem Gerberfile die Linien auslesen
-                _lines = converttogerberlines(GerberfileContent);
+                _lines.AddRange(converttogerberlines(_gerberfilecontent));
 
-                //aus dem Gerberfile Pads auslesen
-                _lines.AddRange(fillpadsandpoints(GerberfileContent));
+                //Polygons füllen
+                _lines.AddRange(fillpolygonswithlines(GerberfileContent));
+
+                //Aus dem Gerberfile Pads auslesen
+                _lines.AddRange(fillpadsandpoints(_gerberfilecontent));
+
+                //Doppelte Linien entfernen, falls es welche gibt
+                removeduplicates();
 
                 //Offsets korrigieren, falls negative Koordinaten dabei sind (Zeichnung auf Druckfläche schieben)
                 correctnegativeoffsets();
 
                 //Zeichnung ins Eck schieben
-                //movetopad();
-
-                //Doppelte Linien entfernen
-                //removeduplicates();
+                movetopad();
 
                 //Linien nach Reihenfolge anordnen
                 sortlines();
@@ -205,11 +205,9 @@ namespace gerber2coordinatesTEST
 
         private List<GerberLine> fillpadsandpoints(string GerberfileContent)
         {
-            
+            string[] lines = GerberfileContent.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
 
             List<GerberPoint> points = new List<GerberPoint>();
-
-            string[] lines = GerberfileContent.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
 
             //Punkte aus dem File auslesen
             for (int i = 0; i < lines.Length; i++)
@@ -224,17 +222,20 @@ namespace gerber2coordinatesTEST
             double size = Settings.getpadwidth();
 
             List<GerberLine> returnlist = new List<GerberLine>();
-            foreach (var p in points)
-            {
-                GerberPoint ol = new GerberPoint(p.X - size, p.Y + size);  //Punkt oben links
-                GerberPoint or = new GerberPoint(p.X + size, p.Y + size); //Punkt oben rechts
-                GerberPoint ul = new GerberPoint(p.X - size, p.Y - size); //Punkt unten links
-                GerberPoint ur = new GerberPoint(p.X + size, p.Y - size); //Punkt unten rechts
 
-                returnlist.Add(new GerberLine(ol, or));  // Oben
-                returnlist.Add(new GerberLine(or, ur));  // Rechts
-                returnlist.Add(new GerberLine(ur, ul));  // Unten
-                returnlist.Add(new GerberLine(ul, ol));  // Links
+            for (int i = 0; i < points.Count; i++)
+            {
+                GerberPoint ol = new GerberPoint(Math.Round(points[i].X - size, 2), Math.Round(points[i].Y + size, 2)); //Punkt oben links
+                GerberPoint or = new GerberPoint(Math.Round(points[i].X + size, 2), Math.Round(points[i].Y + size, 2)); //Punkt oben rechts
+                GerberPoint ul = new GerberPoint(Math.Round(points[i].X - size, 2), Math.Round(points[i].Y - size, 2)); //Punkt unten links
+                GerberPoint ur = new GerberPoint(Math.Round(points[i].X + size, 2), Math.Round(points[i].Y - size, 2)); //Punkt unten rechts
+
+                returnlist.Add(new GerberLine(new GerberPoint(ol.X, ol.Y), new GerberPoint(or.X, or.Y)));  // Oben
+                returnlist.Add(new GerberLine(new GerberPoint(or.X, or.Y), new GerberPoint(ur.X, ur.Y)));  // Rechts
+                returnlist.Add(new GerberLine(new GerberPoint(ur.X, ur.Y), new GerberPoint(ul.X, ul.Y)));  // Unten
+                returnlist.Add(new GerberLine(new GerberPoint(ul.X, ul.Y), new GerberPoint(ol.X, ol.Y)));  // Links
+                returnlist.Add(new GerberLine(new GerberPoint(ol.X, ol.Y), new GerberPoint(ur.X, ur.Y)));  // Quer
+                returnlist.Add(new GerberLine(new GerberPoint(or.X, or.Y), new GerberPoint(ul.X, ul.Y)));  // Quer
             }
             return returnlist;
         }
@@ -267,14 +268,27 @@ namespace gerber2coordinatesTEST
                         //Neues GerberLine - Objekt erstellen und zur Liste hinzufügen
                         gerberLines.Add(new GerberLine(lines[i], lines[i + 1]));
                     }
-
                 }
             }
 
-            //Polygons füllen und hinzufügen
-            gerberLines.AddRange(fillpolygonswithlines(GerberfileContent));
-
             return gerberLines;
+        }
+
+
+        private void removeduplicates()
+        {
+            var uniqueLines = new List<GerberLine>();
+
+            foreach (var line in _lines)
+            {
+                if (!uniqueLines.Any(l => (l._startpoint == line._startpoint && l._endpoint == line._endpoint) ||
+                                          (l._startpoint == line._endpoint && l._endpoint == line._startpoint)))
+                {
+                    uniqueLines.Add(line);
+                }
+            }
+            Debug.WriteLine("Doppelte Linien entfernt: " + (_lines.Count - uniqueLines.Count));
+            _lines = uniqueLines;
         }
 
 
@@ -333,10 +347,12 @@ namespace gerber2coordinatesTEST
 
         /// <summary>
         /// Start und Enden vertauschen, damit die nächste Linie dort anfängt wo die vorherige aufhört
+        /// und die optimalste Verbindung schafft.
         /// </summary>
         public void turnlines()
         {
             //Erste linie muss richtig starten
+            GerberPoint startpoint = getstartpoint();
             if (getstartpoint() != _lines[0]._startpoint)
             {
                 _lines[0].switchstartend();
@@ -344,16 +360,16 @@ namespace gerber2coordinatesTEST
 
             for (int i = 1; i < _lines.Count; i++)
             {
-                //Wenn start und ende nicht zusammenpassen, dann die Linie drehen
+                // Wenn start und ende nicht zusammenpassen, dann die Linie drehen
                 if (_lines[i]._startpoint != _lines[i - 1]._endpoint)
                 {
                     _lines[i].switchstartend();
                 }
 
-                //Wenn nach dem drehen die Linien nicht zusammenpassen, dann wird die nächste Linie so gedreht, dass ihr Startpunkt am nächsten zum Endpunkt der vorherigen Linie liegt
+                // Wenn nach dem drehen die Linien nicht zusammenpassen, dann wird die nächste Linie so gedreht, dass ihr Startpunkt am nächsten zum Endpunkt der vorherigen Linie liegt
                 if (_lines[i]._startpoint != _lines[i - 1]._endpoint)
                 {
-                    //Wenn die Distanz zwischen ende - start größer ist als ende - ende
+                    // Wenn die Distanz zwischen ende - start größer ist als ende - ende
                     if (Gerbertoolbox.getdistance(_lines[i - 1]._endpoint, _lines[i]._startpoint) > Gerbertoolbox.getdistance(_lines[i - 1]._endpoint, _lines[i]._endpoint))
                     {
                         _lines[i].switchstartend();
@@ -368,10 +384,7 @@ namespace gerber2coordinatesTEST
         /// </summary>
         public void calculateroute()
         {
-            //_lines.Reverse();
-
-            //Startpunkt zu erster linie
-            //Wenn startpunkt nicht bei 0,0 dann dorthin fahren
+            // Startpunkt zu erster Linie
             GerberPoint beginpoint = new GerberPoint(0, 0);
             if (!_lines[0]._startpoint.Equals(beginpoint))
             {
@@ -382,15 +395,42 @@ namespace gerber2coordinatesTEST
 
             for (int i = 1; i < _lines.Count; i++)
             {
-                //Wenn der Startpunkt nicht beim endpunkt der vorherigen linie ist
                 GerberPoint endpoint = _lines[i - 1]._endpoint;
                 GerberPoint startpoint = _lines[i]._startpoint;
 
                 if (startpoint != endpoint)
                 {
-                    //Debug.WriteLine("Linie einfügen: " + startpoint.ToString() + "\n" + endpoint.ToString());
-                    GerberLine connectionline = new GerberLine(endpoint, startpoint, false);
-                    _lines.Insert(i, connectionline);
+                    // Check if the next line starts where the current line ends
+                    bool found = false;
+                    for (int j = i + 1; j < _lines.Count; j++)
+                    {
+                        if (_lines[j]._startpoint == endpoint)
+                        {
+                            // Swap lines to ensure continuity
+                            var temp = _lines[i];
+                            _lines[i] = _lines[j];
+                            _lines[j] = temp;
+                            found = true;
+                            break;
+                        }
+                        else if (_lines[j]._endpoint == endpoint)
+                        {
+                            // Swap lines and reverse to ensure continuity
+                            _lines[j].switchstartend();
+                            var temp = _lines[i];
+                            _lines[i] = _lines[j];
+                            _lines[j] = temp;
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    // If no direct continuation is found, add a connection line
+                    if (!found)
+                    {
+                        GerberLine connectionline = new GerberLine(endpoint, startpoint, false);
+                        _lines.Insert(i, connectionline);
+                    }
                 }
             }
         }
@@ -404,9 +444,9 @@ namespace gerber2coordinatesTEST
         public GerberPoint getstartpoint()
         {
             int index = 0;
-            double distance = 1000000;
+            double distance = double.MaxValue;
 
-            //Linie am nächsten zum Startpunkt finden
+            // Linie am nächsten zum Startpunkt finden
             for (int i = 0; i < _lines.Count; i++)
             {
                 double[] currentdist = _lines[i].getdistance(0, 0);
@@ -417,15 +457,8 @@ namespace gerber2coordinatesTEST
                 }
             }
 
-            //Startpunkt der Linie herausfinden, welcher näher am Startpunkt ist
-            if (_lines[index].getdistance(0, 0)[1] < _lines[index].getdistance(0, 0)[0])
-            {
-                return _lines[index]._startpoint;
-            }
-            else
-            {
-                return _lines[index]._endpoint;
-            }
+            // Startpunkt der Linie herausfinden, welcher näher am Startpunkt ist
+            return _lines[index].getdistance(0, 0)[1] == 0 ? _lines[index]._startpoint : _lines[index]._endpoint;
         }
 
 
@@ -466,7 +499,6 @@ namespace gerber2coordinatesTEST
                 {
                     shortestdistance = distance[0];
                     shortestdistindex = i;
-
                 }
             }
             //Debug.WriteLine($"Index: {shortestdistindex}");
@@ -474,8 +506,6 @@ namespace gerber2coordinatesTEST
         }
 
 
-
-        int currentline = 0;
         /// <summary>
         /// Nächste Linie bekommen, wird der Reihe nach ausgegeben
         /// </summary>
@@ -490,7 +520,6 @@ namespace gerber2coordinatesTEST
             }
 
             return _lines[currentline_volatile];
-
         }
 
 
@@ -508,7 +537,6 @@ namespace gerber2coordinatesTEST
             {
                 return 0;
             }
-
         }
 
 
@@ -542,7 +570,7 @@ namespace gerber2coordinatesTEST
             //Wenn ein Offset vorhanden ist
             if (dX > 0 || dY > 0)
             {
-                Debug.WriteLine($"Offset wird korrigiert:\nX: {dX}\nY: {dY}");
+                Debug.WriteLine($"Offset wird korrigiert: X: {dX} Y: {dY}");
                 for (int i = 0; i < _lines.Count; i++)
                 {
                     //Offset anwenden
@@ -569,7 +597,6 @@ namespace gerber2coordinatesTEST
             {
                 l.correctoffset(-Xoffset + 1, -Yoffset + 1);
             }
-            Console.WriteLine("Offsets korrigiert: " + Xoffset);
         }
 
 
@@ -586,7 +613,6 @@ namespace gerber2coordinatesTEST
         public void drawlinestocanvas(Canvas cananas, int drawmultiplier)
         {
             cananas.Children.Clear();
-
 
             for (int i = 0; i < _lines.Count; i++)
             {
@@ -629,7 +655,7 @@ namespace gerber2coordinatesTEST
                     //180° Drehen
                     transformGroup1.Children.Add(new RotateTransform(180));
                     tb.RenderTransform = transformGroup1;
-                    tb.RenderTransformOrigin = new Point(0.5, 0.5);
+                    tb.RenderTransformOrigin = new System.Windows.Point(0.5, 0.5);
 
                     cananas.Children.Add(tb);
 
@@ -653,13 +679,14 @@ namespace gerber2coordinatesTEST
                     //180° Drehen
                     transformGroup.Children.Add(new RotateTransform(180));
                     text.RenderTransform = transformGroup;
-                    text.RenderTransformOrigin = new Point(0.5, 0.5);
+                    text.RenderTransformOrigin = new System.Windows.Point(0.5, 0.5);
 
                     cananas.Children.Add(text);
                 }
             }
         }
         */
+
 
     }
 
@@ -685,6 +712,8 @@ namespace gerber2coordinatesTEST
             _startpoint = startpoint_;
             _endpoint = endpoint_;
             _paint = paint;
+
+            roundcoordinates();
         }
 
         public GerberLine(string GerberFileLine1, string GerberFileLine2)
@@ -703,6 +732,7 @@ namespace gerber2coordinatesTEST
 
 
                     setcoordinates(X_start, Y_start, X_end, Y_end, paint);
+                    roundcoordinates();
                 }
             }
         }
@@ -713,7 +743,7 @@ namespace gerber2coordinatesTEST
             _endpoint = new GerberPoint(X_end, Y_end);
             _paint = paint;
 
-            //Debug.WriteLine($"Zeile: X1: {X_start} Y1: {Y_start} X2: {X_end} Y2: {Y_end} Paint: {paint}");
+            roundcoordinates();
         }
 
 
@@ -741,17 +771,17 @@ namespace gerber2coordinatesTEST
             double distanceendX = Math.Abs(_endpoint.X - X);
             double distanceendY = Math.Abs(_endpoint.Y - Y);
 
-            //Abstand mithilfe des Satz von pythagoras berechnen
+            //Abstand mithilfe des Satz von Pythagoras berechnen
             double distancestart = Math.Sqrt(distancestartX * distancestartX + distancestartY * distancestartY);
             double distanceend = Math.Sqrt(distanceendX * distanceendX + distanceendY * distanceendY);
 
             if (distancestart > distanceend)
             {
-                return new double[] { distanceend, 0 };
+                return new double[] { distanceend, 1 };
             }
             else
             {
-                return new double[] { distancestart, 1 };
+                return new double[] { distancestart, 0 };
             }
         }
 
@@ -762,6 +792,8 @@ namespace gerber2coordinatesTEST
 
             _endpoint.X += dX;
             _endpoint.Y += dY;
+
+            roundcoordinates();
         }
 
         /// <summary>
@@ -779,7 +811,15 @@ namespace gerber2coordinatesTEST
             dXs = _startpoint.X < 0 ? _startpoint.X : 0;
             dXe = _endpoint.X < 0 ? _endpoint.X : 0;
 
-            return new GerberPoint(Math.Min(dXs, dXe), Math.Min(dYs, dYe));
+            return new GerberPoint(Math.MinMagnitude(dXs, dXe), Math.MinMagnitude(dYs, dYe));
+        }
+
+        private void roundcoordinates()
+        {
+            _startpoint.X = Math.Round(_startpoint.X, 2);
+            _startpoint.Y = Math.Round(_startpoint.Y, 2);
+            _endpoint.X = Math.Round(_endpoint.X, 2);
+            _endpoint.Y = Math.Round(_endpoint.Y, 2);
         }
 
         public GerberPoint getpositiveoffset()
@@ -791,7 +831,7 @@ namespace gerber2coordinatesTEST
 
             dY = _startpoint.Y > _endpoint.Y ? _endpoint.Y : _startpoint.Y;
 
-            return new GerberPoint(dX,dY);
+            return new GerberPoint(dX, dY);
         }
 
     }
@@ -1007,7 +1047,7 @@ namespace gerber2coordinatesTEST
         public SETTING _type = SETTING.none;
         public double _value = 0;
 
-        public GerberSetting(SETTING Setting, double Value) 
+        public GerberSetting(SETTING Setting, double Value)
         {
             _type = Setting;
             _value = Value;
@@ -1144,28 +1184,6 @@ namespace gerber2coordinatesTEST
             return intersections;
         }
 
-        public List<GerberLine> getoutline()
-        {
-            List<GerberLine> returnlist = new List<GerberLine>();
-
-            for (int i = 0; i < _poligoncornerpoints.Count; i++)
-            {
-                returnlist.Add(new GerberLine(_poligoncornerpoints[i], _poligoncornerpoints[(i + 1) % _poligoncornerpoints.Count], true));
-            }
-
-            return returnlist;
-        }
-
-
-
-        // Edge class for storing edges in the edge table
-        class Edge
-        {
-            public int YMin { get; set; }
-            public int YMax { get; set; }
-            public double X { get; set; }
-            public double SlopeInverse { get; set; }
-        }
     }
 
 }
