@@ -266,7 +266,8 @@ namespace gerber2coordinatesTEST
         {
             if (gerberfileinfo != null)
             {
-                gerberfileinfo.Settings.setpadwidth(value);
+                logtoconsole("Settings: Padfill:" + value);
+                gerberfileinfo._settings.setpadwidth(value);
             }
             else
             {
@@ -278,8 +279,8 @@ namespace gerber2coordinatesTEST
         {
             if (gerberfileinfo != null)
             {
-                Console.WriteLine("Setinfill");
-                gerberfileinfo.Settings.setpolygoninfill(value);
+                logtoconsole("Settings: Infill:" + value);
+                gerberfileinfo._settings.setpolygoninfill(value);
             }
             else
             {

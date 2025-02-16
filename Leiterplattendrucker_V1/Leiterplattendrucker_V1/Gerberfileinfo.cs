@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Data;
+using System.Diagnostics;
 using System.Text.Json;
 
 
@@ -33,10 +34,10 @@ namespace gerber2coordinatesTEST
         public List<GerberLine> _lines { get; set; } = new List<GerberLine>();
 
         //Settings für den Druck
-        public GerberSettingsList Settings { get; set; } = new GerberSettingsList();
+        public GerberSettingsList _settings { get; set; } = new GerberSettingsList();
 
         //Aktuelle linie die der Drucker gerade abarbeitet
-        public int currentline = 0;
+        public int _currentline = 0;
 
 
 
@@ -46,13 +47,15 @@ namespace gerber2coordinatesTEST
             Initgerberfile(GerberfileContent);
 
             //Callback beim ändern einer Setting (Preview muss geupdated werden)
-            Settings.setonchangecallback(Initgerberfile, GerberfileContent);
+            _settings.setonchangecallback(Initgerberfile, GerberfileContent);
         }
 
 
 
         private void Initgerberfile(string GerberfileContent)
         {
+            cleargerberfile();
+
             Debug.WriteLine("Gerberfile init");
             try
             {
@@ -99,6 +102,15 @@ namespace gerber2coordinatesTEST
             {
                 throw new Exception("Fehler beim initialisieren des Files: " + e.StackTrace);
             }
+        }
+
+        public void cleargerberfile()
+        {
+            _lines.Clear();
+            //_settings.clearsettings(); //Wenn settings gelöscht werden funktioniert die Live vorschau nicht mehr
+            _gerberfilecontent = String.Empty;
+            _unit = "none";
+            _currentline = 0;
         }
 
 
@@ -192,7 +204,7 @@ namespace gerber2coordinatesTEST
             //Gerberlines zückgeben
             List<GerberLine> returnlist = new List<GerberLine>();
 
-            double polygonfillrate = Settings.getpolygoninfill();
+            double polygonfillrate = _settings.getpolygoninfill();
 
             for (int i = 0; i < polygons.Count; i++)
             {
@@ -219,7 +231,7 @@ namespace gerber2coordinatesTEST
             }
 
             //Punkte füllen
-            double size = Settings.getpadwidth();
+            double size = _settings.getpadwidth();
 
             List<GerberLine> returnlist = new List<GerberLine>();
 
@@ -511,8 +523,8 @@ namespace gerber2coordinatesTEST
         /// </summary>
         public GerberLine get_next_line()
         {
-            int currentline_volatile = currentline;
-            currentline++;
+            int currentline_volatile = _currentline;
+            _currentline++;
 
             if (currentline_volatile >= _lines.Count)
             {
@@ -531,7 +543,7 @@ namespace gerber2coordinatesTEST
         {
             if (_lines.Count > 1)
             {
-                return (int)((double)currentline / _lines.Count * 100);
+                return (int)((double)_currentline / _lines.Count * 100);
             }
             else
             {
@@ -986,6 +998,11 @@ namespace gerber2coordinatesTEST
             _callbackFileContent = callbackFileContent;
         }
 
+        public void clearsettings()
+        {
+            _settings.Clear();
+        }
+
 
         public double getpadwidth()
         {
@@ -1029,7 +1046,7 @@ namespace gerber2coordinatesTEST
             {
                 _settings.Add(new GerberSetting(Setting, value));
             }
-            Console.WriteLine("Setsetting");
+
             //Callback ausführen, es wurde etwas geändert
             _onchangecallback?.Invoke(_callbackFileContent);
         }
