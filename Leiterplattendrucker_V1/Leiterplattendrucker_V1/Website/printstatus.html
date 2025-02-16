@@ -7,8 +7,11 @@
 <body>
   <h1>PCB Printer Status</h1>
 
+<div class="container">
+  <div class="column">
+
   <div id="previewdiv">
-    <canvas id="pcbPreview" width="500" height="300" style="border:1px solid #000000;"></canvas>
+    <canvas id="pcbPreview" width="1000" height="600"></canvas>
   </div>
 
   <div class="legend">
@@ -21,7 +24,8 @@
         <span>Not Drawing</span>
     </div>
   </div>
-
+</div>
+<div class="column">
   <div id="progessdiv">
     <progress id="printProgressBar" value="0" max="100"></progress>
     <span id="progessText">Progress: x %</span>
@@ -31,13 +35,13 @@
     <button id="stop">Stop</button>
     <button id="pause">Pause</button>
   </div>
-
+</div>
   <script type="module">
     import {redirectIfPrinting, drawPreviewFromServer, updateProgress} from './js/ui.js';
     import {stop, pauseprinting} from './js/network_task.js';
 
-    if(!redirectIfPrinting())// go back to index.html if printer is not printing
-    //if(true) //for debugging with server in debugging mode
+    //if(!redirectIfPrinting())// go back to index.html if printer is not printing
+    if(true) //for debugging with server in debugging mode
     {
       drawPreviewFromServer(false); // draw the preview
       setInterval(updateProgress, 1000);
