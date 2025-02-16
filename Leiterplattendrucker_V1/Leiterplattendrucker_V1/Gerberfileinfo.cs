@@ -83,6 +83,11 @@ namespace gerber2coordinatesTEST
                 //Doppelte Linien entfernen, falls es welche gibt
                 removeduplicates();
 
+                if (_settings.getmirror())
+                {
+                    mirrorgerberfile();
+                }
+
                 //Offsets korrigieren, falls negative Koordinaten dabei sind (Zeichnung auf Druckfläche schieben)
                 correctnegativeoffsets();
 
@@ -552,6 +557,17 @@ namespace gerber2coordinatesTEST
         }
 
 
+        public void mirrorgerberfile()
+        {
+            //Gerberfile spiegeln
+
+            foreach (GerberLine l in _lines)
+            {
+                l._startpoint.X = -l._startpoint.X;
+                l._endpoint.X = -l._endpoint.X;
+            }
+
+        }
 
         private void correctnegativeoffsets()
         {
@@ -1036,11 +1052,21 @@ namespace gerber2coordinatesTEST
         }
 
 
+        public bool getmirror()
+        {
+            return getsetting(SETTING.mirror)[0] > 0.5;
+        }
+
+        public void setmirror(bool value)
+        {
+            setsetting(SETTING.mirror, value ? 1 : 0);
+        }
+
 
 
         public double[] getsetting(SETTING Setting)
         {
-            return new double[] { _settings.Find(x => x._type.Equals(Setting))?._value ?? 0.5, _settings.Find(x => x._type.Equals(Setting))?._value2 ?? 0.0};
+            return new double[] { _settings.Find(x => x._type.Equals(Setting))?._value ?? 0.5, _settings.Find(x => x._type.Equals(Setting))?._value2 ?? 0.0 };
         }
 
 
@@ -1049,7 +1075,7 @@ namespace gerber2coordinatesTEST
             return _settings.Any(x => x._type.Equals(Setting));
         }
 
-        public void setsetting(SETTING Setting, double value, double value2=0)
+        public void setsetting(SETTING Setting, double value, double value2 = 0)
         {
             if (existssetting(Setting))
             {
@@ -1063,7 +1089,7 @@ namespace gerber2coordinatesTEST
                     _settings.Find(x => x._type.Equals(Setting))._value = value;
                     _settings.Find(x => x._type.Equals(Setting))._value2 = value2;
                 }
-                
+
             }
             else
             {
@@ -1081,6 +1107,7 @@ namespace gerber2coordinatesTEST
         padwidth,
         polygoninfill,
         offset,
+        mirror,
         none
     }
 
@@ -1091,7 +1118,7 @@ namespace gerber2coordinatesTEST
         public double _value = 0;
         public double _value2 = 0;
 
-        public GerberSetting(SETTING Setting, double Value, double Value2=0)
+        public GerberSetting(SETTING Setting, double Value, double Value2 = 0)
         {
             _type = Setting;
             _value = Value;

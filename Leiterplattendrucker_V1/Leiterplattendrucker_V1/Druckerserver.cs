@@ -129,10 +129,12 @@ namespace gerber2coordinatesTEST
                                     string polygonfill = context.Request.Headers["setpolygonfill"];
                                     string offsetx = context.Request.Headers["offsetx"];
                                     string offsety = context.Request.Headers["offsety"];
+                                    string mirror = context.Request.Headers["mirror"];
 
                                     setpadfill(Convert.ToDouble(padfill));
                                     setpolygonfill(Convert.ToDouble(polygonfill));
                                     setoffset(Convert.ToDouble(offsetx), Convert.ToDouble(offsety));
+                                    setmirror(Convert.ToBoolean(mirror));
                                     break;
 
                                 default:
@@ -296,6 +298,19 @@ namespace gerber2coordinatesTEST
             {
 
                 gerberfileinfo._settings.setoffset(x, y);
+            }
+            else
+            {
+                logtoconsole("Setting ungültig, Gerberfile nicht initialisiert", 3);
+            }
+        }
+
+        public void setmirror(bool value)
+        {
+            if (gerberfileinfo != null)
+            {
+
+                gerberfileinfo._settings.setmirror(value);
             }
             else
             {
