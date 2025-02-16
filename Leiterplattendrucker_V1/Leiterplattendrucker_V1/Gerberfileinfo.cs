@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Data;
+using System.Diagnostics;
 using System.Text.Json;
 
 
@@ -33,10 +34,10 @@ namespace gerber2coordinatesTEST
         public List<GerberLine> _lines { get; set; } = new List<GerberLine>();
 
         //Settings für den Druck
-        public GerberSettingsList Settings { get; set; } = new GerberSettingsList();
+        public GerberSettingsList _settings { get; set; } = new GerberSettingsList();
 
         //Aktuelle linie die der Drucker gerade abarbeitet
-        public int currentline = 0;
+        public int _currentline = 0;
 
 
 
@@ -46,13 +47,15 @@ namespace gerber2coordinatesTEST
             Initgerberfile(GerberfileContent);
 
             //Callback beim ändern einer Setting (Preview muss geupdated werden)
-            Settings.setonchangecallback(Initgerberfile, GerberfileContent);
+            _settings.setonchangecallback(Initgerberfile, GerberfileContent);
         }
 
 
 
         private void Initgerberfile(string GerberfileContent)
         {
+            cleargerberfile();
+
             Debug.WriteLine("Gerberfile init");
             try
             {
@@ -99,6 +102,15 @@ namespace gerber2coordinatesTEST
             {
                 throw new Exception("Fehler beim initialisieren des Files: " + e.StackTrace);
             }
+        }
+
+        public void cleargerberfile()
+        {
+            _lines.Clear();
+            //_settings.clearsettings(); //Wenn settings gelöscht werden funktioniert die Live vorschau nicht mehr
+            _gerberfilecontent = String.Empty;
+            _unit = "none";
+            _currentline = 0;
         }
 
 
@@ -192,7 +204,7 @@ namespace gerber2coordinatesTEST
             //Gerberlines zückgeben
             List<GerberLine> returnlist = new List<GerberLine>();
 
-            double polygonfillrate = Settings.getpolygoninfill();
+            double polygonfillrate = _settings.getpolygoninfill();
 
             for (int i = 0; i < polygons.Count; i++)
             {
@@ -219,7 +231,7 @@ namespace gerber2coordinatesTEST
             }
 
             //Punkte füllen
-            double size = Settings.getpadwidth();
+            double size = _settings.getpadwidth();
 
             List<GerberLine> returnlist = new List<GerberLine>();
 
@@ -511,8 +523,8 @@ namespace gerber2coordinatesTEST
         /// </summary>
         public GerberLine get_next_line()
         {
-            int currentline_volatile = currentline;
-            currentline++;
+            int currentline_volatile = _currentline;
+            _currentline++;
 
             if (currentline_volatile >= _lines.Count)
             {
@@ -531,7 +543,7 @@ namespace gerber2coordinatesTEST
         {
             if (_lines.Count > 1)
             {
-                return (int)((double)currentline / _lines.Count * 100);
+                return (int)((double)_currentline / _lines.Count * 100);
             }
             else
             {
@@ -595,7 +607,7 @@ namespace gerber2coordinatesTEST
 
             foreach (GerberLine l in _lines)
             {
-                l.correctoffset(-Xoffset + 1, -Yoffset + 1);
+                l.correctoffset(-Xoffset + _settings.getoffset()[0], -Yoffset + _settings.getoffset()[1]);
             }
         }
 
@@ -986,10 +998,15 @@ namespace gerber2coordinatesTEST
             _callbackFileContent = callbackFileContent;
         }
 
+        public void clearsettings()
+        {
+            _settings.Clear();
+        }
+
 
         public double getpadwidth()
         {
-            return getsetting(SETTING.padwidth);
+            return getsetting(SETTING.padwidth)[0];
         }
 
         public void setpadwidth(double value)
@@ -999,7 +1016,7 @@ namespace gerber2coordinatesTEST
 
         public double getpolygoninfill()
         {
-            return getsetting(SETTING.polygoninfill);
+            return getsetting(SETTING.polygoninfill)[0];
         }
 
         public void setpolygoninfill(double value)
@@ -1008,9 +1025,22 @@ namespace gerber2coordinatesTEST
         }
 
 
-        public double getsetting(SETTING Setting)
+        public double[] getoffset()
         {
-            return _settings.Find(x => x._type.Equals(Setting))?._value ?? 0.5;
+            return getsetting(SETTING.offset);
+        }
+
+        public void setoffset(double xvalue, double yvalue)
+        {
+            setsetting(SETTING.offset, xvalue, yvalue);
+        }
+
+
+
+
+        public double[] getsetting(SETTING Setting)
+        {
+            return new double[] { _settings.Find(x => x._type.Equals(Setting))?._value ?? 0.5, _settings.Find(x => x._type.Equals(Setting))?._value2 ?? 0.0};
         }
 
 
@@ -1019,17 +1049,29 @@ namespace gerber2coordinatesTEST
             return _settings.Any(x => x._type.Equals(Setting));
         }
 
-        public void setsetting(SETTING Setting, double value)
+        public void setsetting(SETTING Setting, double value, double value2=0)
         {
             if (existssetting(Setting))
             {
-                _settings.Find(x => x._type.Equals(Setting))._value = value;
+                //Nur wenn die Setting sich geändert hat wird das File neu initialisiert
+                if (_settings.Find(x => x._type.Equals(Setting))._value == value && _settings.Find(x => x._type.Equals(Setting))._value2 == value2)
+                {
+                    return;
+                }
+                else
+                {
+                    _settings.Find(x => x._type.Equals(Setting))._value = value;
+                    _settings.Find(x => x._type.Equals(Setting))._value2 = value2;
+                }
+                
             }
             else
             {
-                _settings.Add(new GerberSetting(Setting, value));
+                _settings.Add(new GerberSetting(Setting, value, value2));
             }
-            Console.WriteLine("Setsetting");
+
+            Druckerserver.logtoconsole("Settings: " + Setting.ToString() + ": " + value + (value2 != 0 ? "; " + Convert.ToString(value2) : ""));
+
             //Callback ausführen, es wurde etwas geändert
             _onchangecallback?.Invoke(_callbackFileContent);
         }
@@ -1038,6 +1080,7 @@ namespace gerber2coordinatesTEST
     {
         padwidth,
         polygoninfill,
+        offset,
         none
     }
 
@@ -1046,11 +1089,13 @@ namespace gerber2coordinatesTEST
     {
         public SETTING _type = SETTING.none;
         public double _value = 0;
+        public double _value2 = 0;
 
-        public GerberSetting(SETTING Setting, double Value)
+        public GerberSetting(SETTING Setting, double Value, double Value2=0)
         {
             _type = Setting;
             _value = Value;
+            _value2 = Value2;
         }
     }
 

@@ -11,13 +11,10 @@ using System.Text;
 
 namespace gerber2coordinatesTEST
 {
-    
-
     public class Druckerserver
     {
         public static bool USEUSB_DEBUG = false;
 
-        
 
 
         private HttpListener Httplistener;
@@ -94,13 +91,16 @@ namespace gerber2coordinatesTEST
                             switch (action)
                             {
                                 case "startprinting":
+
+                                    //Wenn das Drucken noch nicht gestartet wurde
                                     if (!printing)
                                     {
+                                        //Wenn der Druck gestartet wurde
                                         if (startPrinting())
                                         {
                                             logtoconsole("Drucker: Drucken wird gestartet...");
                                         }
-                                        else
+                                        else //Wenn der Druck nicht gestartet wurde
                                         {
                                             logtoconsole("---Drucker: FEHLER: Gerberobjekt nicht initialisiert");
                                         }
@@ -125,12 +125,14 @@ namespace gerber2coordinatesTEST
 
                                 //Settings
                                 case "settings":
-                                    //Replace für die Convert.todouble funktion
                                     string padfill = context.Request.Headers["setpadfill"];
                                     string polygonfill = context.Request.Headers["setpolygonfill"];
+                                    string offsetx = context.Request.Headers["offsetx"];
+                                    string offsety = context.Request.Headers["offsety"];
 
                                     setpadfill(Convert.ToDouble(padfill));
                                     setpolygonfill(Convert.ToDouble(polygonfill));
+                                    setoffset(Convert.ToDouble(offsetx), Convert.ToDouble(offsety));
                                     break;
 
                                 default:
@@ -266,7 +268,8 @@ namespace gerber2coordinatesTEST
         {
             if (gerberfileinfo != null)
             {
-                gerberfileinfo.Settings.setpadwidth(value);
+                
+                gerberfileinfo._settings.setpadwidth(value);
             }
             else
             {
@@ -278,8 +281,21 @@ namespace gerber2coordinatesTEST
         {
             if (gerberfileinfo != null)
             {
-                Console.WriteLine("Setinfill");
-                gerberfileinfo.Settings.setpolygoninfill(value);
+                
+                gerberfileinfo._settings.setpolygoninfill(value);
+            }
+            else
+            {
+                logtoconsole("Setting ungültig, Gerberfile nicht initialisiert", 3);
+            }
+        }
+
+        public void setoffset(double x, double y)
+        {
+            if (gerberfileinfo != null)
+            {
+
+                gerberfileinfo._settings.setoffset(x, y);
             }
             else
             {
