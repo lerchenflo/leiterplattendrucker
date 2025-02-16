@@ -50,12 +50,15 @@ export function isPrinting(){
 }
 
 // functions for settings
-export function set_settings(padfill, polygonfill){
+export function set_settings(padfill, polygonfill, offsetx, offsety, mirror){
     var req = new XMLHttpRequest();
     req.open("POST", SERVER_ADDR);
     req.setRequestHeader("action", "settings");
     req.setRequestHeader("setpolygonfill", polygonfill.toString().replace("." , ","));
     req.setRequestHeader("setpadfill", padfill.toString().replace("." , ","));
+    req.setRequestHeader("offsetx", offsetx.toString().replace("." , ","));
+    req.setRequestHeader("offsety", offsety.toString().replace("." , ","));
+    req.setRequestHeader("mirror", mirror);
     req.send(null);
 }
 
