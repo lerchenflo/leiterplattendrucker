@@ -234,11 +234,13 @@ namespace lpd_ansteuerung
                 if (draw)
                 {
                     sendCommand("z", travel_height, z_dir_down, 0, "f");
+                    //sendCommand("d"); // send command to drive printhead down
                     drawing = true;
                 }
                 else
                 {
                     sendCommand("z", travel_height, z_dir_up, 0, "f");
+                    //sendCommand("u"); // send command to drive printhead up
                     drawing = false;
                 }
             }
@@ -250,11 +252,10 @@ namespace lpd_ansteuerung
 
         public void driveto00()
         {
-            //TODO: Testen
-            sendCommand("0", 0, "0", 0, "0");
+            sendCommand("0");
         }
 
-        public void sendCommand(string motor, int mm1, string dir1, int mm2, string dir2)
+        public void sendCommand(string motor, int mm1 = 0, string dir1="", int mm2=0, string dir2="")
         {
             string cmd = motor + mm1.ToString("D5") + dir1 + mm2.ToString("D5") + dir2;
             send(cmd);
