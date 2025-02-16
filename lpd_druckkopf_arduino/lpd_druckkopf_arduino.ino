@@ -17,13 +17,19 @@
 int cmd = 0; // public variable for instructions over uart
 int x = 0;
 
+unsigned long duration;
+
 void setup() {
-  Serial.begin(9600);
-  Serial.println("hello world");
-  // put your setup code here, to run once:
-  pinMode(TESTLED, OUTPUT);
+  Serial.begin(9600); // initailise Serial connection
+  Serial.println("Leiterplattendrucker Druckkopfsteuerung");
+  //pinMode(TESTLED, OUTPUT); // define Testled as output
+
+  // Set PinMode for ultrasonic sensor
+  pinMode(PIN_TRIGGER, OUTPUT);
+  pinMode(PIN_ECHO, INPUT);
+
+  // Initialise the IIC communication as slave
   Wire.begin(SLAVE_ADDR);
-  // Attach a function to trigger when something is received.
   Wire.onReceive(receiveEvent);
   Wire.onRequest(requestEvent);
 }
@@ -33,16 +39,31 @@ void receiveEvent(int bytes) {
 }
 
 void requestEvent() {
-  Wire.write(104); // respond with message of 6 bytes as expected by master
+  //Measure the Distance of the ultrasonic sensor and return the data
+  Wire.write(measureDistance());
+}
+
+int measureDistance(){
+  digitalWrite(PIN_TRIGGER, LOW);
+  delayMicroseconds(2);
+
+  digitalWrite(PIN_TRIGGER, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(PIN_TRIGGER, LOW);
+
+  duration = pulseIn(PIN_ECHO, HIGH);
+  unsigned int distance = duration * 0.344 / 2;
+  Serial.println(distance);
+  return distance;
 }
 
 
 void loop() {
-  //Serial.println(x);
+  Serial.println(x);
   if(x == 1){
     digitalWrite(TESTLED, HIGH);
-  }if(x==2){
+  }else if(x == 2){
     digitalWrite(TESTLED, LOW);
   }
-   x=0;
+   
 }
