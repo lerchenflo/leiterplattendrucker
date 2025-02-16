@@ -1040,12 +1040,23 @@ namespace gerber2coordinatesTEST
         {
             if (existssetting(Setting))
             {
-                _settings.Find(x => x._type.Equals(Setting))._value = value;
+                //Nur wenn die Setting sich geändert hat wird das File neu initialisiert
+                if (_settings.Find(x => x._type.Equals(Setting))._value == value)
+                {
+                    return;
+                }
+                else
+                {
+                    _settings.Find(x => x._type.Equals(Setting))._value = value;
+                }
+                
             }
             else
             {
                 _settings.Add(new GerberSetting(Setting, value));
             }
+
+            Druckerserver.logtoconsole("Settings: " + Setting.ToString() + ": " + value);
 
             //Callback ausführen, es wurde etwas geändert
             _onchangecallback?.Invoke(_callbackFileContent);

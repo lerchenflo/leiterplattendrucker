@@ -94,13 +94,16 @@ namespace gerber2coordinatesTEST
                             switch (action)
                             {
                                 case "startprinting":
+
+                                    //Wenn das Drucken noch nicht gestartet wurde
                                     if (!printing)
                                     {
+                                        //Wenn der Druck gestartet wurde
                                         if (startPrinting())
                                         {
                                             logtoconsole("Drucker: Drucken wird gestartet...");
                                         }
-                                        else
+                                        else //Wenn der Druck nicht gestartet wurde
                                         {
                                             logtoconsole("---Drucker: FEHLER: Gerberobjekt nicht initialisiert");
                                         }
@@ -125,7 +128,6 @@ namespace gerber2coordinatesTEST
 
                                 //Settings
                                 case "settings":
-                                    //Replace für die Convert.todouble funktion
                                     string padfill = context.Request.Headers["setpadfill"];
                                     string polygonfill = context.Request.Headers["setpolygonfill"];
 
@@ -266,7 +268,7 @@ namespace gerber2coordinatesTEST
         {
             if (gerberfileinfo != null)
             {
-                logtoconsole("Settings: Padfill:" + value);
+                
                 gerberfileinfo._settings.setpadwidth(value);
             }
             else
@@ -279,7 +281,7 @@ namespace gerber2coordinatesTEST
         {
             if (gerberfileinfo != null)
             {
-                logtoconsole("Settings: Infill:" + value);
+                
                 gerberfileinfo._settings.setpolygoninfill(value);
             }
             else
