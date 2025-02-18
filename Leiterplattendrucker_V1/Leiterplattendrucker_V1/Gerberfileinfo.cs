@@ -28,7 +28,7 @@ namespace gerber2coordinatesTEST
         public string _gerberfilecontent { get; set; } = "";
 
         //Unit des Gerberfiles
-        public string _unit { get; set; } = "none";
+        public Unit _unit { get; set; } = Unit.undef;
 
         //Linien die der Drucker zu fahren hat
         public List<GerberLine> _lines { get; set; } = new List<GerberLine>();
@@ -50,6 +50,12 @@ namespace gerber2coordinatesTEST
             _settings.setonchangecallback(Initgerberfile, GerberfileContent);
         }
 
+        public enum Unit
+        {
+            mm,
+            inch,
+            undef
+        }
 
 
         private void Initgerberfile(string GerberfileContent)
@@ -114,8 +120,9 @@ namespace gerber2coordinatesTEST
             _lines.Clear();
             //_settings.clearsettings(); //Wenn settings gelöscht werden funktioniert die Live vorschau nicht mehr
             _gerberfilecontent = String.Empty;
-            _unit = "none";
+            _unit = Unit.undef;
             _currentline = 0;
+            
         }
 
 
@@ -129,8 +136,22 @@ namespace gerber2coordinatesTEST
             if (startindex != -1)
             {
                 //Unit ist angegeben
-                _unit = _gerberfilecontent.Substring(startindex + 4).Split(")")[0].Trim();
-                Debug.WriteLine("Unit: " + _unit);
+                string unitstring = _gerberfilecontent.Substring(startindex + 4).Split(")")[0].Trim();
+
+                switch (unitstring)
+                {
+                    case "mm":
+                        _unit = Unit.mm;
+                        break;
+                    case "inch":
+                        _unit = Unit.inch;
+                        break;
+
+                    default:
+                        break;
+                }
+
+                Debug.WriteLine("Unit: " + _unit.ToString());
             }
         }
 

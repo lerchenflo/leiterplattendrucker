@@ -127,15 +127,15 @@ namespace Leiterplattendrucker_V1
 
             try
             {
-                while (Console.ReadKey().Key != ConsoleKey.Enter) { }
-                d.stopSerialConnection();
+                //while (Console.ReadKey().Key != ConsoleKey.Enter) { }
+                //d.stopSerialConnection();
 
-                /*
+                
                 while (true)
                 {
                     //Arbeitsschleife
                 }
-                */
+                
             }
             catch (Exception)
             {
