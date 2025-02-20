@@ -2,6 +2,10 @@
 // Code für Arduino Nano, Motoransteuerung der Stepper motoren, Befehle über uart
 #define VERSION 1
 
+// change mode for debugging
+#define USENS
+//#define IIC
+
 // X-Axis Driver
 #define X_PUL 2
 #define X_DIR 3
@@ -17,6 +21,7 @@
 #define Z_DIR 9
 #define Z_ENA 10
 
+// Endstops
 #define EX1 A2
 #define EX2 A3
 #define EY1 A4
@@ -26,6 +31,13 @@
 // https://edistechlab.com/wp-content/uploads/2023/11/Pinout_arduino_nano.png
 
 #define PREASSURE_SNS A0
+
+// Ultrasonic sensor
+#ifdef USENS
+  #define PIN_TRIGGER A5
+  #define PIN_ECHO    A4
+#endif
+
 
 // directions to the 0 or home position
 #define DIRX0 HIGH 
@@ -38,6 +50,7 @@
 #define SPEED 50 //Period of the pulse in us (lower value = higher speed)
 #define TRAVEL_HEIGT 8000 // Steps to drive up or down while driving to 0,0. should be obselete as soon as z endswitches are implemented
 #define HEIGHT_DIFF 50 // Value in mm?, the Distance from the ultrasonic sensor to the tip op the Pen from the printhead
+#define MEASUREMENTS 10 //number of measurements the ultrasonic sensor does befor calculating average
 
 #define SLAVE_ADDR 9 // Slave address for the SPI communicatin with the second arduino
 
@@ -67,6 +80,12 @@ void init_motor_pins(){
   digitalWrite(X_ENA, LOW);
   digitalWrite(Y_ENA, LOW);
   digitalWrite(Z_ENA, LOW);
+
+  #define USENS
+  #ifdef USENS
+    pinMode(PIN_TRIGGER, OUTPUT);
+    pinMode(PIN_ECHO, INPUT);
+  #endif
 }
 
 void drive2ways(long x_steps, long y_steps,bool x_dir, bool y_dir, int speed){
@@ -208,6 +227,24 @@ void drive_preassure(int stopPreassure){ // drive the z axis down until the set 
     digitalWrite(Z_ENA,LOW);
 }
 
+unsigned int measureDistance(){
+  unsigned long totalDuration = 0;
+  for(int i=0; i<MEASUREMENTS; i++){
+    digitalWrite(PIN_TRIGGER, LOW);
+    delayMicroseconds(2);
+
+    digitalWrite(PIN_TRIGGER, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(PIN_TRIGGER, LOW);
+
+    totalDuration += pulseIn(PIN_ECHO, HIGH);
+  }
+  
+  unsigned int distance = (totalDuration * 0.344 / 2)/MEASUREMENTS;
+  Serial.println("Distance: " + String(distance));
+  return distance;
+}
+
 void zero_pos(int speed){  //drive to 0,0 position until hitting an endstop
   //drive z up while positioning to 0
   drive(2, true, TRAVEL_HEIGT, speed); // drive z axis up while traveling to 0, 0
@@ -260,11 +297,12 @@ void setup() {
   // Initialise Serial Communication
   Serial.begin(9600);
   Serial.println("Leiterplattendrucker Ansteuerung");
-
+  #ifdef IIC
   Wire.begin(); // join i2c bus (address optional for master)
-
+  #endif
 }
 
+#ifdef IIC
 void sendIIC(int data){
   Wire.beginTransmission(SLAVE_ADDR); // transmit to device #9
   Wire.write(data);
@@ -279,8 +317,7 @@ int requestIIC(){
   }
   delay(500);
 }
-
-
+#endif
 
 void loop() {
   
@@ -339,7 +376,12 @@ void loop() {
       drive(2, true, TRAVEL_HEIGT, SPEED); // drive the Z-Axis up
     }
     else if(axisCmd == 'd'){ // command do drive the printhead down for parts which should be printed
+      #ifdef IIC      
       unsigned int measMM = requestIIC(); // gets the distance to the ground from the printhead Arduino
+      #endif
+      #ifdef USENS
+      unsigned int measMM = measureDistance();
+      #endif
       Serial.println(measMM);
       if(measMM > HEIGHT_DIFF){
         unsigned long steps = mmToSteps(measMM - HEIGHT_DIFF); // calculate steps based on ultrasonic sensor measurement

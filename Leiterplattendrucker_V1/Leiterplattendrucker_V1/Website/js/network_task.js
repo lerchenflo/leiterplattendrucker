@@ -1,9 +1,4 @@
-//const SERVER_ADDR = "http://192.168.144.48:6850";
 const SERVER_ADDR = location.host;
-//const SERVER_ADDR = "http://localhost:6850";
-
-import {updateProgress} from './ui.js'
-
 
 export function ping(){
     var req = new XMLHttpRequest();
@@ -26,26 +21,29 @@ export function send_gerber(gerber_content){
     
 }
 
-// get berber preview 
+// get gerber preview 
 export function get_preview(){
-    var req = new XMLHttpRequest();
-    req.open("GET", SERVER_ADDR, false);
-    req.setRequestHeader("action", "getgerberpreview");
-    req.send(null);
-    return req.responseText;
+    let ret = "";
+    try{
+        var req = new XMLHttpRequest();
+        req.open("GET", SERVER_ADDR, false);
+        req.setRequestHeader("action", "getgerberpreview");
+        req.send(null);
+        ret = req.responseText;
+    }catch(err){
+        console.log("Error during get_preview" + err);
+    }
+    return ret;
 }
 
+// check if printer is aready printing
 export function isPrinting(){
     var req = new XMLHttpRequest();
     req.open("GET", SERVER_ADDR, false);
     req.setRequestHeader("action", "isprinting");
     req.send(null);
 
-    if(req.responseText == "True"){
-        return true;
-    }else{
-        return false;
-    }
+    return req.responseText == "True";
     
 }
 

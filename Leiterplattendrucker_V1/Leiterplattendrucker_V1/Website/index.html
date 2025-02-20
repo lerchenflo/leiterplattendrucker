@@ -107,73 +107,70 @@
   </script>
 
 <script type="module">
-  
   import {send_gerber, isPrinting, start, set_settings} from './js/network_task.js';
   import {drawPreviewFromServer, redirectIfPrinting} from './js/ui.js';
 
-  // input fields for filling-level and pad-size
+  redirectIfPrinting(); // go to printstatus.html if printer is active
+  
+
+  // input fields in settings popup
   const fillLvlInp = document.getElementById("filling-level");
   const padfillLvlInp = document.getElementById("pad-size");
   const offsetx = document.getElementById("offsetx");
   const offsety = document.getElementById("offsety");
   const mirror = document.getElementById("mirror");
-  const fileLoadingCircle = document.getElementById("fileLoadingCircle"); //disable the loading circle 
-  fileLoadingCircle.style.visibility = "hidden";
-
-  function sendNewSetting(){
+  const resetButton = document.getElementById("resetbutton");
+  const fileSelector = document.getElementById('file-selector');
+  // upload loading circle
+  const fileLoadingCircle = document.getElementById("fileLoadingCircle");
+  
+  function sendNewSetting(){ // send all new settings values to the server
+    console.log("updating settings");
     set_settings(padfillLvlInp.value, fillLvlInp.value, offsetx.value, offsety.value, mirror.checked);
   }
 
-  fillLvlInp.onchange = function(){
-    sendNewSetting();
-  }
-  padfillLvlInp.onchange = function(){
-    sendNewSetting();
-  }
-  offsetx.onchange = function(){
-    sendNewSetting();
-  }
-  offsety.onchange = function(){
-    sendNewSetting();
-  }
-  mirror.onchange = function(){
-    sendNewSetting();
-  }
-
-  const resetButton = document.getElementById("resetbutton");
-  resetButton.onclick = function(){
+  function resetSettings(){ // reset all Settings
     padfillLvlInp.value = 0.5;
     fillLvlInp.value = 0.5;
     offsetx.value = 0;
     offsety.value = 0;
     mirror.checked = false;
-    sendNewSetting();
   }
 
-    
-    
-    redirectIfPrinting();
+  //Send settings on change
+  fillLvlInp.onchange = () => sendNewSetting();
+  padfillLvlInp.onchange = () => sendNewSetting();
+  offsetx.onchange = () => sendNewSetting();
+  offsety.onchange = () => sendNewSetting();
+  mirror.onchange = () => sendNewSetting();
 
-    // Load Gerber file using js, sending it to the server in Textformat
-    const fileSelector = document.getElementById('file-selector');
-      fileSelector.addEventListener('change', (event) => {
-        const fileList = event.target.files;
-        const file = fileList[0];
-        if (file) {
-            var reader = new FileReader();
-            reader.readAsText(file, "UTF-8");
-            reader.onload = function (evt) {
-                var content = evt.target.result;
-                console.log("Sending Gerber File");
-                send_gerber(content); // Sending the geberfile as text
-            }
-            reader.onerror = function (evt) {
-                console.log("error reading file");
-            }
-        }
-        fileLoadingCircle.style.visibility = "visible";
-        setInterval(drawPreviewFromServer, 500); // get and draw the preview after 500ms
-        setTimeout(drawPreviewFromServer, 3000, true, true)
+  resetButton.onclick = function(){ // reset button on onlick
+    resetSettings();
+    sendNewSetting();
+  }
+  resetSettings(); // reset the settings at start
+
+  fileLoadingCircle.style.visibility = "hidden"; // hide loading circle at start
+  
+  // Load Gerber file using js, sending it to the server in Textformat
+    fileSelector.addEventListener('change', (event) => {
+      const fileList = event.target.files;
+      const file = fileList[0];
+      if (file) {
+          var reader = new FileReader();
+          reader.readAsText(file, "UTF-8");
+          reader.onload = function (evt) {
+              var content = evt.target.result;
+              console.log("Sending Gerber File");
+              send_gerber(content); // Sending the geberfile as text
+          }
+          reader.onerror = function (evt) {
+              console.log("error reading file");
+          }
+      }
+      fileLoadingCircle.style.visibility = "visible"; // set the loading circle visible
+      setInterval(drawPreviewFromServer, 500, true); // get and draw the preview after 500ms
+      setTimeout(drawPreviewFromServer, 3000, true, true)
 
     });
 

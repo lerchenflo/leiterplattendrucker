@@ -9,7 +9,7 @@ export function updateProgress(){
     progressText.innerHTML = "Progress: " + progressBar.value + "%";
   }
 
-export function drawPreviewFromServer(buttonExists=true, alertBool=false){ // gets the Preview from the Server and displays it, when buttonexits = true it disables the start button from index.html
+export function drawPreviewFromServer(indexpage=true, alertBool=false){ // gets the Preview from the Server and displays it, when buttonexits = true it disables the start button from index.html
     const json_string = get_preview();
     
     if (json_string == "Keine Preview")
@@ -17,19 +17,25 @@ export function drawPreviewFromServer(buttonExists=true, alertBool=false){ // ge
         if(alertBool){
             alert("Falsches Gerberfile format oder sehr großes Gerberfile");
         }
-        if(buttonExists){
-            document.getElementById("startprinting").disabled = true;
+        if(indexpage){
+            document.getElementById("startprinting").disabled = true; // disable start button
             document.getElementById("startprinting").title = "Please upload valid Gerberfile first";
-        }if(alertBool && buttonExists){
+            document.getElementById("file-selector").value = '';
+            const canvas = document.getElementById("pcbPreview");// clear canvas
+            canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height); 
+        }if(alertBool && indexpage){
             const fileLoadingCircle = document.getElementById("fileLoadingCircle"); //disable the loading circle 
             fileLoadingCircle.style.visibility = "hidden";
         }
+    } else if (json_string == ""){
+        alert("Server nicht erreichbar")
+        location.reload();
     }
     else
     {
         const json_object = JSON.parse(json_string);
         drawpreview(json_object);
-        if(buttonExists){
+        if(indexpage){
             document.getElementById("startprinting").disabled = false;
             document.getElementById("startprinting").title = "Press to start the Print";
             const fileLoadingCircle = document.getElementById("fileLoadingCircle"); //disable the loading circle 
