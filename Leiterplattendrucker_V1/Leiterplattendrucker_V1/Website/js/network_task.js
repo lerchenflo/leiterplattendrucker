@@ -1,9 +1,4 @@
-//const SERVER_ADDR = "http://192.168.144.48:6850";
 const SERVER_ADDR = location.host;
-//const SERVER_ADDR = "http://localhost:6850";
-
-import {updateProgress} from './ui.js'
-
 
 export function ping(){
     var req = new XMLHttpRequest();
@@ -35,17 +30,14 @@ export function get_preview(){
     return req.responseText;
 }
 
+// check if printer is aready printing
 export function isPrinting(){
     var req = new XMLHttpRequest();
     req.open("GET", SERVER_ADDR, false);
     req.setRequestHeader("action", "isprinting");
     req.send(null);
 
-    if(req.responseText == "True"){
-        return true;
-    }else{
-        return false;
-    }
+    return req.responseText == "True";
     
 }
 

@@ -200,7 +200,7 @@ background-color: var(--canvas-bg);
     display: none;
     justify-content: left;
     align-items: center;
-    margin-left:10%;
+    padding-left:12%;
   }
   /* Popup content */
   .popup-content {

@@ -136,7 +136,7 @@ namespace gerber2coordinatesTEST
                                     setoffset(Convert.ToDouble(offsetx), Convert.ToDouble(offsety));
                                     setmirror(Convert.ToBoolean(mirror));
                                     break;
-
+                                    
                                 default:
                                     logtoconsole($"Webserver: Fehler - Ungültige Aktion: {action}");
                                     break;
