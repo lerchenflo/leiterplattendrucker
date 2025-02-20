@@ -21,6 +21,7 @@
             accept=".gbr, .gerber, .gtl"
             class="file-input"
           />
+          <div class="loader" id="fileLoadingCircle"></div>
         </form>
       </div>
       
@@ -106,7 +107,9 @@
   </script>
 
 <script type="module">
-  import {set_settings} from './js/network_task.js';
+  
+  import {send_gerber, isPrinting, start, set_settings} from './js/network_task.js';
+  import {drawPreviewFromServer, redirectIfPrinting} from './js/ui.js';
 
   // input fields for filling-level and pad-size
   const fillLvlInp = document.getElementById("filling-level");
@@ -114,6 +117,8 @@
   const offsetx = document.getElementById("offsetx");
   const offsety = document.getElementById("offsety");
   const mirror = document.getElementById("mirror");
+  const fileLoadingCircle = document.getElementById("fileLoadingCircle"); //disable the loading circle 
+  fileLoadingCircle.style.visibility = "hidden";
 
   function sendNewSetting(){
     set_settings(padfillLvlInp.value, fillLvlInp.value, offsetx.value, offsety.value, mirror.checked);
@@ -145,11 +150,7 @@
     sendNewSetting();
   }
 
-</script>
-
-  <script type="module">
-    import {send_gerber, isPrinting, start} from './js/network_task.js';
-    import {drawPreviewFromServer, redirectIfPrinting} from './js/ui.js';
+    
     
     redirectIfPrinting();
 
@@ -170,7 +171,7 @@
                 console.log("error reading file");
             }
         }
-
+        fileLoadingCircle.style.visibility = "visible";
         setInterval(drawPreviewFromServer, 500); // get and draw the preview after 500ms
         setTimeout(drawPreviewFromServer, 3000, true, true)
 

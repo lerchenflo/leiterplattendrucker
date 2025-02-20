@@ -20,7 +20,10 @@ export function drawPreviewFromServer(buttonExists=true, alertBool=false){ // ge
         if(buttonExists){
             document.getElementById("startprinting").disabled = true;
             document.getElementById("startprinting").title = "Please upload valid Gerberfile first";
-        }     
+        }if(alertBool && buttonExists){
+            const fileLoadingCircle = document.getElementById("fileLoadingCircle"); //disable the loading circle 
+            fileLoadingCircle.style.visibility = "hidden";
+        }
     }
     else
     {
@@ -29,6 +32,8 @@ export function drawPreviewFromServer(buttonExists=true, alertBool=false){ // ge
         if(buttonExists){
             document.getElementById("startprinting").disabled = false;
             document.getElementById("startprinting").title = "Press to start the Print";
+            const fileLoadingCircle = document.getElementById("fileLoadingCircle"); //disable the loading circle 
+            fileLoadingCircle.style.visibility = "hidden";
         } 
     }
 }
