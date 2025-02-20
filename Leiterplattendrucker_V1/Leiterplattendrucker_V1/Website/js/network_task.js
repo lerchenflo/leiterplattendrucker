@@ -21,13 +21,19 @@ export function send_gerber(gerber_content){
     
 }
 
-// get berber preview 
+// get gerber preview 
 export function get_preview(){
-    var req = new XMLHttpRequest();
-    req.open("GET", SERVER_ADDR, false);
-    req.setRequestHeader("action", "getgerberpreview");
-    req.send(null);
-    return req.responseText;
+    let ret = "";
+    try{
+        var req = new XMLHttpRequest();
+        req.open("GET", SERVER_ADDR, false);
+        req.setRequestHeader("action", "getgerberpreview");
+        req.send(null);
+        ret = req.responseText;
+    }catch(err){
+        console.log("Error during get_preview" + err);
+    }
+    return ret;
 }
 
 // check if printer is aready printing
