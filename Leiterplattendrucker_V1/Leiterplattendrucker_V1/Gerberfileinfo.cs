@@ -1232,7 +1232,7 @@ namespace gerber2coordinatesTEST
                     gerberLines.Add(new GerberLine(startPoint, endPoint, true)); // true for paint
                 }
             }
-            //gerberLines.AddRange(getoutline());
+            gerberLines.AddRange(getoutline());
 
             return gerberLines;
         }
@@ -1275,6 +1275,25 @@ namespace gerber2coordinatesTEST
             }
 
             return intersections;
+        }
+
+
+
+        private List<GerberLine> getoutline()
+        {
+            List<GerberLine> returnlist = new List<GerberLine>();
+
+            for (int i = 0; i < _poligoncornerpoints.Count; i++)
+            {
+                //Pointer entfernen,
+                GerberPoint startp = new GerberPoint(_poligoncornerpoints[i].X, _poligoncornerpoints[i].Y);
+                GerberPoint endp = new GerberPoint(_poligoncornerpoints[(i + 1) % _poligoncornerpoints.Count].X, _poligoncornerpoints[(i + 1) % _poligoncornerpoints.Count].Y);
+
+
+                returnlist.Add(new GerberLine(startp,endp));
+            }
+
+            return returnlist;
         }
 
     }
