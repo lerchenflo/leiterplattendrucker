@@ -24,8 +24,8 @@
 // Endstops
 #define EX1 A2
 #define EX2 A3
-#define EY1 A4
-#define EY2 A5
+#define EY1 13
+#define EY2 A1
 #define EZ1 11 // A6 & A7 sind keine GPIO pins
 #define EZ2 12
 // https://edistechlab.com/wp-content/uploads/2023/11/Pinout_arduino_nano.png
