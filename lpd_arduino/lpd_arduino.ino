@@ -3,7 +3,7 @@
 #define VERSION 1
 
 // change mode for debugging
-#define USENS
+//#define USENS
 //#define IIC
 
 // X-Axis Driver
@@ -30,7 +30,7 @@
 #define EZ2 12
 // https://edistechlab.com/wp-content/uploads/2023/11/Pinout_arduino_nano.png
 
-#define PREASSURE_SNS A0
+#define PREASSURE_SNS A5
 
 // Ultrasonic sensor
 #ifdef USENS
@@ -46,11 +46,12 @@
 #define HOMEY 50000
 
 // Constants
-#define StepsPerMM 1282 // innacuratly measured
+#define StepsPerMM 128 // innacuratly measured
 #define SPEED 50 //Period of the pulse in us (lower value = higher speed)
 #define TRAVEL_HEIGT 8000 // Steps to drive up or down while driving to 0,0. should be obselete as soon as z endswitches are implemented
-#define HEIGHT_DIFF 50 // Value in mm?, the Distance from the ultrasonic sensor to the tip op the Pen from the printhead
-#define MEASUREMENTS 10 //number of measurements the ultrasonic sensor does befor calculating average
+#define HEIGHT_DIFF 100 // Value in mm?, the Distance from the ultrasonic sensor to the tip op the Pen from the printhead
+#define MEASUREMENTS 40 //number of measurements the ultrasonic sensor does befor calculating average
+#define RETRACT 500 // Steps to drive up after driving to preassure
 
 #define SLAVE_ADDR 9 // Slave address for the SPI communicatin with the second arduino
 
@@ -81,7 +82,7 @@ void init_motor_pins(){
   digitalWrite(Y_ENA, LOW);
   digitalWrite(Z_ENA, LOW);
 
-  #define USENS
+  
   #ifdef USENS
     pinMode(PIN_TRIGGER, OUTPUT);
     pinMode(PIN_ECHO, INPUT);
@@ -210,10 +211,13 @@ void drive_preassure(int stopPreassure){ // drive the z axis down until the set 
   // send signals to the motor
   digitalWrite(Z_DIR, LOW); // drive down
   digitalWrite(Z_ENA,HIGH);
+
+  Serial.print("Preassure bevore: ");
+  Serial.println(analogRead(PREASSURE_SNS));
   
   while(analogRead(PREASSURE_SNS) < stopPreassure) // check if wanted preassure is reached
     {
-      if(true){ // endstop placeholder
+      if(digitalRead(EZ2)){ // endstop placeholder
         digitalWrite(Z_PUL,HIGH);
         delayMicroseconds(speed);
         digitalWrite(Z_PUL,LOW);
@@ -223,9 +227,27 @@ void drive_preassure(int stopPreassure){ // drive the z axis down until the set 
         break; // end driving
       }
     }
-    Serial.println("preassure reached"); // send a message back to the controll programm
+    Serial.print("preassure reached: "); // send a message back to the controll programm
+
+    //int up = 500; // drive x steps up again to reach optimal heigth
+    digitalWrite(Z_DIR, HIGH); // drive up again
+    for(int i=0; i<RETRACT; i++){
+      if(digitalRead(EZ1)){ // endstop placeholder
+        digitalWrite(Z_PUL,HIGH);
+        delayMicroseconds(SPEED);
+        digitalWrite(Z_PUL,LOW);
+        delayMicroseconds(SPEED);
+      }else{
+        Serial.println("end stop reached");
+        break; // end driving
+      }
+    }
+
     digitalWrite(Z_ENA,LOW);
+    Serial.println(analogRead(PREASSURE_SNS));
 }
+
+#ifdef USENS
 
 unsigned int measureDistance(){
   unsigned long totalDuration = 0;
@@ -244,6 +266,8 @@ unsigned int measureDistance(){
   Serial.println("Distance: " + String(distance));
   return distance;
 }
+
+#endif
 
 void zero_pos(int speed){  //drive to 0,0 position until hitting an endstop
   //drive z up while positioning to 0
@@ -381,14 +405,17 @@ void loop() {
       #endif
       #ifdef USENS
       unsigned int measMM = measureDistance();
-      #endif
       Serial.println(measMM);
+      #endif
+      #ifdef USENS || IIC
       if(measMM > HEIGHT_DIFF){
         unsigned long steps = mmToSteps(measMM - HEIGHT_DIFF); // calculate steps based on ultrasonic sensor measurement
         drive(2, false, steps, SPEED); // drive the z-Axis down to the right position
       }else{
         Serial.println("Error: wrong HEIGHT_DIFF defined or Printhead at to low position");
       }
+      #endif
+      drive_preassure(100); //drive the z-axis until a certain preassure is reached
     }
 
     // Convert text into boolean values for the driving directions
