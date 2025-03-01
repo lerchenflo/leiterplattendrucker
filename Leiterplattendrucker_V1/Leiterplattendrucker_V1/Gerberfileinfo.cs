@@ -122,7 +122,7 @@ namespace gerber2coordinatesTEST
             _gerberfilecontent = String.Empty;
             _unit = Unit.undef;
             _currentline = 0;
-            
+
         }
 
 
@@ -338,6 +338,7 @@ namespace gerber2coordinatesTEST
             //Start finden
             List<GerberLine> newlines = new List<GerberLine>();
 
+            //Startpunkt finden (Am nächsten zum Koordinatenursprung)
             GerberPoint startpoint = getstartpoint();
             newlines.Add(find_line_with_same_start(startpoint));
 
@@ -347,25 +348,34 @@ namespace gerber2coordinatesTEST
             //Durch die restlichen linien cyclen und sortieren
             for (int i = _lines.Count - 1; i >= 0; i--)
             {
+                //Linie mit gleichem Startpunkt finden
                 GerberLine line = find_line_with_same_start(newlines[newlines.Count - 1]._startpoint);
+
+                //Wenn Linie nicht gefunden dann mit gleichem Endpunkt finden
                 if (line == null)
                 {
                     line = find_line_with_same_start(newlines[newlines.Count - 1]._endpoint);
                 }
 
+                //Wenn eine Linie gefunden wurde, wird sie zur neuen Liste hinzugefügt und aus der alten Liste entfertn
                 if (line != null)
                 {
                     newlines.Add(line);
                     _lines.Remove(line);
                 }
-                else //Keine linie mit gleichem startpunkt gefunden
+                else //Wenn keine linie mit gleichem startpunkt gefunden
                 {
-                    GerberLine line1 = find_nearest_line(newlines[newlines.Count - 1]._startpoint);
+                    //Nächste Linie finden, da es keine Exakte gibt
+                    GerberLine line1 = find_nearest_line(newlines[newlines.Count - 1]._startpoint, newlines[newlines.Count - 1]._endpoint);
+
+                    /*
                     if (line1 == null)
                     {
                         line1 = find_nearest_line(newlines[newlines.Count - 1]._endpoint);
                     }
+                    */
 
+                    //Linie gefunden, wird hinzugefügt und aus der alten Liste entfernt
                     if (line1 != null)
                     {
                         newlines.Add(line1);
@@ -373,6 +383,7 @@ namespace gerber2coordinatesTEST
                     }
                     else
                     {
+                        //Darf nicht passieren, sonst gehen Linien verloren
                         Debug.WriteLine("Keine Linie gefunden");
                     }
 
@@ -422,14 +433,19 @@ namespace gerber2coordinatesTEST
         /// </summary>
         public void calculateroute()
         {
-            // Startpunkt zu erster Linie
+            //Startpunkt ist bei 0,0
             GerberPoint beginpoint = new GerberPoint(0, 0);
+
+            //Wenn die erste Leiterbahn nicht bei 0,0 startet
             if (!_lines[0]._startpoint.Equals(beginpoint))
             {
                 Debug.WriteLine("Startpunkt nicht bei 0,0");
                 GerberLine startline = new GerberLine(beginpoint, _lines[0]._startpoint, false);
+
+                //Fahrtlinie vom Startpunkt bis zur ersten Linie einfügen
                 _lines.Insert(0, startline);
             }
+
 
             for (int i = 1; i < _lines.Count; i++)
             {
@@ -444,7 +460,7 @@ namespace gerber2coordinatesTEST
                     {
                         if (_lines[j]._startpoint == endpoint)
                         {
-                            // Swap lines to ensure continuity
+                            // Aktuelle Linie mit neu gefundener Linie tauschen
                             var temp = _lines[i];
                             _lines[i] = _lines[j];
                             _lines[j] = temp;
@@ -453,7 +469,7 @@ namespace gerber2coordinatesTEST
                         }
                         else if (_lines[j]._endpoint == endpoint)
                         {
-                            // Swap lines and reverse to ensure continuity
+                            // Aktuelle Linie mit neu gefundener Linie tauschen
                             _lines[j].switchstartend();
                             var temp = _lines[i];
                             _lines[i] = _lines[j];
@@ -525,17 +541,19 @@ namespace gerber2coordinatesTEST
         /// </summary>
         /// <param name="point"></param>
         /// <returns>Nächste Linie</returns>
-        public GerberLine find_nearest_line(GerberPoint point)
+        public GerberLine find_nearest_line(GerberPoint startpoint, GerberPoint endpoint)
         {
-            double shortestdistance = 1000000;
+            double shortestdistance = double.MaxValue;
             int shortestdistindex = 0;
+
             for (int i = 0; i < _lines.Count; i++)
             {
-                double[] distance = _lines[i].getdistance(point.X, point.Y);
-
-                if (distance[0] < shortestdistance)
+                double[] distancestart = _lines[i].getdistance(startpoint.X, startpoint.Y);
+                double[] distanceend = _lines[i].getdistance(endpoint.X, endpoint.Y);
+                double shorter = distancestart[0] > distanceend[0] ? distancestart[0] : distanceend[0];
+                if (shorter < shortestdistance)
                 {
-                    shortestdistance = distance[0];
+                    shortestdistance = shorter;
                     shortestdistindex = i;
                 }
             }
@@ -581,13 +599,11 @@ namespace gerber2coordinatesTEST
         public void mirrorgerberfile()
         {
             //Gerberfile spiegeln
-
             foreach (GerberLine l in _lines)
             {
                 l._startpoint.X = -l._startpoint.X;
                 l._endpoint.X = -l._endpoint.X;
             }
-
         }
 
         private void correctnegativeoffsets()
@@ -631,19 +647,26 @@ namespace gerber2coordinatesTEST
 
         private void movetopad()
         {
-            double Xoffset = 100000;
-            double Yoffset = 100000;
+            //X und Y Offset auf maximalen Wert setzen
+            double Xoffset = double.MaxValue;
+            double Yoffset = double.MaxValue;
 
-            //Offset auf maximal gesetzt, jetzt muss der kleiste Offset gefunden und korrigiert werden
+            //Schleife durch alle GerberLines
             foreach (GerberLine line in _lines)
             {
+                //Offsets der aktuellen Linie holen (GerberPoint mit X und Y Koordinate)
                 GerberPoint g = line.getpositiveoffset();
+
+                //Wenn der Offset der aktuellen Linie kleiner ist, dann wird der aktuelle
+                //Wert als kleinster gesetzt, sonst bleibt der alte Wert der kleinste.
                 Xoffset = g.X < Xoffset ? g.X : Xoffset;
                 Yoffset = g.Y < Yoffset ? g.Y : Yoffset;
             }
 
+            //Schleife durch alle GerberLines
             foreach (GerberLine l in _lines)
             {
+                //Für jede GerberLine den Offset mit den Offset aus den Settings korrigieren
                 l.correctoffset(-Xoffset + _settings.getoffset()[0], -Yoffset + _settings.getoffset()[1]);
             }
         }
@@ -1117,7 +1140,7 @@ namespace gerber2coordinatesTEST
                 _settings.Add(new GerberSetting(Setting, value, value2));
             }
 
-            Druckerserver.logtoconsole("Settings: " + Setting.ToString() + ": " + value + (value2 != 0 ? "; " + Convert.ToString(value2) : ""));
+            //Druckerserver.logtoconsole("Settings: " + Setting.ToString() + ": " + value + (value2 != 0 ? "; " + Convert.ToString(value2) : ""));
 
             //Callback ausführen, es wurde etwas geändert
             _onchangecallback?.Invoke(_callbackFileContent);
@@ -1290,7 +1313,7 @@ namespace gerber2coordinatesTEST
                 GerberPoint endp = new GerberPoint(_poligoncornerpoints[(i + 1) % _poligoncornerpoints.Count].X, _poligoncornerpoints[(i + 1) % _poligoncornerpoints.Count].Y);
 
 
-                returnlist.Add(new GerberLine(startp,endp));
+                returnlist.Add(new GerberLine(startp, endp));
             }
 
             return returnlist;
