@@ -408,7 +408,8 @@ namespace gerber2coordinatesTEST
 
                     if (USEUSB_DEBUG)
                     {
-                        serialconn.driveXY((int)drivecoords.X, (int)drivecoords.Y, currentline._paint);
+                        serialconn.driveXY((int)(drivecoords.X * 10), (int)(drivecoords.Y * 10), currentline._paint);
+                        logtoconsole("X: " + (int)(drivecoords.X * 10) + " Y: " + (int)(drivecoords.Y * 10));
                     }
                 }
                 else

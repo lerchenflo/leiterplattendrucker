@@ -41,7 +41,6 @@ namespace lpd_ansteuerung
 
             try
             {
-    
                 CancellationTokenSource cts = new CancellationTokenSource();
 
                 Thread t = new Thread((uebergebenerport) =>
@@ -66,19 +65,14 @@ namespace lpd_ansteuerung
                         }
                         else if (cts.IsCancellationRequested)
                         {
-
                             break;
                         }
-                        
-                        
                     }
                     
                     s1.close();
-                    
                 });
                 t.Start(port);
                 
-
                 Thread.Sleep(2000);
 
                 if (cts.IsCancellationRequested)
@@ -90,16 +84,11 @@ namespace lpd_ansteuerung
                     cts.Cancel();
                     return false;
                 }
-
-                
-                
-                //s.close();
             }
             catch (Exception e)
             {
                 Druckerserver.logtoconsole(e.Message, 1);
                 functions = false;
-                
             }
             
             return functions;
@@ -233,14 +222,14 @@ namespace lpd_ansteuerung
             {
                 if (draw)
                 {
-                    sendCommand("z", travel_height, z_dir_down, 0, "f");
-                    //sendCommand("d"); // send command to drive printhead down
+                    //sendCommand("z", travel_height, z_dir_down, 0, "f");
+                    sendCommand("d"); // send command to drive printhead down
                     drawing = true;
                 }
                 else
                 {
-                    sendCommand("z", travel_height, z_dir_up, 0, "f");
-                    //sendCommand("u"); // send command to drive printhead up
+                    //sendCommand("z", travel_height, z_dir_up, 0, "f");
+                    sendCommand("u"); // send command to drive printhead up
                     drawing = false;
                 }
             }

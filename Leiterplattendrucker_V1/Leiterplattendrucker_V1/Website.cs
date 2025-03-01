@@ -25,7 +25,7 @@ namespace Leiterplattendrucker_V1
             {
                 requesturl = "/index.html";
             }
-            //Favicon muss seperat verändert werden
+            //Favicon muss separat verändert werden
             else if (requesturl == "favicon.ico")
             {
                 requesturl = "/favicon.ico";
@@ -63,7 +63,7 @@ namespace Leiterplattendrucker_V1
             if (Encoding.UTF8.GetString(body) == string.Empty)
             {
                 Druckerserver.logtoconsole("Website: Fehler - Kein File geladen", 1);
-                //Wenn ein falsches File angefordert wird, wird ein fehlercode zurückgegeben
+                //Wenn ein falsches File angefordert wird, wird ein Fehlercode zurückgegeben
                 statuscode = (int)HttpStatusCode.NotFound;
                 body = new byte[0];
             }
