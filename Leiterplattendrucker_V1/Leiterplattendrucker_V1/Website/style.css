@@ -84,15 +84,6 @@ button[disabled] {
     width: 100%; /* Full width by default */
 }
 
-.header {
-    display: flex;
-    align-items: center;
-    gap: 30px;
-}
-
-.header img {
-    height: 35px;
-}
 
 progress {
     width: 100%;
@@ -118,13 +109,6 @@ border: 1px solid var(--bright-blue);
 background-color: var(--canvas-bg);
 }
 
-/*
-#pcbPreview {
-    display: block;
-    margin: 20px auto;
-    
-}
-    */
 
 #settingsicon {
     width: 20px;

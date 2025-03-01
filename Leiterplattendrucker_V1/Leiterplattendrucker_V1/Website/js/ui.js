@@ -6,7 +6,7 @@ export function updateProgress(){
     var progressBar = document.getElementById("printProgressBar");
     var progressText = document.getElementById("progessText");
     progressBar.value = val;
-    progressText.innerHTML = "Progress: " + progressBar.value + "%";
+    progressText.innerHTML = "Fortschritt: " + progressBar.value + "%";
   }
 
 export function drawPreviewFromServer(indexpage=true, alertBool=false){ // gets the Preview from the Server and displays it, when buttonexits = true it disables the start button from index.html
@@ -19,7 +19,7 @@ export function drawPreviewFromServer(indexpage=true, alertBool=false){ // gets 
         }
         if(indexpage){
             document.getElementById("startprinting").disabled = true; // disable start button
-            document.getElementById("startprinting").title = "Please upload valid Gerberfile first";
+            document.getElementById("startprinting").title = "Bitte zuerst eine korrekte Gerberdatei hochladen";
             document.getElementById("file-selector").value = '';
             const canvas = document.getElementById("pcbPreview");// clear canvas
             canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height); 
@@ -37,7 +37,7 @@ export function drawPreviewFromServer(indexpage=true, alertBool=false){ // gets 
         drawpreview(json_object);
         if(indexpage){
             document.getElementById("startprinting").disabled = false;
-            document.getElementById("startprinting").title = "Press to start the Print";
+            document.getElementById("startprinting").title = "Startet den Druckvorgang";
             const fileLoadingCircle = document.getElementById("fileLoadingCircle"); //disable the loading circle 
             fileLoadingCircle.style.visibility = "hidden";
         } 

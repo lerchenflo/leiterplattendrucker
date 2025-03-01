@@ -43,7 +43,7 @@ export function isPrinting(){
     req.setRequestHeader("action", "isprinting");
     req.send(null);
 
-    return req.responseText == "True";
+    return req.responseText == "True"; // convert to Boolean value
     
 }
 

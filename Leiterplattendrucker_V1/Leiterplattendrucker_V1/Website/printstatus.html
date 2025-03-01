@@ -1,27 +1,27 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>PCB Printer Website</title>
+  <title>Druckfortschritt</title>
   <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-  <h1>PCB Printer Status</h1>
+  <h1>Leiterplattendrucker Druckfortschritt</h1>
 
 <div class="container">
   <div class="column">
 
-  <div id="previewdiv">
+  <div id="previewdiv" title="Vorschau">
     <canvas id="pcbPreview" width="1000" height="600"></canvas>
   </div>
 
   <div class="legend">
     <div class="legend-item">
         <div class="color-box gold"></div>
-        <span>Drawing</span>
+        <span>Leiterbahn</span>
     </div>
     <div class="legend-item">
         <div class="color-box red"></div>
-        <span>Not Drawing</span>
+        <span>übersprungener Pfad</span>
     </div>
   </div>
 </div>
@@ -32,20 +32,28 @@
   </div>
 
   <div class="center">
-    <button id="stop">Stop</button>
-    <button id="pause">Pause</button>
+    <button id="stop" title="Druck abbrechen">Stopp</button>
+    <button id="pause" title="Druck pausieren oder fortsetzen (fahranweisung wird noch fertig gefahren)">Pausieren / Fortsetzen</button>
   </div>
 </div>
   <script type="module">
     import {redirectIfPrinting, drawPreviewFromServer, updateProgress} from './js/ui.js';
-    import {stop, pauseprinting} from './js/network_task.js';
+    import {stop, pauseprinting, getPrintStatus, isPrinting} from './js/network_task.js';
 
-    //if(!redirectIfPrinting())// go back to index.html if printer is not printing
-    if(true) //for debugging with server in debugging mode
+    if(!redirectIfPrinting())// go back to index.html if printer is not printing
+    //if(true) //for debugging with server in debugging mode
     {
       drawPreviewFromServer(false); // draw the preview
-      setInterval(updateProgress, 1000);
-    } 
+      setInterval(updateProgress, 500);
+      setInterval(checkForEnd, 2000)
+    }
+
+    function checkForEnd(){
+      if(getPrintStatus() == 0 && !isPrinting()){ // if progress is at 0 percent and is not printing, idication that progress is finished
+        alert("Druck Fertig");
+        location.href="./"
+      }
+    }
 
 
     // Button onclicks

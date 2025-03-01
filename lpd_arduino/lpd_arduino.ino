@@ -3,8 +3,9 @@
 #define VERSION 1
 
 // change mode for debugging
-//#define USENS
-//#define IIC
+//#define USENS // Ultrasonic sensor
+//#define IIC //iic communication to other arduino
+#define PRESS //preassures sensor
 
 // X-Axis Driver
 #define X_PUL 2
@@ -24,13 +25,15 @@
 // Endstops
 #define EX1 A2
 #define EX2 A3
-#define EY1 13
+#define EY1 A0
 #define EY2 A1
 #define EZ1 11 // A6 & A7 sind keine GPIO pins
 #define EZ2 12
 // https://edistechlab.com/wp-content/uploads/2023/11/Pinout_arduino_nano.png
 
-#define PREASSURE_SNS A5
+#ifdef PRESS
+  #define PREASSURE_SNS A4
+#endif
 
 // Ultrasonic sensor
 #ifdef USENS
@@ -76,6 +79,11 @@ void init_motor_pins(){
   pinMode(EY2, INPUT_PULLUP);
   pinMode(EZ1, INPUT_PULLUP);
   pinMode(EZ2, INPUT_PULLUP);
+
+  #ifdef PRESS
+    //drucksensor
+    //pinMode(PREASSURE_SNS, INPUT);
+  #endif
 
   // Set the Enable pins low so the motors are free
   digitalWrite(X_ENA, LOW);
@@ -206,6 +214,7 @@ void drive(int axis, bool dir_val, long steps, long speed){
 
 }
 
+#ifdef PRESS
 void drive_preassure(int stopPreassure){ // drive the z axis down until the set preassure is reached
   int speed = 10; //hardcoded speed
   // send signals to the motor
@@ -217,7 +226,7 @@ void drive_preassure(int stopPreassure){ // drive the z axis down until the set 
   
   while(analogRead(PREASSURE_SNS) < stopPreassure) // check if wanted preassure is reached
     {
-      if(digitalRead(EZ2)){ // endstop placeholder
+      if(digitalRead(EZ1)){ // endstop placeholder
         digitalWrite(Z_PUL,HIGH);
         delayMicroseconds(speed);
         digitalWrite(Z_PUL,LOW);
@@ -232,7 +241,7 @@ void drive_preassure(int stopPreassure){ // drive the z axis down until the set 
     //int up = 500; // drive x steps up again to reach optimal heigth
     digitalWrite(Z_DIR, HIGH); // drive up again
     for(int i=0; i<RETRACT; i++){
-      if(digitalRead(EZ1)){ // endstop placeholder
+      if(digitalRead(EZ2)){ // endstop placeholder
         digitalWrite(Z_PUL,HIGH);
         delayMicroseconds(SPEED);
         digitalWrite(Z_PUL,LOW);
@@ -246,9 +255,9 @@ void drive_preassure(int stopPreassure){ // drive the z axis down until the set 
     digitalWrite(Z_ENA,LOW);
     Serial.println(analogRead(PREASSURE_SNS));
 }
+#endif
 
 #ifdef USENS
-
 unsigned int measureDistance(){
   unsigned long totalDuration = 0;
   for(int i=0; i<MEASUREMENTS; i++){
@@ -266,7 +275,6 @@ unsigned int measureDistance(){
   Serial.println("Distance: " + String(distance));
   return distance;
 }
-
 #endif
 
 void zero_pos(int speed){  //drive to 0,0 position until hitting an endstop
@@ -306,7 +314,7 @@ void zero_pos(int speed){  //drive to 0,0 position until hitting an endstop
   digitalWrite(X_ENA, LOW);
   digitalWrite(Y_ENA, LOW);
 
-  drive(2, false, TRAVEL_HEIGT, speed); // drive z axis back down for debuggin purposes
+  //drive(2, false, TRAVEL_HEIGT, speed); // drive z axis back down for debuggin purposes
   Serial.println("Endstops reached");
 }
 
@@ -383,7 +391,7 @@ void loop() {
     else if(axisCmd == 'b'){ // drive x and y axis at the same time
       axis = 3;
       Serial.println("Driving 2 directions");
-    }else if(axisCmd == 'p'){ // drive to set pressure
+    }else if(axisCmd == 'p'){ // drive to set pressure (outdated)
       axis = 4;
       Serial.println("Driving z to preassure");
     }else if (axisCmd == '0'){ // drive to home Position
@@ -403,6 +411,7 @@ void loop() {
       #ifdef IIC      
       unsigned int measMM = requestIIC(); // gets the distance to the ground from the printhead Arduino
       #endif
+
       #ifdef USENS
       unsigned int measMM = measureDistance();
       Serial.println(measMM);
@@ -415,7 +424,10 @@ void loop() {
         Serial.println("Error: wrong HEIGHT_DIFF defined or Printhead at to low position");
       }
       #endif
-      drive_preassure(100); //drive the z-axis until a certain preassure is reached
+
+      #ifdef PRESS
+        drive_preassure(300); //drive the z-axis until a certain preassure is reached
+      #endif
     }
 
     // Convert text into boolean values for the driving directions
@@ -452,8 +464,8 @@ void loop() {
   }
 }
 
-void serialEvent() {
-  if (Serial.available() > 0) // Polling for Command over serial
+void serialEvent() { // Serial input Interrupt
+  if (Serial.available() > 0)
   {
     cmd = Serial.readString(); //read the avaliable command over serial
   }
