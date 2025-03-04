@@ -1,0 +1,63 @@
+<map id="gerber2coordinatesTEST.Gerberfileinfo.Initgerberfile" name="gerber2coordinatesTEST.Gerberfileinfo.Initgerberfile">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,321,281,361"/>
+<area shape="rect" id="Node000002" href="$classgerber2coordinatesTEST_1_1Gerberfileinfo.html#a46b55c255eb6f4f9a1fcb07874fc7324" title="Linien zwischen den Leiterbahnen erstellen, welche vom Drucker abgefahren werden, ohne gezeichnet zu ..." alt="" coords="356,5,725,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="148,319,168,262,204,185,228,144,257,105,290,69,328,40,342,32,345,36,331,44,293,73,261,108,232,147,208,187,173,264,153,321"/>
+<area shape="rect" id="Node000003" href="$classgerber2coordinatesTEST_1_1Gerberfileinfo.html#acd09aaf89a0109e953cac5c74b166bd9" title=" " alt="" coords="355,55,726,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="150,319,173,270,211,207,263,142,294,113,328,89,341,82,343,87,331,94,297,117,267,145,216,210,178,273,155,322"/>
+<area shape="rect" id="Node000004" href="$classgerber2coordinatesTEST_1_1Gerberfileinfo.html#a2f41bfcda0c2509431f4a0746543c651" title="Konvertierung der Zeilen aus dem Gerberfile in GerberLine Objekte." alt="" coords="335,104,746,129"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="154,319,180,279,219,229,269,179,298,157,328,138,343,132,345,136,331,143,301,161,273,183,223,232,185,282,159,322"/>
+<area shape="rect" id="Node000005" href="$classgerber2coordinatesTEST_1_1Gerberfileinfo.html#a964606e16064f4673f65043f0a314d0a" title=" " alt="" coords="329,153,752,179"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="160,318,189,288,229,252,276,216,328,188,348,180,350,185,330,192,279,221,232,256,193,292,164,322"/>
+<area shape="rect" id="Node000006" href="$classgerber2coordinatesTEST_1_1Gerberfileinfo.html#a91e20a7c0ad8148d3c7ad6daa6de4e4e" title=" " alt="" coords="347,203,734,228"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="172,318,241,276,284,254,329,237,360,228,362,233,330,242,286,259,243,280,175,323"/>
+<area shape="rect" id="Node000011" href="$classgerber2coordinatesTEST_1_1Gerberfileinfo.html#a35d701d89e2b7ba549132f359e8b068d" title=" " alt="" coords="335,252,746,277"/>
+<area shape="poly" id="edge10_Node000001_Node000011" title=" " alt="" coords="222,318,329,294,431,277,432,282,330,299,223,323"/>
+<area shape="rect" id="Node000013" href="$classgerber2coordinatesTEST_1_1GerberSettingsList.html#a0bcf32cdcdaf083054b70969b9c36972" title=" " alt="" coords="867,309,1093,349"/>
+<area shape="poly" id="edge14_Node000001_Node000013" title=" " alt="" coords="281,336,853,328,853,333,281,341"/>
+<area shape="rect" id="Node000014" href="$classgerber2coordinatesTEST_1_1Gerberfileinfo.html#a08b324bafb8e1f416642087a26fcc934" title="Unit aus dem Gerberfile auslesen." alt="" coords="379,403,702,428"/>
+<area shape="poly" id="edge16_Node000001_Node000014" title=" " alt="" coords="211,358,330,387,397,398,396,404,329,393,210,363"/>
+<area shape="rect" id="Node000015" href="$classgerber2coordinatesTEST_1_1Gerberfileinfo.html#ae20e9e51930f42daf1f7eb229f415367" title=" " alt="" coords="351,452,730,477"/>
+<area shape="poly" id="edge17_Node000001_Node000015" title=" " alt="" coords="175,358,244,399,286,420,330,437,368,447,367,452,329,442,284,425,242,404,172,363"/>
+<area shape="rect" id="Node000016" href="$classgerber2coordinatesTEST_1_1Gerberfileinfo.html#ac8d7417d6b59429f86c4116bfe6f3343" title=" " alt="" coords="365,353,716,379"/>
+<area shape="poly" id="edge18_Node000001_Node000016" title=" " alt="" coords="282,347,351,351,351,357,281,352"/>
+<area shape="rect" id="Node000020" href="$classgerber2coordinatesTEST_1_1Gerberfileinfo.html#ae138707b86ad38df4a921d19e46ca2b2" title="Alle Kommentaare aus dem Gerberfile entfernen." alt="" coords="377,502,704,542"/>
+<area shape="poly" id="edge23_Node000001_Node000020" title=" " alt="" coords="165,359,233,423,280,458,330,486,365,499,363,504,328,491,277,463,230,428,161,363"/>
+<area shape="rect" id="Node000021" href="$classgerber2coordinatesTEST_1_1Gerberfileinfo.html#a8759fb123bde312ef2cbdaac2ad2032c" title=" " alt="" coords="344,567,737,592"/>
+<area shape="poly" id="edge24_Node000001_Node000021" title=" " alt="" coords="158,360,183,402,221,455,271,509,300,532,331,552,347,559,345,564,328,556,297,537,267,513,217,458,178,405,153,362"/>
+<area shape="rect" id="Node000022" href="$classgerber2coordinatesTEST_1_1Gerberfileinfo.html#a2d0e089c433ced29af13ae3505d0ebc5" title="Linien der Reihe nach sortieren, damit der Drucker nicht hin und her muss." alt="" coords="375,616,707,641"/>
+<area shape="poly" id="edge25_Node000001_Node000022" title=" " alt="" coords="155,360,177,411,214,478,237,513,265,546,296,576,331,601,363,616,360,621,328,606,293,580,261,550,233,516,209,480,172,413,150,362"/>
+<area shape="rect" id="Node000027" href="$classgerber2coordinatesTEST_1_1Gerberfileinfo.html#a9b409938f8afa89a7625ed59f86e3dd6" title="Start und Enden vertauschen, damit die nächste Linie dort anfängt wo die vorherige aufhört und die op..." alt="" coords="374,669,707,695"/>
+<area shape="poly" id="edge31_Node000001_Node000027" title=" " alt="" coords="152,360,172,419,207,500,231,543,259,584,292,621,331,652,362,668,360,673,328,656,289,625,255,587,226,545,202,502,167,421,147,362"/>
+<area shape="rect" id="Node000007" href="$classgerber2coordinatesTEST_1_1GerberSettingsList.html#a547dd3499bfb7480d52fda231ebc3488" title=" " alt="" coords="867,130,1093,170"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="656,200,752,187,853,170,854,175,752,193,657,205"/>
+<area shape="rect" id="Node000009" href="$classgerber2coordinatesTEST_1_1Gerbertoolbox.html#a9c535ff4a74b677aed43f88b2626b30e" title=" " alt="" coords="821,195,1139,220"/>
+<area shape="poly" id="edge8_Node000006_Node000009" title=" " alt="" coords="734,209,807,208,807,213,734,214"/>
+<area shape="rect" id="Node000008" href="$classgerber2coordinatesTEST_1_1GerberSettingsList.html#a8b0449100b4f26e9d131a8f127ad3d1c" title=" " alt="" coords="1291,277,1517,317"/>
+<area shape="poly" id="edge7_Node000007_Node000008" title=" " alt="" coords="1094,157,1129,166,1161,180,1177,192,1187,204,1195,217,1209,229,1255,252,1302,270,1300,275,1252,257,1207,234,1191,221,1182,207,1173,195,1159,184,1127,171,1093,162"/>
+<area shape="rect" id="Node000010" href="$classgerber2coordinatesTEST_1_1Gerbertoolbox.html#aa745b83fde9503e2dbd3a27d2f05d912" title=" " alt="" coords="1208,195,1600,220"/>
+<area shape="poly" id="edge9_Node000009_Node000010" title=" " alt="" coords="1139,205,1194,205,1194,210,1139,210"/>
+<area shape="poly" id="edge13_Node000011_Node000009" title=" " alt="" coords="651,249,752,237,876,219,876,225,752,242,651,255"/>
+<area shape="rect" id="Node000012" href="$classgerber2coordinatesTEST_1_1GerberSettingsList.html#a64ed062513aabf62d6a1533c98f3d0a3" title=" " alt="" coords="867,245,1093,285"/>
+<area shape="poly" id="edge11_Node000011_Node000012" title=" " alt="" coords="746,262,853,262,853,267,746,267"/>
+<area shape="poly" id="edge12_Node000012_Node000008" title=" " alt="" coords="1094,271,1277,284,1277,290,1093,276"/>
+<area shape="poly" id="edge15_Node000013_Node000008" title=" " alt="" coords="1093,317,1277,304,1277,309,1094,323"/>
+<area shape="rect" id="Node000017" href="$classgerber2coordinatesTEST_1_1GerberLine.html#ab55117fe7c0a5244530079a0e64263eb" title=" " alt="" coords="867,437,1093,477"/>
+<area shape="poly" id="edge19_Node000016_Node000017" title=" " alt="" coords="716,376,753,388,768,396,778,405,787,414,801,422,854,439,852,444,799,427,784,418,774,409,765,400,751,392,715,381"/>
+<area shape="rect" id="Node000019" href="$classgerber2coordinatesTEST_1_1GerberSettingsList.html#aedf25c3a0d95f36bcdd5996964c3cef5" title=" " alt="" coords="867,373,1093,413"/>
+<area shape="poly" id="edge21_Node000016_Node000019" title=" " alt="" coords="717,374,853,382,853,388,716,379"/>
+<area shape="rect" id="Node000018" href="$classgerber2coordinatesTEST_1_1GerberLine.html#a224b44ce11e8565018e49a3452883d9f" title=" " alt="" coords="1291,437,1517,477"/>
+<area shape="poly" id="edge20_Node000017_Node000018" title=" " alt="" coords="1094,454,1277,454,1277,459,1094,459"/>
+<area shape="poly" id="edge22_Node000019_Node000008" title=" " alt="" coords="1093,371,1159,358,1318,318,1320,323,1161,363,1094,377"/>
+<area shape="rect" id="Node000023" href="$classgerber2coordinatesTEST_1_1Gerberfileinfo.html#a391d943c162991913ed7d0a8e304a236" title="Linie mit gleichem Startpunkt finden." alt="" coords="830,541,1130,581"/>
+<area shape="poly" id="edge26_Node000022_Node000023" title=" " alt="" coords="664,613,752,601,799,590,849,581,850,586,801,595,752,606,665,619"/>
+<area shape="rect" id="Node000025" href="$classgerber2coordinatesTEST_1_1Gerberfileinfo.html#a98f4652c8c10159e911b2a4cc9ae7d2c" title="Linie finden, die in der nähe liegt. Wird verwendet, wenn keine weiterführende Linie vorhanden ist." alt="" coords="830,605,1130,645"/>
+<area shape="poly" id="edge28_Node000022_Node000025" title=" " alt="" coords="707,624,816,623,816,629,707,630"/>
+<area shape="rect" id="Node000026" href="$classgerber2coordinatesTEST_1_1Gerberfileinfo.html#a1fbfbb2aa35fc3dcf85dbaaddab12372" title="Startpunkt finden, an dem angefangen wird zu zeichnen." alt="" coords="800,669,1160,695"/>
+<area shape="poly" id="edge30_Node000022_Node000026" title=" " alt="" coords="646,639,861,665,861,670,646,644"/>
+<area shape="rect" id="Node000024" href="$classgerber2coordinatesTEST_1_1GerberLine.html#ae257141630b8c0e208827571d0477255" title="Abstand zwischen dem Start / Endpunkt und einem Übergebenen Punkt berechnen." alt="" coords="1291,573,1517,613"/>
+<area shape="poly" id="edge27_Node000023_Node000024" title=" " alt="" coords="1131,569,1277,580,1277,586,1130,575"/>
+<area shape="poly" id="edge29_Node000025_Node000024" title=" " alt="" coords="1130,611,1277,600,1277,605,1131,616"/>
+<area shape="poly" id="edge33_Node000027_Node000026" title=" " alt="" coords="708,679,786,679,786,685,708,685"/>
+<area shape="rect" id="Node000028" href="$classgerber2coordinatesTEST_1_1Gerbertoolbox.html#a3d2eaeebd1919e626f5314d934c76f1a" title=" " alt="" coords="802,719,1158,744"/>
+<area shape="poly" id="edge32_Node000027_Node000028" title=" " alt="" coords="655,692,853,714,852,720,654,697"/>
+</map>

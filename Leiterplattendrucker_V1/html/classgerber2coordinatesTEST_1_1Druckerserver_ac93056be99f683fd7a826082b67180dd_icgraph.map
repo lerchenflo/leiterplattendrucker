@@ -1,0 +1,5 @@
+<map id="gerber2coordinatesTEST.Druckerserver.AcceptRequests" name="gerber2coordinatesTEST.Druckerserver.AcceptRequests">
+<area shape="rect" id="Node000001" title="Funktion zum aktzeptieren mehrerer Anfragen gleichzeitig." alt="" coords="331,5,608,45"/>
+<area shape="rect" id="Node000002" href="$classgerber2coordinatesTEST_1_1Druckerserver.html#a3db80629f1401b75124dfebadb1f4c88" title="Httpserver starten." alt="" coords="5,5,283,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="317,28,283,28,283,23,317,23"/>
+</map>

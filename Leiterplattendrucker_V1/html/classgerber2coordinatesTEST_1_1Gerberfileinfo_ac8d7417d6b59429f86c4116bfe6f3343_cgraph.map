@@ -1,0 +1,11 @@
+<map id="gerber2coordinatesTEST.Gerberfileinfo.movetopad" name="gerber2coordinatesTEST.Gerberfileinfo.movetopad">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,45,356,70"/>
+<area shape="rect" id="Node000002" href="$classgerber2coordinatesTEST_1_1GerberLine.html#ab55117fe7c0a5244530079a0e64263eb" title=" " alt="" coords="404,5,631,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="314,42,390,35,390,40,315,47"/>
+<area shape="rect" id="Node000004" href="$classgerber2coordinatesTEST_1_1GerberSettingsList.html#aedf25c3a0d95f36bcdd5996964c3cef5" title=" " alt="" coords="404,69,631,109"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="315,67,390,75,390,80,314,73"/>
+<area shape="rect" id="Node000003" href="$classgerber2coordinatesTEST_1_1GerberLine.html#a224b44ce11e8565018e49a3452883d9f" title=" " alt="" coords="679,5,905,45"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="631,23,665,23,665,28,631,28"/>
+<area shape="rect" id="Node000005" href="$classgerber2coordinatesTEST_1_1GerberSettingsList.html#a8b0449100b4f26e9d131a8f127ad3d1c" title=" " alt="" coords="679,69,905,109"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="631,87,665,87,665,92,631,92"/>
+</map>

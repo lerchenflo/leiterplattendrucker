@@ -1,0 +1,11 @@
+<map id="gerber2coordinatesTEST.GerberSettingsList.setoffset" name="gerber2coordinatesTEST.GerberSettingsList.setoffset">
+<area shape="rect" id="Node000001" title=" " alt="" coords="1364,5,1591,45"/>
+<area shape="rect" id="Node000002" href="$classgerber2coordinatesTEST_1_1Druckerserver.html#a59c02b80d01f547c5e903f9976272db7" title=" " alt="" coords="981,13,1316,38"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="1350,28,1317,28,1317,23,1350,23"/>
+<area shape="rect" id="Node000003" href="$classgerber2coordinatesTEST_1_1Druckerserver.html#ab8db08d8cf9f5882603df250d7c0c03b" title="Die einzelnen Anfragen werden verarbeitet." alt="" coords="656,5,933,45"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="967,28,934,28,934,23,967,23"/>
+<area shape="rect" id="Node000004" href="$classgerber2coordinatesTEST_1_1Druckerserver.html#ac93056be99f683fd7a826082b67180dd" title="Funktion zum aktzeptieren mehrerer Anfragen gleichzeitig." alt="" coords="331,5,608,45"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="642,28,608,28,608,23,642,23"/>
+<area shape="rect" id="Node000005" href="$classgerber2coordinatesTEST_1_1Druckerserver.html#a3db80629f1401b75124dfebadb1f4c88" title="Httpserver starten." alt="" coords="5,5,283,45"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="317,28,283,28,283,23,317,23"/>
+</map>

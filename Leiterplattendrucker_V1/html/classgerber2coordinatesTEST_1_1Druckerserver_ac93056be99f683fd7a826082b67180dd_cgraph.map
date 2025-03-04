@@ -1,0 +1,61 @@
+<map id="gerber2coordinatesTEST.Druckerserver.AcceptRequests" name="gerber2coordinatesTEST.Druckerserver.AcceptRequests">
+<area shape="rect" id="Node000001" title="Funktion zum aktzeptieren mehrerer Anfragen gleichzeitig." alt="" coords="5,388,283,428"/>
+<area shape="rect" id="Node000002" href="$classgerber2coordinatesTEST_1_1Druckerserver.html#ab8db08d8cf9f5882603df250d7c0c03b" title="Die einzelnen Anfragen werden verarbeitet." alt="" coords="331,388,608,428"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="283,405,317,405,317,411,283,411"/>
+<area shape="rect" id="Node000003" href="$classgerber2coordinatesTEST_1_1Druckerserver.html#a0835f5beab61ad3fa7595fd3637c40c5" title=" " alt="" coords="663,46,1014,71"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="475,387,497,332,535,258,587,180,619,144,654,113,696,88,741,72,742,77,698,93,658,117,623,148,591,183,539,261,502,335,480,389"/>
+<area shape="rect" id="Node000005" href="$classgerber2coordinatesTEST_1_1Gerberfileinfo.html#a9ba5800c1575be5dfff55093a42d77cb" title="Aktuellen Druckfortschritt in Prozent bekommen." alt="" coords="1459,579,1859,605"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="489,426,517,458,557,495,604,530,657,558,720,574,803,587,901,595,1009,600,1236,603,1445,598,1445,604,1236,608,1009,606,901,601,802,592,719,580,655,562,601,535,553,499,514,461,485,430"/>
+<area shape="rect" id="Node000006" href="$classLeiterplattendrucker__V1_1_1Website.html#a71e53317601b7596dd7d430a6ae3978f" title=" " alt="" coords="743,180,934,220"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="483,386,511,351,551,308,600,265,655,230,691,215,729,206,730,211,693,220,657,234,603,269,555,312,515,355,487,389"/>
+<area shape="rect" id="Node000007" href="$classgerber2coordinatesTEST_1_1Druckerserver.html#a08d1da26dbc5116eff8ca27a47ec38af" title=" " alt="" coords="689,244,988,284"/>
+<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="495,386,565,339,609,314,655,294,681,285,682,290,657,298,611,319,568,343,498,390"/>
+<area shape="rect" id="Node000008" href="$classgerber2coordinatesTEST_1_1Druckerserver.html#aca3fd45b4759e5834114e450a8d50d32" title="Allgemeine Konsolenausgabe mit aktueller Zeit." alt="" coords="1907,478,2267,503"/>
+<area shape="poly" id="edge7_Node000002_Node000008" title=" " alt="" coords="499,426,568,470,611,491,657,507,763,524,904,534,1068,537,1247,535,1608,521,1909,502,1910,507,1608,526,1247,541,1068,543,903,540,763,530,655,512,609,496,565,474,496,430"/>
+<area shape="rect" id="Node000009" href="$classgerber2coordinatesTEST_1_1Druckerserver.html#a6d2b6196c04dad571e84b2f1e6e09724" title=" " alt="" coords="681,359,997,399"/>
+<area shape="poly" id="edge8_Node000002_Node000009" title=" " alt="" coords="608,394,667,390,667,395,608,400"/>
+<area shape="rect" id="Node000010" href="$classgerber2coordinatesTEST_1_1Druckerserver.html#ad0249cb1356b24bc2dc3f208b5d35581" title=" " alt="" coords="670,309,1007,334"/>
+<area shape="poly" id="edge9_Node000002_Node000010" title=" " alt="" coords="522,385,585,364,655,344,710,333,711,339,657,349,587,369,524,391"/>
+<area shape="rect" id="Node000014" href="$classgerber2coordinatesTEST_1_1Druckerserver.html#a59c02b80d01f547c5e903f9976272db7" title=" " alt="" coords="671,423,1006,449"/>
+<area shape="poly" id="edge14_Node000002_Node000014" title=" " alt="" coords="608,416,658,420,658,425,608,421"/>
+<area shape="rect" id="Node000016" href="$classgerber2coordinatesTEST_1_1Druckerserver.html#a12e0f5f8fafaba6e56b74278991b798b" title=" " alt="" coords="670,127,1007,153"/>
+<area shape="poly" id="edge18_Node000002_Node000016" title=" " alt="" coords="477,386,501,340,540,279,591,217,621,189,655,166,676,155,678,160,657,170,625,193,595,220,544,282,506,342,482,389"/>
+<area shape="rect" id="Node000018" href="$classgerber2coordinatesTEST_1_1Druckerserver.html#a5ac55638a08c878eb8fe137be3d1a411" title=" " alt="" coords="656,473,1021,498"/>
+<area shape="poly" id="edge22_Node000002_Node000018" title=" " alt="" coords="535,425,657,457,716,468,715,473,655,463,533,431"/>
+<area shape="rect" id="Node000020" href="$classgerber2coordinatesTEST_1_1Druckerserver.html#a4d3050145a86ba737bef7a21d2e52fa4" title=" " alt="" coords="685,629,992,669"/>
+<area shape="poly" id="edge26_Node000002_Node000020" title=" " alt="" coords="485,427,512,466,551,516,600,566,657,608,687,622,685,627,655,613,597,570,547,520,508,470,481,430"/>
+<area shape="rect" id="Node000025" href="$classgerber2coordinatesTEST_1_1Druckerserver.html#a56560bd44a06029268e9cd3bfef89eba" title=" " alt="" coords="686,693,991,733"/>
+<area shape="poly" id="edge34_Node000002_Node000025" title=" " alt="" coords="480,427,503,479,540,549,564,585,591,620,623,652,657,679,675,689,672,693,655,684,619,656,587,624,559,588,535,552,498,482,475,429"/>
+<area shape="rect" id="Node000004" href="$classgerber2coordinatesTEST_1_1Gerberfileinfo.html#a992e1d2ee0ab9a4a8f7856869cd89b25" title=" " alt="" coords="1069,5,1411,45"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="992,43,1056,38,1056,43,992,49"/>
+<area shape="poly" id="edge10_Node000010_Node000008" title=" " alt="" coords="1008,318,1185,323,1399,337,1630,362,1746,380,1859,403,1911,417,1963,435,2048,470,2046,475,1961,440,1910,422,1858,408,1745,385,1630,367,1399,342,1185,329,1007,324"/>
+<area shape="rect" id="Node000011" href="$classgerber2coordinatesTEST_1_1GerberSettingsList.html#a21318abf396092ec7e533611001a98c0" title=" " alt="" coords="1127,184,1353,224"/>
+<area shape="poly" id="edge11_Node000010_Node000011" title=" " alt="" coords="992,306,1020,294,1035,280,1043,265,1052,249,1068,234,1112,215,1115,220,1071,238,1056,252,1048,267,1039,284,1023,298,994,311"/>
+<area shape="rect" id="Node000012" href="$classgerber2coordinatesTEST_1_1GerberSettingsList.html#a7f6830eebd42c74fac6d9de8d2a6c44e" title=" " alt="" coords="1545,216,1772,256"/>
+<area shape="poly" id="edge12_Node000011_Node000012" title=" " alt="" coords="1354,210,1532,224,1531,229,1353,215"/>
+<area shape="rect" id="Node000013" href="$classgerber2coordinatesTEST_1_1GerberSettingsList.html#a0d6c6ef709817eaa9af58b92a61225b4" title=" " alt="" coords="1973,216,2200,256"/>
+<area shape="poly" id="edge13_Node000012_Node000013" title=" " alt="" coords="1772,233,1959,233,1959,239,1772,239"/>
+<area shape="poly" id="edge15_Node000014_Node000008" title=" " alt="" coords="938,421,1021,408,1069,399,1204,391,1343,391,1480,398,1612,410,1845,442,2013,473,2012,478,1844,447,1611,415,1479,403,1342,396,1205,396,1070,404,1022,413,938,426"/>
+<area shape="rect" id="Node000015" href="$classgerber2coordinatesTEST_1_1GerberSettingsList.html#a036d1751712a1544f8957b4e1a252312" title=" " alt="" coords="1127,248,1353,288"/>
+<area shape="poly" id="edge16_Node000014_Node000015" title=" " alt="" coords="990,421,1020,408,1035,397,1044,384,1053,370,1068,355,1122,320,1176,291,1179,296,1125,324,1071,359,1057,373,1049,387,1039,401,1023,413,992,426"/>
+<area shape="poly" id="edge17_Node000015_Node000012" title=" " alt="" coords="1353,257,1531,243,1532,248,1354,262"/>
+<area shape="poly" id="edge19_Node000016_Node000008" title=" " alt="" coords="891,125,965,109,1065,93,1183,79,1316,73,1455,78,1526,86,1597,99,1666,116,1734,139,1799,167,1860,202,1878,216,1888,231,1909,266,2068,465,2064,469,1904,270,1883,234,1874,220,1857,206,1796,172,1732,143,1665,121,1596,104,1526,92,1455,84,1316,79,1184,85,1065,98,966,114,892,130"/>
+<area shape="rect" id="Node000017" href="$classgerber2coordinatesTEST_1_1GerberSettingsList.html#ab52332fb782819fe4b9bfd20f3f3b534" title=" " alt="" coords="1127,120,1353,160"/>
+<area shape="poly" id="edge20_Node000016_Node000017" title=" " alt="" coords="1007,137,1113,137,1113,143,1007,143"/>
+<area shape="poly" id="edge21_Node000017_Node000012" title=" " alt="" coords="1354,157,1411,169,1573,210,1572,215,1410,175,1353,163"/>
+<area shape="poly" id="edge23_Node000018_Node000008" title=" " alt="" coords="1021,483,1893,487,1893,493,1021,489"/>
+<area shape="rect" id="Node000019" href="$classgerber2coordinatesTEST_1_1GerberSettingsList.html#ac518ba905ddb1dc5535cc2761685a560" title=" " alt="" coords="1127,413,1353,453"/>
+<area shape="poly" id="edge24_Node000018_Node000019" title=" " alt="" coords="937,470,1113,447,1114,452,938,475"/>
+<area shape="poly" id="edge25_Node000019_Node000012" title=" " alt="" coords="1282,411,1602,259,1604,264,1285,416"/>
+<area shape="rect" id="Node000021" href="$classgerber2coordinatesTEST_1_1Druckerserver.html#a9d206737320c167397df7512cd0b0d40" title=" " alt="" coords="1087,661,1393,686"/>
+<area shape="poly" id="edge27_Node000020_Node000021" title=" " alt="" coords="993,656,1073,661,1073,666,992,661"/>
+<area shape="poly" id="edge31_Node000021_Node000005" title=" " alt="" coords="1284,658,1364,636,1458,615,1524,604,1525,609,1459,620,1365,641,1285,663"/>
+<area shape="poly" id="edge33_Node000021_Node000008" title=" " alt="" coords="1261,684,1344,734,1400,760,1459,779,1572,807,1620,817,1664,823,1707,824,1753,817,1802,803,1857,779,1899,754,1936,722,1969,687,1998,648,2044,574,2073,515,2077,517,2049,576,2003,651,1973,690,1940,726,1902,758,1860,784,1804,808,1754,823,1708,829,1663,828,1619,822,1571,812,1458,784,1398,765,1342,738,1259,689"/>
+<area shape="rect" id="Node000022" href="$classgerber2coordinatesTEST_1_1Druckerserver.html#a7680188ef68e32230ee1173f1e9f7a58" title=" " alt="" coords="1493,629,1824,654"/>
+<area shape="poly" id="edge28_Node000021_Node000022" title=" " alt="" coords="1394,659,1480,652,1480,658,1394,664"/>
+<area shape="rect" id="Node000023" href="$classgerber2coordinatesTEST_1_1Gerberfileinfo.html#a4334be9709c2cd8a60d17974c0d73e35" title="Nächste Linie bekommen, wird der Reihe nach ausgegeben." alt="" coords="1510,679,1807,719"/>
+<area shape="poly" id="edge30_Node000021_Node000023" title=" " alt="" coords="1394,680,1497,686,1496,692,1394,685"/>
+<area shape="rect" id="Node000024" href="$classgerber2coordinatesTEST_1_1Gerbertoolbox.html#ac8029c2807c958525e9cfe87ea3df43e" title=" " alt="" coords="1461,743,1856,769"/>
+<area shape="poly" id="edge32_Node000021_Node000024" title=" " alt="" coords="1284,684,1365,706,1459,728,1525,739,1524,744,1458,733,1363,711,1282,689"/>
+<area shape="poly" id="edge29_Node000022_Node000008" title=" " alt="" coords="1814,626,1858,615,1915,592,1970,563,2056,509,2059,513,1973,568,1917,597,1859,620,1815,631"/>
+</map>

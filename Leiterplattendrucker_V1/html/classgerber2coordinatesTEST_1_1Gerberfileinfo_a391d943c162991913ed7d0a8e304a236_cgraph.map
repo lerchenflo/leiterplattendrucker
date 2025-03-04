@@ -1,0 +1,5 @@
+<map id="gerber2coordinatesTEST.Gerberfileinfo.find_line_with_same_start" name="gerber2coordinatesTEST.Gerberfileinfo.find_line_with_same_start">
+<area shape="rect" id="Node000001" title="Linie mit gleichem Startpunkt finden." alt="" coords="5,5,305,45"/>
+<area shape="rect" id="Node000002" href="$classgerber2coordinatesTEST_1_1GerberLine.html#ae257141630b8c0e208827571d0477255" title="Abstand zwischen dem Start / Endpunkt und einem Übergebenen Punkt berechnen." alt="" coords="353,5,580,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="306,23,340,23,340,28,306,28"/>
+</map>
