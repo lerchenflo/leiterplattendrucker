@@ -1,0 +1,16 @@
+<map id="gerber2coordinatesTEST.Druckerserver.startPrinting" name="gerber2coordinatesTEST.Druckerserver.startPrinting">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,106,312,146"/>
+<area shape="rect" id="Node000002" href="$classgerber2coordinatesTEST_1_1Druckerserver.html#a9d206737320c167397df7512cd0b0d40" title=" " alt="" coords="360,113,667,139"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="312,123,347,123,347,129,312,129"/>
+<area shape="rect" id="Node000003" href="$classgerber2coordinatesTEST_1_1Druckerserver.html#a7680188ef68e32230ee1173f1e9f7a58" title=" " alt="" coords="749,5,1080,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="542,111,618,79,714,47,795,30,796,36,715,53,620,84,544,116"/>
+<area shape="rect" id="Node000004" href="$classgerber2coordinatesTEST_1_1Druckerserver.html#aca3fd45b4759e5834114e450a8d50d32" title="Allgemeine Konsolenausgabe mit aktueller Zeit." alt="" coords="1163,31,1523,56"/>
+<area shape="poly" id="edge7_Node000002_Node000004" title=" " alt="" coords="585,111,714,91,939,68,1149,52,1149,58,940,74,715,97,586,116"/>
+<area shape="rect" id="Node000005" href="$classgerber2coordinatesTEST_1_1Gerberfileinfo.html#a4334be9709c2cd8a60d17974c0d73e35" title="Nächste Linie bekommen, wird der Reihe nach ausgegeben." alt="" coords="766,106,1063,146"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="667,123,752,123,752,129,667,129"/>
+<area shape="rect" id="Node000006" href="$classgerber2coordinatesTEST_1_1Gerberfileinfo.html#a9ba5800c1575be5dfff55093a42d77cb" title="Aktuellen Druckfortschritt in Prozent bekommen." alt="" coords="715,171,1115,196"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="591,136,715,155,796,166,795,172,714,161,590,141"/>
+<area shape="rect" id="Node000007" href="$classgerber2coordinatesTEST_1_1Gerbertoolbox.html#ac8029c2807c958525e9cfe87ea3df43e" title=" " alt="" coords="717,220,1112,245"/>
+<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="541,136,618,171,715,205,764,215,763,220,714,210,616,176,539,141"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="1081,25,1149,29,1149,35,1080,30"/>
+</map>

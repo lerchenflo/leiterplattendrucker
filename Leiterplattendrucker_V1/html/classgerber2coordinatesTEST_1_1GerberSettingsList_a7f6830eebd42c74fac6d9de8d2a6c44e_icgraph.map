@@ -1,0 +1,28 @@
+<map id="gerber2coordinatesTEST.GerberSettingsList.setsetting" name="gerber2coordinatesTEST.GerberSettingsList.setsetting">
+<area shape="rect" id="Node000001" title=" " alt="" coords="1669,101,1896,141"/>
+<area shape="rect" id="Node000002" href="$classgerber2coordinatesTEST_1_1GerberSettingsList.html#a21318abf396092ec7e533611001a98c0" title=" " alt="" coords="1395,5,1621,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="1722,99,1620,60,1583,48,1585,43,1622,55,1723,94"/>
+<area shape="rect" id="Node000007" href="$classgerber2coordinatesTEST_1_1GerberSettingsList.html#a036d1751712a1544f8957b4e1a252312" title=" " alt="" coords="1395,69,1621,109"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="1656,109,1621,105,1622,100,1656,104"/>
+<area shape="rect" id="Node000009" href="$classgerber2coordinatesTEST_1_1GerberSettingsList.html#ab52332fb782819fe4b9bfd20f3f3b534" title=" " alt="" coords="1395,133,1621,173"/>
+<area shape="poly" id="edge9_Node000001_Node000009" title=" " alt="" coords="1656,139,1622,143,1621,137,1656,133"/>
+<area shape="rect" id="Node000011" href="$classgerber2coordinatesTEST_1_1GerberSettingsList.html#ac518ba905ddb1dc5535cc2761685a560" title=" " alt="" coords="1395,197,1621,237"/>
+<area shape="poly" id="edge12_Node000001_Node000011" title=" " alt="" coords="1723,149,1622,188,1585,200,1583,195,1620,183,1722,144"/>
+<area shape="rect" id="Node000003" href="$classgerber2coordinatesTEST_1_1Druckerserver.html#ad0249cb1356b24bc2dc3f208b5d35581" title=" " alt="" coords="995,22,1333,47"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="1381,31,1333,33,1333,27,1381,26"/>
+<area shape="rect" id="Node000004" href="$classgerber2coordinatesTEST_1_1Druckerserver.html#ab8db08d8cf9f5882603df250d7c0c03b" title="Die einzelnen Anfragen werden verarbeitet." alt="" coords="656,103,933,143"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="1071,52,982,71,859,105,857,100,981,65,1069,47"/>
+<area shape="rect" id="Node000005" href="$classgerber2coordinatesTEST_1_1Druckerserver.html#ac93056be99f683fd7a826082b67180dd" title="Funktion zum aktzeptieren mehrerer Anfragen gleichzeitig." alt="" coords="331,103,608,143"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="642,125,608,125,608,120,642,120"/>
+<area shape="rect" id="Node000006" href="$classgerber2coordinatesTEST_1_1Druckerserver.html#a3db80629f1401b75124dfebadb1f4c88" title="Httpserver starten." alt="" coords="5,103,283,143"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="317,125,283,125,283,120,317,120"/>
+<area shape="rect" id="Node000008" href="$classgerber2coordinatesTEST_1_1Druckerserver.html#a59c02b80d01f547c5e903f9976272db7" title=" " alt="" coords="997,81,1331,106"/>
+<area shape="poly" id="edge7_Node000007_Node000008" title=" " alt="" coords="1381,93,1331,94,1331,89,1381,88"/>
+<area shape="poly" id="edge8_Node000008_Node000004" title=" " alt="" coords="990,110,934,114,933,109,990,104"/>
+<area shape="rect" id="Node000010" href="$classgerber2coordinatesTEST_1_1Druckerserver.html#a12e0f5f8fafaba6e56b74278991b798b" title=" " alt="" coords="995,134,1333,159"/>
+<area shape="poly" id="edge10_Node000009_Node000010" title=" " alt="" coords="1381,154,1333,153,1333,147,1381,148"/>
+<area shape="poly" id="edge11_Node000010_Node000004" title=" " alt="" coords="981,137,933,134,934,129,982,132"/>
+<area shape="rect" id="Node000012" href="$classgerber2coordinatesTEST_1_1Druckerserver.html#a5ac55638a08c878eb8fe137be3d1a411" title=" " alt="" coords="981,190,1347,215"/>
+<area shape="poly" id="edge13_Node000011_Node000012" title=" " alt="" coords="1381,215,1347,213,1347,208,1381,209"/>
+<area shape="poly" id="edge14_Node000012_Node000004" title=" " alt="" coords="1069,190,981,173,867,145,868,140,982,168,1070,185"/>
+</map>

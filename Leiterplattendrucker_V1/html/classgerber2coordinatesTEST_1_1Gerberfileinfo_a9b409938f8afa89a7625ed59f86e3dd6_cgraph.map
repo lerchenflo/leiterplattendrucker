@@ -1,0 +1,7 @@
+<map id="gerber2coordinatesTEST.Gerberfileinfo.turnlines" name="gerber2coordinatesTEST.Gerberfileinfo.turnlines">
+<area shape="rect" id="Node000001" title="Start und Enden vertauschen, damit die nächste Linie dort anfängt wo die vorherige aufhört und die op..." alt="" coords="5,31,339,56"/>
+<area shape="rect" id="Node000002" href="$classgerber2coordinatesTEST_1_1Gerbertoolbox.html#a3d2eaeebd1919e626f5314d934c76f1a" title=" " alt="" coords="389,5,745,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="339,30,375,28,375,33,339,35"/>
+<area shape="rect" id="Node000003" href="$classgerber2coordinatesTEST_1_1Gerberfileinfo.html#a1fbfbb2aa35fc3dcf85dbaaddab12372" title="Startpunkt finden, an dem angefangen wird zu zeichnen." alt="" coords="387,55,747,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="339,51,373,53,373,58,339,56"/>
+</map>
