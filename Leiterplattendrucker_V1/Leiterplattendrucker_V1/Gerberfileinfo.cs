@@ -272,8 +272,8 @@ namespace gerber2coordinatesTEST
                 returnlist.Add(new GerberLine(new GerberPoint(or.X, or.Y), new GerberPoint(ur.X, ur.Y)));  // Rechts
                 returnlist.Add(new GerberLine(new GerberPoint(ur.X, ur.Y), new GerberPoint(ul.X, ul.Y)));  // Unten
                 returnlist.Add(new GerberLine(new GerberPoint(ul.X, ul.Y), new GerberPoint(ol.X, ol.Y)));  // Links
-                returnlist.Add(new GerberLine(new GerberPoint(ol.X, ol.Y), new GerberPoint(ur.X, ur.Y)));  // Quer
-                returnlist.Add(new GerberLine(new GerberPoint(or.X, or.Y), new GerberPoint(ul.X, ul.Y)));  // Quer
+                //returnlist.Add(new GerberLine(new GerberPoint(ol.X, ol.Y), new GerberPoint(ur.X, ur.Y)));  // Quer
+                //returnlist.Add(new GerberLine(new GerberPoint(or.X, or.Y), new GerberPoint(ul.X, ul.Y)));  // Quer
             }
             return returnlist;
         }
