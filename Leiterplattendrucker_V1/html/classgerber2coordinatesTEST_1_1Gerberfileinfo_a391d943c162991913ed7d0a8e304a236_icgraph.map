@@ -1,9 +1,0 @@
-<map id="gerber2coordinatesTEST.Gerberfileinfo.find_line_with_same_start" name="gerber2coordinatesTEST.Gerberfileinfo.find_line_with_same_start">
-<area shape="rect" id="Node000001" title="Linie mit gleichem Startpunkt finden." alt="" coords="1033,5,1333,45"/>
-<area shape="rect" id="Node000002" href="$classgerber2coordinatesTEST_1_1Gerberfileinfo.html#a2d0e089c433ced29af13ae3505d0ebc5" title="Linien der Reihe nach sortieren, damit der Drucker nicht hin und her muss." alt="" coords="653,13,985,38"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="1019,28,986,28,986,23,1019,23"/>
-<area shape="rect" id="Node000003" href="$classgerber2coordinatesTEST_1_1Gerberfileinfo.html#a756d07194ea904f77d9d50b3717c796c" title=" " alt="" coords="329,5,605,45"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="640,28,606,28,606,23,640,23"/>
-<area shape="rect" id="Node000004" href="$classgerber2coordinatesTEST_1_1Gerberfileinfo.html#a6415b3b8ed5c5d93a9c3d2ee80bf90bb" title=" " alt="" coords="5,5,281,45"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="316,28,282,28,282,23,316,23"/>
-</map>
