@@ -367,6 +367,7 @@ namespace gerber2coordinatesTEST
             if (printThread != null)
             {
                 stopprinttoken.Cancel();
+
                 return true;
             }
             return false;
@@ -390,7 +391,8 @@ namespace gerber2coordinatesTEST
             printing = false;
             gerberfileinfo = null;
             serialconn = null;
-            
+            stopprinttoken = null;
+            stopprinttoken = new CancellationTokenSource();
         }
 
         private void print()
