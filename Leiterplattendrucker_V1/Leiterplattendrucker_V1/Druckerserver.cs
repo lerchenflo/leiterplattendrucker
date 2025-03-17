@@ -13,7 +13,7 @@ namespace gerber2coordinatesTEST
 {
     public class Druckerserver
     {
-        public static bool USEUSB_DEBUG = true;
+        public static bool USEUSB_DEBUG = false;
 
 
 
