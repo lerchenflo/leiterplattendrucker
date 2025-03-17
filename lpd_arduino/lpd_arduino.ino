@@ -54,7 +54,7 @@
 #define TRAVEL_HEIGT 8000 // Steps to drive up or down while driving to 0,0. should be obselete as soon as z endswitches are implemented
 #define HEIGHT_DIFF 100 // Value in mm?, the Distance from the ultrasonic sensor to the tip op the Pen from the printhead
 #define MEASUREMENTS 40 //number of measurements the ultrasonic sensor does befor calculating average
-#define RETRACT 500 // Steps to drive up after driving to preassure
+#define RETRACT 0 // Steps to drive up after driving to preassure
 
 #define SLAVE_ADDR 9 // Slave address for the SPI communicatin with the second arduino
 
@@ -196,21 +196,21 @@ void drive(int axis, bool dir_val, long steps, long speed){
   }
 
   // send signals to the motor
-  digitalWrite(DIR, dir_val);
-  digitalWrite(ENA,HIGH);
+  digitalWrite(DIR, dir_val); // Richtung über GPIO-Pin setzen
+  digitalWrite(ENA,HIGH); // Motor aktivieren
   for (long i=0; i<steps; i++)
     {
-      if(digitalRead(ES1) && dir_val || digitalRead(ES2) && !dir_val){
-        digitalWrite(PUL,HIGH);
+      if(digitalRead(ES1) && dir_val || digitalRead(ES2) && !dir_val){ // auf Endschalter prüfen
+        digitalWrite(PUL,HIGH); // Puls generieren
         delayMicroseconds(speed);
         digitalWrite(PUL,LOW);
         delayMicroseconds(speed);
       }else{
-        Serial.println("end_switch_hit"); // send a message back to the controll programm
-        break; // end driving
+        Serial.println("end_switch_hit"); // Nachricht an kontrollierenden PC
+        break; // Schleife beenden
       }
     }
-  digitalWrite(ENA,LOW);
+  digitalWrite(ENA,LOW); // Motor deaktivieren um Geräusche zu vermeiden
 
 }
 
@@ -226,7 +226,7 @@ void drive_preassure(int stopPreassure){ // drive the z axis down until the set 
   
   while(analogRead(PREASSURE_SNS) < stopPreassure) // check if wanted preassure is reached
     {
-      if(digitalRead(EZ1)){ // endstop placeholder
+      if(digitalRead(EZ2)){ // endstop placeholder
         digitalWrite(Z_PUL,HIGH);
         delayMicroseconds(speed);
         digitalWrite(Z_PUL,LOW);
@@ -241,7 +241,7 @@ void drive_preassure(int stopPreassure){ // drive the z axis down until the set 
     //int up = 500; // drive x steps up again to reach optimal heigth
     digitalWrite(Z_DIR, HIGH); // drive up again
     for(int i=0; i<RETRACT; i++){
-      if(digitalRead(EZ2)){ // endstop placeholder
+      if(digitalRead(EZ1)){
         digitalWrite(Z_PUL,HIGH);
         delayMicroseconds(SPEED);
         digitalWrite(Z_PUL,LOW);
@@ -426,7 +426,7 @@ void loop() {
       #endif
 
       #ifdef PRESS
-        drive_preassure(300); //drive the z-axis until a certain preassure is reached
+        drive_preassure(100); //drive the z-axis until a certain preassure is reached
       #endif
     }
 
