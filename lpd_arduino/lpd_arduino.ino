@@ -54,7 +54,7 @@
 #define TRAVEL_HEIGT 8000 // Steps to drive up or down while driving to 0,0. should be obselete as soon as z endswitches are implemented
 #define HEIGHT_DIFF 100 // Value in mm?, the Distance from the ultrasonic sensor to the tip op the Pen from the printhead
 #define MEASUREMENTS 40 //number of measurements the ultrasonic sensor does befor calculating average
-#define RETRACT 0 // Steps to drive up after driving to preassure
+#define RETRACT 500 // Steps to drive up after driving to preassure
 
 #define SLAVE_ADDR 9 // Slave address for the SPI communicatin with the second arduino
 
