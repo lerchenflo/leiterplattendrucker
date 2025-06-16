@@ -20,7 +20,7 @@ namespace Leiterplattendrucker_V1
             //Je nach anfrage verschiedene Files zurückgeben
             bool picture = false;
 
-            //Beim aufrufen der Website ohne Verzeichnis wird die index.html zurückgegeben
+            //Beim Aufrufen der Website ohne Verzeichnis wird die index.html zurückgegeben
             if (requesturl == "/")
             {
                 requesturl = "/index.html";
