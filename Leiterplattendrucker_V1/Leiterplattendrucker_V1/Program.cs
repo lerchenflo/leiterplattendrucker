@@ -59,6 +59,12 @@ namespace Leiterplattendrucker_V1
                         }
 
                         comPorts = SerialComm.getAvalibablePorts();
+
+                        if (comPorts.Length == 0)
+                        {
+                            throw new Exception("Kein USB - Gerät gefunden!");
+                        }
+
                         for (int i = 0; i < comPorts.Length; i++)
                         {
                             if (Druckerserver.USEUSB_DEBUG)
