@@ -666,7 +666,7 @@ namespace gerber2coordinatesTEST
             //Schleife durch alle GerberLines
             foreach (GerberLine l in _lines)
             {
-                //Für jede GerberLine den Offset mit den Offset aus den Settings korrigieren
+                //Für jede GerberLine den Offset mit dem größten Offset + Settingsoffset korrigieren
                 l.correctoffset(-Xoffset + _settings.getoffset()[0], -Yoffset + _settings.getoffset()[1]);
             }
         }
