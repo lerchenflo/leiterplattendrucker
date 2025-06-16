@@ -94,7 +94,7 @@ namespace Leiterplattendrucker_V1
                     catch (Exception e)
                     {
                         Druckerserver.logtoconsole("Fehler: " + e.Message, 1);
-
+                        Thread.Sleep(2000);
                     }
                 }
             }
